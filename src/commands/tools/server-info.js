@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, } = require('discord.js')
+const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Guild } = require('discord.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -9,12 +9,12 @@ module.exports = {
             "ja" : "サーバー情報",
             "ko" : "서버정보"
         })
-        .setDescription('伺服器介紹網頁')
+        .setDescription('伺服器介紹')
         .setDescriptionLocalizations({
-            "zh-TW" : "伺服器介紹網頁",
-            "zh-CN" : "伺服器介绍网页",
-            "ja" : "サーバー紹介ページ",
-            "ko" : "서버 소개 페이지"
+            "zh-TW" : "伺服器介紹",
+            "zh-CN" : "伺服器介绍",
+            "ja" : "サーバー紹介",
+            "ko" : "서버 소개"
         }),
     async execute (interaction , client) {
         const embed =  new EmbedBuilder()
@@ -31,19 +31,19 @@ module.exports = {
                 iconURL:interaction.guild.iconURL()
             })
             .addFields([{
-                name:`🪪 伺服器ID`,
+                name:`🪪｜伺服器ID`,
                 value:`**\`${interaction.guild.id}\`**`
             },
             {
-                name:`👥 人數`,
+                name:`👥｜人數`,
                 value:`\`${interaction.guild.memberCount}\``
             },
             {
-                name:`🌟 擁有者`,
+                name:`🌟｜擁有者`,
                 value:`<@${interaction.guild.ownerId}>`
             },
             {
-                name:`🤩 伺服簡介`,
+                name:`🤩｜伺服簡介`,
                 value:`${interaction.guild.description}`
             },
             {
@@ -51,7 +51,7 @@ module.exports = {
                 value:`**\`${interaction.guild.premiumSubscriptionCount} (Lv.${interaction.guild.premiumTier})\`**`
             },
             {
-                name:`🔰 伺服建立`,
+                name:`🔰｜伺服建立`,
                 value:`__**<t:${parseInt(interaction.guild.createdTimestamp/1000)}>**__ **(<t:${parseInt(interaction.guild.createdTimestamp/1000)}:R>)**`
             },
         ])

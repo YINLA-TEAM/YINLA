@@ -15,7 +15,7 @@ client.player = new Player(client, {
     }
 })
 client.commandArray = [];
-
+client.commands.set([]);
 
 const functionFolders = fs.readdirSync(`./src/functions`);
 for(const folder of functionFolders) {

@@ -5,11 +5,11 @@ const fs = require('fs');
 module.exports = (client) => {
     client.handleCommands = async() => {
         const commandFolder = fs.readdirSync('./src/commands');
+        const { commands, commandArray } = client;
         for (const folder of commandFolder) {
             const commandFiles = fs
                 .readdirSync(`./src/commands/${folder}`)
                 .filter((file) => file.endsWith(".js"));
-            const { commands, commandArray } = client;
             for (const file of commandFiles) {
                 const command = require(`../../commands/${folder}/${file}`)
                 commands.set(command.data.name, command);
@@ -18,12 +18,11 @@ module.exports = (client) => {
             }
         }
     const clientId = '914150570250625044';
-    const guildId = '1031159028505641011';
     const rest = new REST({version: '9'}).setToken(process.env.token);
     try {
         console.log("Slash Commands 已開始加載 🤔")
 
-        await rest.put(Routes.applicationGuildCommands(clientId,guildId),{
+        await rest.put(Routes.applicationCommands(clientId),{
             body: client.commandArray,
         });
         console.log("Slash Commands 已完成加載 ✅");

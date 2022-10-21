@@ -53,23 +53,23 @@ module.exports = {
 
             .addFields([
                 {
-                    name: `🪪 使用者ID`,
+                    name: `🪪｜使用者ID`,
                     value: `\`${member.id}\``,
                 },
                 {
-                    name: `💩 伺服器暱稱`,
+                    name: `💩｜伺服器暱稱`,
                     value:`\`${member.nickname}\``,
                 },
                 {
-                    name: `🔰 創立帳號時間`,
+                    name: `🔰｜創立帳號時間`,
                     value: `**__<t:${parseInt(member.user.createdTimestamp/1000)}>__ (<t:${parseInt(member.user.createdTimestamp/1000)}:R>)**`,
                 },
                 {
-                    name: `👥 加入伺服時間`,
+                    name: `👥｜加入伺服時間`,
                     value: `**__<t:${parseInt(member.joinedTimestamp/1000)}>__ (<t:${parseInt(member.joinedTimestamp/1000)}:R>)**`,
                 },
                 {
-                    name: `🤖 機器人`,
+                    name: `🤖｜機器人`,
                     value: `${member.user.bot? '\`✅\`':'\`❎\`'}`
                 }
             ]);
