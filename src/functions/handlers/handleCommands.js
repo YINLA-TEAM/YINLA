@@ -21,7 +21,7 @@ module.exports = (client) => {
     const rest = new REST({version: '9'}).setToken(process.env.token);
     try {
         console.log("Slash Commands 已開始加載 🤔")
-
+;
         await rest.put(Routes.applicationCommands(clientId),{
             body: client.commandArray,
         });
