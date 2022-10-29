@@ -31,7 +31,7 @@ module.exports = {
             ephemeral: true
         });
 
-        const  newMessage = `<:play:827734196243398668> |機器人開機時間：\`${msToHMS(client.uptime)}\`\n:globe_with_meridians: | **API**：\`${client.ws.ping}\` ms\n<:Discord_Bot:986319391660593172> | **機器人延遲**：\`${message.createdTimestamp - interaction.createdTimestamp}\` ms`
+        const  newMessage = `<:play:827734196243398668>｜機器人開機時間：\`${msToHMS(client.uptime)}\`\n:globe_with_meridians:｜**API**：\`${client.ws.ping}\` ms\n<:Discord_Bot:986319391660593172>｜**機器人延遲**：\`${message.createdTimestamp - interaction.createdTimestamp}\` ms\n**👥｜使用者**：\`${client.users.cache.size}\`\n**👾｜伺服器**：\`${client.guilds.cache.size}\``
         await interaction.editReply({
             content : newMessage
         })

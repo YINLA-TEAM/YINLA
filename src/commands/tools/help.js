@@ -52,6 +52,12 @@ module.exports = {
                 label: `進階指令`,
                 description:"進階",
                 value: `2`
+            }),
+            new SelectMenuOptionBuilder({
+                emoji:`🔷`,
+                label: `應用程式`,
+                description:"應用程式",
+                value: `3`
             })
         );
 

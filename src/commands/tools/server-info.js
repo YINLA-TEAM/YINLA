@@ -47,7 +47,7 @@ module.exports = {
                 value:`${interaction.guild.description}`
             },
             {
-                name:`<a:nitroboost:1009023116917350472> 加成狀態`,
+                name:`<a:nitroboost:1009023116917350472>｜加成狀態`,
                 value:`**\`${interaction.guild.premiumSubscriptionCount} (Lv.${interaction.guild.premiumTier})\`**`
             },
             {

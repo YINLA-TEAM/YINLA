@@ -59,6 +59,26 @@ module.exports = {
                 value: `2`
             })
         );
+        const application_menu = new SelectMenuBuilder()
+            .setCustomId(`application`)
+            .setPlaceholder("📖 請選擇應用程式介紹")
+            .setDisabled(false)
+            .setMinValues(1)
+            .setMaxValues(1)
+            .setOptions(
+            new SelectMenuOptionBuilder({
+                emoji: `😎`,
+                label: `取得大頭貼`,
+                description:"取得使用者大頭貼",
+                value: `avatar`
+            }),
+            new SelectMenuOptionBuilder({
+                emoji:`<a:_loading:1009020311573893121>`,
+                label: `待更新`,
+                description:"待更新",
+                value: `banner`
+            })
+        );
 
         if (interaction.values[0] == `1`) {
             await interaction.reply({
@@ -74,6 +94,15 @@ module.exports = {
                 embeds:[embed2],
                 components: [
                     new ActionRowBuilder({components:[advance_menu]}),
+            ],
+                ephemeral: true
+            });
+        }
+        if (interaction.values[0] == `3`) {
+            await interaction.reply({
+                embeds:[embed3],
+                components: [
+                    new ActionRowBuilder({components:[application_menu]}),
             ],
                 ephemeral: true
             });
