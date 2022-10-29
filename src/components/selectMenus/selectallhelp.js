@@ -22,6 +22,14 @@ module.exports = {
             })
             .setDescription(`</help:1033064221283450965> 請用以下選單選擇指令，會向您詳細介紹`)
 
+        const embed3 = new EmbedBuilder()
+            .setTitle(`🔷｜應用程式`)
+            .setAuthor({
+                name:`YINLA`,
+                iconURL:client.user.displayAvatarURL()
+            })
+            .setDescription(`</help:1033187250504220766> 請用以下選單選擇指令，會向您詳細介紹`)
+
         const common_menu = new SelectMenuBuilder()
             .setCustomId(`common`)
             .setPlaceholder("📖 請選擇指令")
@@ -47,13 +55,13 @@ module.exports = {
             .setMaxValues(1)
             .setOptions(
             new SelectMenuOptionBuilder({
-                emoji: `🔰`,
+                emoji: `<a:_loading:1009020311573893121>`,
                 label: `待更新`,
                 description:"待更新",
                 value: `1`
             }),
             new SelectMenuOptionBuilder({
-                emoji:`⚜️`,
+                emoji:`<a:_loading:1009020311573893121>️`,
                 label: `待更新`,
                 description:"待更新",
                 value: `2`
