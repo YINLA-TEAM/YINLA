@@ -38,6 +38,7 @@ module.exports = {
             })
 
             welcomeChannel.send({
+                content:`<@${member.user.id}>`,
                 embeds: [welcomeEmbed]
             })
             member.roles.add(data.Role);
