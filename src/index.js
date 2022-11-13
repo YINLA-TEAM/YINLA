@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { Client, ActivityType , Collection } = require('discord.js');
-const { Player } = require("discord-player")
+const { connect } = require('mongoose');
+const { Player } = require("discord-player");
 const fs = require('fs');
 
 const client = new Client({intents: 32767});
@@ -30,5 +31,8 @@ client.handleEvents();
 client.handleCommands();
 client.handleComponents();
 client.login(process.env.token).then(() => {
-    client.user.setActivity(`${client.guilds.cache.size} 個伺服器`, {type: ActivityType.Watching});
-})
+    client.user.setActivity(`/help｜YINLA`, {type: ActivityType.Watching});
+});
+(async () => {
+    await connect(process.env.databaseToken).catch(console.error);
+})();

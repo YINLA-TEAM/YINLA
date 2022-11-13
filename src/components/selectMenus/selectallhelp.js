@@ -81,10 +81,10 @@ module.exports = {
                 value: `avatar`
             }),
             new SelectMenuOptionBuilder({
-                emoji:`<a:_loading:1009020311573893121>`,
-                label: `待更新`,
-                description:"待更新",
-                value: `banner`
+                emoji:`<:tranlate:1035826480904679424>`,
+                label: `把訊息翻成中文`,
+                description:"可以直接利用此功能將訊息翻譯",
+                value: `translator`
             })
         );
 
