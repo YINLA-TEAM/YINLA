@@ -82,8 +82,8 @@ module.exports = {
             }),
             new SelectMenuOptionBuilder({
                 emoji:`<:tranlate:1035826480904679424>`,
-                label: `把訊息翻成中文`,
-                description:"可以直接利用此功能將訊息翻譯",
+                label: `把訊息翻成 中/日/英/韓文`,
+                description:"可以直接利用此功能將訊息翻譯(目前只提供四種語言)",
                 value: `translator`
             })
         );

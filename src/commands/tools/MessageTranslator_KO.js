@@ -3,12 +3,12 @@ const translate = require('@iamtraction/google-translate');
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
-        .setName('Translate into Chinese')
+        .setName('Translate into Korean')
         .setNameLocalizations({
-            "zh-TW" : "把訊息翻成中文",
-            "zh-CN" : "把讯息翻成中文",
-            "ja" : "メッセージを中国語に翻訳する",
-            "ko" : "메시지를 중국어로 번역"
+            "zh-TW" : "將信息翻譯成韓文",
+            "zh-CN" : "将信息翻译成韩文",
+            "ja" : "情報を韓国語に翻訳",
+            "ko" : "정보를 한국어로 번역"
         })
         .setType(ApplicationCommandType.Message),
 
@@ -27,7 +27,7 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle(`<:tranlate:1035826480904679424> 翻譯｜TRANSLATE`)
             .setColor(`#5185e3`)
-            .setDescription(`翻譯不一定100%正確，僅供參考\n目前只提供 **__中翻英__** 功能 (最多可翻譯500字)`)
+            .setDescription(`翻譯不一定100%正確，僅供參考\n(最多可翻譯500字)`)
             .setFooter({
                 iconURL: client.user.displayAvatarURL(),
                 text: `YINLA`
@@ -39,7 +39,7 @@ module.exports = {
             })
             .addFields({
                 name:`翻譯訊息`,
-                value:`\`\`\`\n${(await translate(interaction.targetMessage,{to:'zh-TW'})).text}\n\`\`\``
+                value:`\`\`\`\n${(await translate(interaction.targetMessage,{to:'ko'})).text}\n\`\`\``
             })
 
         await interaction.reply({
