@@ -5,8 +5,8 @@ module.exports = {
     data: new ContextMenuCommandBuilder()
         .setName('Translate into Japanese')
         .setNameLocalizations({
-            "zh-TW" : "將信息翻譯成日文",
-            "zh-CN" : "将信息翻译成日文",
+            "zh-TW" : "將訊息翻譯成日文",
+            "zh-CN" : "将讯息翻译成日文",
             "ja" : "情報を日本語に翻訳する",
             "ko" : "정보를 일본어로 번역"
         })
