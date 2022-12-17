@@ -43,7 +43,14 @@ module.exports = {
         }
 
         try {
+            const queue = await client.distube.getQueue(voiceChannel);
 
+            if (!queue) {
+                embed
+                .setColor("Random")
+                .setDescription("我在休息zzz")
+                return interaction.reply({embeds : [embed], ephemeral : true})
+            }
                     await queue.stop(voiceChannel);
                     embed
                     .setColor("Random")
