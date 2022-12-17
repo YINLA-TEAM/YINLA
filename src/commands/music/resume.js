@@ -62,7 +62,7 @@ module.exports = {
 
             embed
             .setColor("Random")
-            .setDescription("音樂系統 發生錯誤 請向管理員回報")
+            .setTitle("播放中")
 
             return interaction.reply({embeds : [embed], ephemeral : true})
         }

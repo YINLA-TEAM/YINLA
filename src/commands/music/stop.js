@@ -58,7 +58,7 @@ module.exports = {
                     return interaction.reply({embeds : [embed], ephemeral : false})
         } catch(err) {
             console.log(err)
-
+            
             embed
             .setColor("Random")
             .setDescription("音樂系統 發生錯誤 請向管理員回報")
