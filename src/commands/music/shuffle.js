@@ -27,18 +27,20 @@ module.exports = {
         if (!voiceChannel) {
             embed
             .setColor("Random")
-            .setDescription("我找不到你")
+            .setTitle("我找不到你")
             return interaction.reply({
-                embeds:[embed], ephemeral:true
+                embeds:[embed],
+                ephemeral:true
             });
         }
 
         if (!member.voice.channelId == guild.members.me.voice.channelId) {
             embed
             .setColor("Random")
-            .setDescription(`我已經在 <#${guild.members.me.voice.channelId}> 被使用`)
+            .setTitle(`我已經在 <#${guild.members.me.voice.channelId}> 被使用`)
             return interaction.reply({
-                embeds:[embed], ephemeral:true
+                embeds:[embed],
+                ephemeral:true
             });
         }
 
@@ -49,22 +51,31 @@ module.exports = {
                         embed
                         .setColor("Random")
                         .setTitle("我在休息zzz")
-                        return interaction.reply({embeds : [embed], ephemeral : true})
+                        return interaction.reply({
+                            embeds : [embed],
+                            ephemeral : true
+                        })
                     }
 
             await queue.shuffle(voiceChannel);
                 embed
                     .setColor("Random")
-                    .setTitle("列表已隨機排列");
-                    return interaction.reply({embeds : [embed], ephemeral : false})
+                    .setTitle("<:queue:1064554685547163668> 列表已隨機排列");
+                    return interaction.reply({
+                        embeds : [embed],
+                        ephemeral : false
+                    })
         } catch(err) {
             console.log(err)
 
             embed
             .setColor("Random")
-            .setDescription("音樂系統 發生錯誤 請向管理員回報")
+            .setTitle("音樂系統 發生錯誤 請向管理員回報")
 
-            return interaction.reply({embeds : [embed], ephemeral : true})
+            return interaction.reply({
+                embeds : [embed],
+                ephemeral : true
+            })
         }
     }
 }

@@ -24,13 +24,10 @@ module.exports = {
                 text: `YINLA`
             })
             .setTimestamp(Date.now())
-            .addFields({
-                name:`👀｜使用指令者`,
-                value:`> <@${interaction.user.id}>`
-            })
+
         await interaction.reply({
-            content:`**通知 <@${interaction.targetUser.id}> **`,
-            embeds:[embed]
+            embeds:[embed],
+            ephemeral: true
         })
     }
 }

@@ -27,18 +27,20 @@ module.exports = {
         if (!voiceChannel) {
             embed
             .setColor("Random")
-            .setDescription("我找不到你")
+            .setTitle("我找不到你")
             return interaction.reply({
-                embeds:[embed], ephemeral:true
+                embeds:[embed],
+                ephemeral:true
             });
         }
 
         if (!member.voice.channelId == guild.members.me.voice.channelId) {
             embed
             .setColor("Random")
-            .setDescription(`我已經在 <#${guild.members.me.voice.channelId}> 被使用`)
+            .setDescripsetTitletion(`我已經在 <#${guild.members.me.voice.channelId}> 被使用`)
             return interaction.reply({
-                embeds:[embed], ephemeral:true
+                embeds:[embed],
+                ephemeral:true
             });
         }
 
@@ -48,24 +50,43 @@ module.exports = {
                     if (!queue) {
                         embed
                         .setColor("Random")
-                        .setDescription("我在休息zzz")
-                        return interaction.reply({embeds : [embed], ephemeral : true})
+                        .setTitle("我在休息zzz")
+                        return interaction.reply({
+                            embeds : [embed],
+                            ephemeral : true
+                        })
                     }
 
                     await queue.skip(voiceChannel);
                     embed
                     .setColor("Random")
-                    .setDescription("已切換至下首歌");
-                    return interaction.reply({embeds : [embed], ephemeral : false})
+                    .setTitle("<:skip:1064554696414605402> 已切換至下首歌");
+                    return interaction.reply({
+                        embeds : [embed],
+                        ephemeral : false
+                    })
 
         } catch(err) {
             console.log(err)
+            if (err.errorCode == 'NO_UP_NEXT') {
+                embed
+                    .setColor("Random")
+                    .setTitle("沒歌囉~")
 
-            embed
-            .setColor("Random")
-            .setTitle("下一首在哪?我找不到")
+                return interaction.reply({
+                    embeds : [embed], 
+                    ephemeral : true
+            })
+            } else {
+                embed
+                    .setColor("Random")
+                    .setTitle("音樂系統 發生錯誤 請向管理員回報")
 
-            return interaction.reply({embeds : [embed], ephemeral : true})
+                return interaction.reply({
+                    embeds : [embed], 
+                    ephemeral : true
+                })
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ module.exports = {
         const button1 = new ButtonBuilder()
             .setLabel('加入支援伺服器')
             .setStyle(ButtonStyle.Link)
-            .setURL('https://discord.gg/We6enK7wb3')
+            .setURL('https://discord.gg/mnCHdBbh65')
         const button2 = new ButtonBuilder()
             .setLabel('支援伺服器介紹')
             .setStyle(ButtonStyle.Link)
@@ -48,9 +48,9 @@ module.exports = {
                 value: `1`
             }),
             new SelectMenuOptionBuilder({
-                emoji:`⚜️`,
-                label: `進階指令`,
-                description:"進階",
+                emoji:`🎵`,
+                label: `音樂指令`,
+                description:"音樂",
                 value: `2`
             }),
             new SelectMenuOptionBuilder({
@@ -67,7 +67,7 @@ module.exports = {
             new ActionRowBuilder({components:[menu]}),
             new ActionRowBuilder({components:[button1,button2]})
     ],
-        ephemeral: false
+        ephemeral: true
     });
 },
 }

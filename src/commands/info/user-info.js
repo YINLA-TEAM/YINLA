@@ -75,7 +75,8 @@ module.exports = {
             ]);
 
         await interaction.reply({
-            embeds: [embed]
+            embeds: [embed],
+            ephemeral: true
         });
     }
 }

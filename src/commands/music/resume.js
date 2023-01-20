@@ -29,16 +29,18 @@ module.exports = {
             .setColor("Random")
             .setDescription("我找不到你")
             return interaction.reply({
-                embeds:[embed], ephemeral:true
+                embeds:[embed],
+                ephemeral:true
             });
         }
 
         if (!member.voice.channelId == guild.members.me.voice.channelId) {
             embed
             .setColor("Random")
-            .setDescription(`我已經在 <#${guild.members.me.voice.channelId}> 被使用`)
+            .setTitle(`我已經在 <#${guild.members.me.voice.channelId}> 被使用`)
             return interaction.reply({
-                embeds:[embed], ephemeral:true
+                embeds:[embed],
+                ephemeral:true
             });
         }
 
@@ -48,23 +50,41 @@ module.exports = {
                     if (!queue) {
                         embed
                         .setColor("Random")
-                        .setDescription("我在休息zzz")
-                        return interaction.reply({embeds : [embed], ephemeral : true})
+                        .setTitle("我在休息zzz")
+                        return interaction.reply({
+                            embeds : [embed],
+                            ephemeral : true
+                        })
                     }
 
                 await queue.resume(voiceChannel);
                     embed
                     .setColor("Random")
-                    .setDescription("已繼續播放");
-                    return interaction.reply({embeds : [embed], ephemeral : false})
+                    .setTitle("<:play:1064554680295886908> 已繼續播放");
+                    return interaction.reply({
+                        embeds : [embed],
+                        ephemeral : true
+                    })
         } catch(err) {
             console.log(err)
 
-            embed
-            .setColor("Random")
-            .setTitle("播放中")
-
-            return interaction.reply({embeds : [embed], ephemeral : true})
+            if(err.errorCode == 'RESUMED'){
+                embed
+                    .setColor("Random")
+                    .setTitle("在播了啦~")
+                return interaction.reply({
+                    embeds : [embed],
+                    ephemeral : true
+                });
+            } else {
+                embed
+                .setColor("Random")
+                .setTitle("音樂系統 發生錯誤 請向管理員回報")
+            return interaction.reply({
+                embeds : [embed],
+                ephemeral : true
+            });
+            }
         }
     }
 }

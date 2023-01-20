@@ -46,32 +46,43 @@ module.exports = {
         if (!voiceChannel) {
             embed
             .setColor("Random")
-            .setDescription("我找不到你")
+            .setTitle("我找不到你")
             return interaction.reply({
-                embeds:[embed], ephemeral:true
+                embeds:[embed],
+                ephemeral:true
             });
         }
 
         if (!member.voice.channelId == guild.members.me.voice.channelId) {
             embed
             .setColor("Random")
-            .setDescription(`我已經在 <#${guild.members.me.voice.channelId}> 被使用`)
+            .setTitle(`我已經在 <#${guild.members.me.voice.channelId}> 被使用`)
             return interaction.reply({
-                embeds:[embed], ephemeral:true
+                embeds:[embed],
+                ephemeral:true
             });
         }
 
         try {
             client.distube.play(voiceChannel, query, {textChannel: channel, member:member});
-            return interaction.reply({content:"已加入序列!"});
+            embed
+            .setColor("Random")
+            .setTitle("<a:check:1064547948605755402> 音樂已加入序列<:queue:1064554685547163668>")
+            return interaction.reply({
+                embeds:[embed],
+                ephemeral:true
+            });
         } catch(err) {
             console.log(err)
 
             embed
             .setColor("Random")
-            .setDescription("音樂系統 發生錯誤 請向管理員回報")
+            .setTitle("音樂系統 發生錯誤 請向管理員回報")
 
-            return interaction.reply({embeds : [embed], ephemeral : true})
+            return interaction.reply({
+                embeds : [embed],
+                ephemeral : true
+            })
         }
     }
 }
