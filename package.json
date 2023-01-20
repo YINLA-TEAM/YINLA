@@ -1,5 +1,5 @@
 {
-  "name": "YINLA",
+  "name": "yinla",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/YinCheng0106/CPBL-BOT.git"
+    "url": "git+https://github.com/YINLA-TEAM/YINLA.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/YinCheng0106/CPBL-BOT/issues"
+    "url": "https://github.com/YINLA-TEAM/YINLA/issues"
   },
-  "homepage": "https://github.com/YinCheng0106/CPBL-BOT#readme",
+  "homepage": "https://github.com/YINLA-TEAM/YINLA#readme",
   "dependencies": {
     "@discordjs/opus": "^0.8.0",
     "@discordjs/rest": "^0.5.0",
