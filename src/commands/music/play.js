@@ -53,16 +53,22 @@ module.exports = {
             });
         }
 
-        if (!member.voice.channelId == guild.members.me.voice.channelId) {
+        if (member.voice.channelId !== guild.members.me.voice.channelId && guild.members.me.voice.channelId != null) {
             embed
             .setColor("Random")
-            .setTitle(`我已經在 <#${guild.members.me.voice.channelId}> 被使用`)
+            .setTitle(`我已經被使用`)
+            .addFields([
+                {
+                    name:'所在頻道',
+                    value:`<#${guild.members.me.voice.channelId}>`
+                }
+            ])
             return interaction.reply({
                 embeds:[embed],
                 ephemeral:true
             });
         }
-
+        
         try {
             client.distube.play(voiceChannel, query, {textChannel: channel, member:member});
             embed
