@@ -23,6 +23,16 @@ module.exports = {
                 embeds:[error_embed],
                 ephemeral: true
             })
+        } else if(interaction.targetMessage.content.length >= 500){
+            const error_embed = new EmbedBuilder()
+                .setTitle(`<:tranlate:1035826480904679424> 翻譯｜TRANSLATE`)
+                .setDescription("太多了")
+                .setColor(`#5185e3`)
+                .setTimestamp(Date.now())
+            await interaction.reply({
+                embeds:[error_embed],
+                ephemeral: true
+            })
         } else {
         const embed = new EmbedBuilder()
             .setTitle(`<:tranlate:1035826480904679424> 翻譯｜TRANSLATE`)
