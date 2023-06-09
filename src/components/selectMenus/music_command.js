@@ -1,5 +1,5 @@
 const { EmbedBuilder} = require("@discordjs/builders");
-const { SlashCommandBuilder, SelectMenuBuilder, SelectMenuOptionBuilder, ActionRowBuilder, ButtonBuilder , ButtonStyle } = require("discord.js");
+const { SlashCommandBuilder, SelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder, ButtonBuilder , ButtonStyle } = require("discord.js");
 
 module.exports = {
     data: {

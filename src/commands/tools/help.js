@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, SelectMenuBuilder, ActionRowBuilder, SelectMenuOptionBuilder, EmbedBuilder, ButtonBuilder , ButtonStyle} = require('discord.js')
+const { SlashCommandBuilder, SelectMenuBuilder, ActionRowBuilder, StringSelectMenuOptionBuilder, EmbedBuilder, ButtonBuilder , ButtonStyle} = require('discord.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -35,25 +35,25 @@ module.exports = {
             .setStyle(ButtonStyle.Link)
             .setURL('https://hackmd.io/@YinCheng0106/YINLADC')
 
-        const menu = new SelectMenuBuilder()
+        const menu = new StringSelectMenuOptionBuilder()
             .setCustomId(`help`)
             .setPlaceholder("📖 請選擇指令種類")
             .setMinValues(1)
             .setMaxValues(1)
             .setOptions(
-            new SelectMenuOptionBuilder({
+            new StringSelectMenuOptionBuilder({
                 emoji: `🔰`,
                 label: `基礎指令`,
                 description:"基礎",
                 value: `1`
             }),
-            new SelectMenuOptionBuilder({
+            new StringSelectMenuOptionBuilder({
                 emoji:`🎵`,
                 label: `音樂指令`,
                 description:"音樂",
                 value: `2`
             }),
-            new SelectMenuOptionBuilder({
+            new StringSelectMenuOptionBuilder({
                 emoji:`🔷`,
                 label: `應用程式`,
                 description:"應用程式",

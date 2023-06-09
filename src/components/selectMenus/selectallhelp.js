@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require("@discordjs/builders");
-const { SlashCommandBuilder, SelectMenuBuilder, ActionRowBuilder, SelectMenuOptionBuilder, ButtonBuilder , ButtonStyle} = require("discord.js");
+const { SlashCommandBuilder, SelectMenuBuilder, ActionRowBuilder, StringSelectMenuOptionBuilder, ButtonBuilder , ButtonStyle} = require("discord.js");
 
 module.exports = {
     data: {
@@ -29,7 +29,7 @@ module.exports = {
             })
             .setDescription(`</help:1033064221283450965> 請用以下選單選擇指令，會向您詳細介紹`)
 
-        const common_menu = new SelectMenuBuilder()
+        const common_menu = new StringSelectMenuOptionBuilder()
             .setCustomId(`common`)
             .setPlaceholder("📖 請選擇指令")
             .setMinValues(1)
@@ -46,7 +46,7 @@ module.exports = {
                 value: 'bot'
             })
         );
-        const music_menu = new SelectMenuBuilder()
+        const music_menu = new StringSelectMenuOptionBuilder()
             .setCustomId(`music`)
             .setPlaceholder("📖 請選擇指令")
             .setMinValues(1)
@@ -101,7 +101,7 @@ module.exports = {
                 value: `8`
             })
         );
-        const application_menu = new SelectMenuBuilder()
+        const application_menu = new StringSelectMenuOptionBuilder()
             .setCustomId(`application`)
             .setPlaceholder("📖 請選擇應用程式介紹")
             .setDisabled(false)

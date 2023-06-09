@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require("@discordjs/builders");
-const { SlashCommandBuilder, SelectMenuBuilder, ActionRowBuilder, SelectMenuOptionBuilder, ButtonBuilder , ButtonStyle } = require("discord.js");
+const { SlashCommandBuilder, SelectMenuBuilder, ActionRowBuilder, StringSelectMenuOptionBuilder, ButtonBuilder , ButtonStyle } = require("discord.js");
 const help = require("../../commands/tools/help");
 
 module.exports = {
