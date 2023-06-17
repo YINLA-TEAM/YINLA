@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, SelectMenuBuilder, ActionRowBuilder, StringSelectMenuOptionBuilder, EmbedBuilder, ButtonBuilder , ButtonStyle} = require('discord.js')
+const { SlashCommandBuilder, StringSelectMenuBuilder, ActionRowBuilder, StringSelectMenuOptionBuilder, EmbedBuilder, ButtonBuilder , ButtonStyle} = require('discord.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -35,7 +35,7 @@ module.exports = {
             .setStyle(ButtonStyle.Link)
             .setURL('https://hackmd.io/@YinCheng0106/YINLADC')
 
-        const menu = new StringSelectMenuOptionBuilder()
+        const menu = new StringSelectMenuBuilder()
             .setCustomId(`help`)
             .setPlaceholder("📖 請選擇指令種類")
             .setMinValues(1)
