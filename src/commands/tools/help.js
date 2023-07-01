@@ -48,12 +48,6 @@ module.exports = {
                 value: `1`
             }),
             new StringSelectMenuOptionBuilder({
-                emoji:`🎵`,
-                label: `音樂指令`,
-                description:"音樂",
-                value: `2`
-            }),
-            new StringSelectMenuOptionBuilder({
                 emoji:`🔷`,
                 label: `應用程式`,
                 description:"應用程式",

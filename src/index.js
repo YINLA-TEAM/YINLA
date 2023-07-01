@@ -1,8 +1,6 @@
 require('dotenv').config();
 const { Client, ActivityType , Collection } = require('discord.js');
 const { connect } = require('mongoose');
-const { DisTube }= require('distube');
-const { SpotifyPlugin } = require("@distube/spotify");
 const fs = require('fs');
 
 const client = new Client({intents: 32767});
@@ -22,16 +20,6 @@ for(const folder of functionFolders) {
     for (const file of functionFolders)
         require(`./functions/${folder}/${file}`)(client);
 }
-
-client.distube = new DisTube(client, {
-    emitNewSongOnly: true,
-    leaveOnFinish:true,
-    emitAddSongWhenCreatingQueue:false,
-    plugins:[
-        new SpotifyPlugin(),
-    ]
-});
-
 module.exports = client;
 
 client.handleEvents();
