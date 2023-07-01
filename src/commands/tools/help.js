@@ -36,7 +36,7 @@ module.exports = {
             .setURL('https://hackmd.io/@YinCheng0106/YINLADC')
 
         const menu = new StringSelectMenuBuilder()
-            .setCustomId(`help`)
+            .setCustomId('help')
             .setPlaceholder("📖 請選擇指令種類")
             .setMinValues(1)
             .setMaxValues(1)
