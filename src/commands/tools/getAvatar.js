@@ -16,7 +16,7 @@ module.exports = {
             .setAuthor({
                 name:`取得大頭貼`,
             })
-            .setTitle(`${interaction.targetUser.tag}`)
+            .setTitle(`${interaction.targetUser.username}`)
             .setImage(`${interaction.targetUser.displayAvatarURL()}`)
             .setColor(`Random`)
             .setFooter({
