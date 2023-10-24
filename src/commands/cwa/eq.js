@@ -28,12 +28,12 @@ module.exports = {
     async execute(interaction, client) {
         
         if(interaction.options.getString('type') == '無編號'){
-            cwbID = 'E-A0016-001'
+            cwaID = 'E-A0016-001'
         } else {
-            cwbID = 'E-A0015-001'
+            cwaID = 'E-A0015-001'
         }
 
-        const eqResult = await axios.get(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/${cwbID}?Authorization=${process.env.cwb_key}`);
+        const eqResult = await axios.get(`https://opendata.cwa.gov.tw/api/v1/rest/datastore/${cwaID}?Authorization=${process.env.cwa_key}`);
         const { records } = eqResult.data;
         const Earthquake = records.Earthquake[0];
         const No = String(Earthquake.EarthquakeNo);
@@ -66,14 +66,14 @@ module.exports = {
             + (Time.getMinutes() < 10 ? "0" : "") + Time.getMinutes()
             + (Time.getSeconds() < 10 ? "0" : "") + Time.getSeconds();
 
-        const Image = "https://www.cwb.gov.tw/Data/earthquake/img/EC"
+        const Image = "https://www.cwa.gov.tw/Data/earthquake/img/EC"
             + (Earthquake.EarthquakeNo % 1000 == 0 ? "L" : "")
             + (Earthquake.EarthquakeNo % 1000 == 0 ? timecode : timecode.slice(4, timecode.length - 2))
             + (Earthquake.EarthquakeInfo.EarthquakeMagnitude.MagnitudeValue * 10)
             + (Earthquake.EarthquakeNo % 1000 == 0 ? "" : Earthquake.EarthquakeNo.toString().substring(3))
             + "_H.png";
 
-        const Web = "https://www.cwb.gov.tw/V8/C/E/EQ/"
+        const Web = "https://www.cwa.gov.tw/V8/C/E/EQ/"
             + cwb_code
             + ".html";
 
@@ -130,7 +130,7 @@ module.exports = {
                     inline: true
                 },
             ])
-            .setFooter({ text: "交通部中央氣象局", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png" })
+            .setFooter({ text: "交通部中央氣象署", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png" })
             .setTimestamp(Time);
 
         Earthquake.Intensity.ShakingArea

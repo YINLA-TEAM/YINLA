@@ -35,7 +35,7 @@ module.exports = {
         const member = interaction.options.getMember("成員") || interaction.member;
         const embed = new EmbedBuilder()
 
-            .setTitle(member.user.tag)
+            .setTitle(member.user.username)
             .setColor('Random')
             .setThumbnail(member.user.displayAvatarURL())
             .setTimestamp(Date.now())

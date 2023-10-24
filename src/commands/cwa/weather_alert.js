@@ -10,7 +10,7 @@ module.exports = {
         .setDescription('檢視 天氣警報'),
 
     async execute(interaction, client) {
-        const waResult = await axios.get(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/W-C0033-002?Authorization=${process.env.cwb_key}`);
+        const waResult = await axios.get(`https://opendata.cwa.gov.tw/api/v1/rest/datastore/W-C0033-002?Authorization=${process.env.cwa_key}`);
         const { records } = waResult.data;
         const Alert_Embed_List = []
 
@@ -50,7 +50,7 @@ module.exports = {
                 .setTitle(Type)
                 .setColor('Red')
                 .setDescription(`\`\`\`${Content}\`\`\``)
-                .setFooter({ text: `交通部中央氣象局 • 發布於 ${I_time}`, iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png" })
+                .setFooter({ text: `交通部中央氣象署 • 發布於 ${I_time}`, iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png" })
                 .addFields([
                     {
                         name: "開始時間",
@@ -67,11 +67,11 @@ module.exports = {
 
         const WaitMessage = await interaction.deferReply({
             fetchReply: true,
-            ephemeral: true
+            ephemeral: false
         });
 
         const SuccessMessage = await interaction.editReply({
-            embeds: Alert_Embed_List,
+            embeds: Alert_Embed_List || Null_Embed,
             ephemeral: false
         })
     }
