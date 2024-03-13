@@ -1,9 +1,9 @@
 require('dotenv').config();
-const { Client, ActivityType , Collection } = require('discord.js');
+const { Client, ActivityType , Collection, GatewayIntentBits } = require('discord.js');
 const { connect } = require('mongoose');
 const fs = require('fs');
 
-const client = new Client({intents: 32767});
+const client = new Client({intents: [32767, GatewayIntentBits.MessageContent]});
 client.commands = new Collection();
 client.buttons = new Collection();
 client.selectMenus = new Collection();
