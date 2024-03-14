@@ -64,15 +64,5 @@ module.exports = {
 
             return Alert_Embed;
         }
-
-        const WaitMessage = await interaction.deferReply({
-            fetchReply: true,
-            ephemeral: false
-        });
-
-        const SuccessMessage = await interaction.editReply({
-            embeds: Alert_Embed_List || Null_Embed,
-            ephemeral: false
-        })
     }
 }
