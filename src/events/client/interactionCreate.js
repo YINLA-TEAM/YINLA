@@ -1,4 +1,4 @@
-const { InteractionType, ContextMenuCommandAssertions } = require('discord.js');
+const { InteractionType } = require('discord.js');
 
 module.exports = {
     name: 'interactionCreate',
