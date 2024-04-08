@@ -17,7 +17,7 @@ module.exports = (client) => {
                 console.log(`指令 : ${command.data.name} ✅`)
             }
         }
-    const clientId = '914150570250625044';
+    const clientId = '914150570250625044'; 
     const rest = new REST({version: '9'}).setToken(process.env.token);
     try {
         console.log("Slash Commands 已開始加載 🤔")

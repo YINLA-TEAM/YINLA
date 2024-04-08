@@ -1,2 +1,4 @@
 .env
+.sh
+.bat
 node_modules
