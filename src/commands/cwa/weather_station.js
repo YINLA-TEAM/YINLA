@@ -3,11 +3,11 @@ const axios = require('axios');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('weather')
+        .setName('weather_station')
         .setNameLocalizations({
-            "zh-TW": "天氣",
+            "zh-TW": "氣象站",
         })
-        .setDescription('檢視 天氣(此為實驗功能，僅能檢視 台中龍井 的觀測站)'),
+        .setDescription('檢視 氣象站相關資訊(此為實驗功能，僅能檢視 台中龍井 的觀測站)'),
 
     async execute(interaction){
         const wtResult = await axios.get(`https://opendata.cwa.gov.tw/api/v1/rest/datastore/O-A0001-001?Authorization=${process.env.cwa_key}&StationId=C0F9R0`)
@@ -26,7 +26,7 @@ module.exports = {
 
         const wtEmbed = new EmbedBuilder()
             .setAuthor({
-                name: "天氣資訊",
+                name: "氣象站資訊",
             })
             .setColor('Blue')
             .setTitle(locaName)
