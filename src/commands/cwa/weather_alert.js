@@ -12,9 +12,7 @@ module.exports = {
     async execute(interaction, client) {
         const waResult = await axios.get(`https://opendata.cwa.gov.tw/api/v1/rest/datastore/W-C0033-002?Authorization=${process.env.cwa_key}`);
         const { records } = waResult.data;
-        const Alert_Embed_List = []
-
-        
+        const Alert_Embed_List = [];
 
         if (records.record[0] == null) {
             const Null_Embed = new EmbedBuilder()
