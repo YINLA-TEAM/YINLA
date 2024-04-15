@@ -48,6 +48,12 @@ module.exports = {
                 value: `1`
             }),
             new StringSelectMenuOptionBuilder({
+                emoji: `🌥️`,
+                label: `氣象署相關指令`,
+                description:"皆由 CWA 氣象署提供",
+                value: `2`
+            }),
+            new StringSelectMenuOptionBuilder({
                 emoji:`🔷`,
                 label: `應用程式`,
                 description:"應用程式",
