@@ -9,7 +9,7 @@ module.exports = {
         })
         .setDescription("即時的雷達回波圖"),
 
-        async execute (interaction, client) {
+        async execute (interaction) {
             const radarResult = await axios.get(`https://opendata.cwa.gov.tw/fileapi/v1/opendataapi/O-A0058-003?Authorization=${process.env.cwa_key}&format=JSON`);
             const { cwaopendata } = radarResult.data;
 
