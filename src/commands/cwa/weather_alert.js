@@ -14,7 +14,7 @@ module.exports = {
         const { records } = waResult.data;
         const Alert_Embed_List = [];
 
-        if (records.record[0] == null) {
+        if (records.record == null || records.record.length === 0) {
             const Null_Embed = new EmbedBuilder()
                 .setColor('Green')
                 .setTitle('目前沒有任何天氣警報')
@@ -24,7 +24,7 @@ module.exports = {
                 ephemeral: true
             })
         } else {
-            for (i = 0; i <= records.record.length-1; i++) {
+            for (let i = 0; i <= records.record.length-1; i++) {
                 Alert_Embed_List.push(F_Alert_Embed(i))
             }
         }
@@ -62,5 +62,14 @@ module.exports = {
 
             return Alert_Embed;
         }
+        const WaitMessage = await interaction.deferReply({
+            fetchReply: true,
+            ephemeral: true
+        });
+
+        const SuccessMessage = await interaction.editReply({
+            embeds: Alert_Embed_List || Null_Embed,
+            ephemeral: true
+        })
     }
 }
