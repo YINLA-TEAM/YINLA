@@ -18,11 +18,7 @@ module.exports = {
             const Null_Embed = new EmbedBuilder()
                 .setColor('Green')
                 .setTitle('目前沒有任何天氣警報')
-
-            await interaction.reply({
-                embeds: [Null_Embed],
-                ephemeral: true
-            })
+            Alert_Embed_List.push(Null_Embed);
         } else {
             for (let i = 0; i <= records.record.length-1; i++) {
                 Alert_Embed_List.push(F_Alert_Embed(i))
@@ -68,7 +64,7 @@ module.exports = {
         });
 
         const SuccessMessage = await interaction.editReply({
-            embeds: Alert_Embed_List || Null_Embed,
+            embeds: Alert_Embed_List,
             ephemeral: true
         })
     }
