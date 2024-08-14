@@ -7,7 +7,7 @@ module.exports = {
         .setNameLocalizations({
             "zh-TW" : "天氣小幫手",
         })
-        .setDescription('小幫手會告訴你 今天氣如何')
+        .setDescription('小幫手會告訴你 今天天氣如何')
         .addStringOption(option => (
             option
                 .setName("city")
@@ -22,7 +22,6 @@ module.exports = {
                 .addChoices(
                     { name: '台北市', value: '009' },
                     { name: '新北市', value: '010' },
-                    { name: '基隆市', value: '011' },
                     { name: '基隆市', value: '011' },
                     { name: '花蓮縣', value: '012' },
                     { name: '宜蘭縣', value: '013' },
@@ -59,14 +58,17 @@ module.exports = {
             ct_desc_list.push(ct_desc[i].parameterValue);
         }
 
-        const wtEmbeb = new EmbedBuilder()
+        const wtEmbed = new EmbedBuilder()
         .setAuthor({
             name: "天氣小幫手",
         })
         .setColor('Random')
         .setTitle(ct_name)
         .setDescription(ct_desc_list.join('\n\n'))
-        .setFooter({ text: `交通部中央氣象署 提供`, iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png" })
+        .setFooter({
+            text: `交通部中央氣象署 提供`,
+            iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png"
+        })
         
         const WaitMessage = await interaction.deferReply({
             fetchReply: true,
@@ -74,7 +76,7 @@ module.exports = {
         });
 
         const SuccessMessage = await interaction.editReply({
-            embeds: [wtEmbeb],
+            embeds: [wtEmbed],
         });
     }
 }

@@ -13,7 +13,7 @@ module.exports = {
                 await command.execute(interaction, client);
             } catch (error) {
                 console.error(error);
-                console.log(interaction.member)
+                // console.log(interaction.member)
                 await interaction.reply({
                     content: `發生錯誤，請向管理員回報`,
                     ephemeral: true

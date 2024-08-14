@@ -62,7 +62,10 @@ module.exports = {
                     inline: true,
                 },
             ])
-            .setFooter({ text: `交通部中央氣象署 提供`, iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png" })
+            .setFooter({
+                text: `交通部中央氣象署 提供`,
+                iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png"
+            })
 
             await interaction.reply({
             embeds: [wtEmbed],

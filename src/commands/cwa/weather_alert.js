@@ -44,7 +44,10 @@ module.exports = {
                 .setTitle(Type)
                 .setColor('Red')
                 .setDescription(`\`\`\`${Content}\`\`\``)
-                .setFooter({ text: `交通部中央氣象署 • 發布於 ${I_time}`, iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png" })
+                .setFooter({
+                    text: `交通部中央氣象署 • 發布於 ${I_time}`,
+                    iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png"
+                })
                 .addFields([
                     {
                         name: "開始時間",
@@ -66,6 +69,6 @@ module.exports = {
         const SuccessMessage = await interaction.editReply({
             embeds: Alert_Embed_List,
             ephemeral: true
-        })
+        });
     }
 }

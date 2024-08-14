@@ -15,10 +15,13 @@ module.exports = {
 
             const radar_IMG = cwaopendata.dataset.resource.ProductURL +"?"+ cwaopendata.dataset.DateTime
 
-            const radar_EMBED = new EmbedBuilder()
+            const radar_embed = new EmbedBuilder()
                 .setColor('Random')
                 .setTitle("雷達回波圖")
-                .setFooter({ text: "由 交通部中央氣象署 提供", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png" })
+                .setFooter({
+                    text: "由 交通部中央氣象署 提供",
+                    iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png"
+                })
                 .setImage(radar_IMG)
 
             const WaitMessage = await interaction.deferReply({
@@ -27,7 +30,7 @@ module.exports = {
             });
 
             const SuccessMessage = await interaction.editReply({
-                embeds:[radar_EMBED]
+                embeds:[radar_embed]
             })
 }
 }
