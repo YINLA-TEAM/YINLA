@@ -1,4 +1,4 @@
-<img alt="LOGO" src="https://i.imgur.com/T0Aspfb.png" width="125px" height="125px" align="left" >
+<img alt="LOGO" src="https://i.imgur.com/Wd1DJY1.png" width="125px" height="125px" align="left" >
 
 # **YINLA**
 
@@ -7,8 +7,11 @@
 <img src="https://wakatime.com/badge/user/830ee6e5-c894-4b82-bf14-7e55d87afbd4/project/8fa8a374-7442-4dad-979c-7820ba198411.svg?style=for-the-badge"  alt="wakatime" align="right">
 ## 關於
 
-如果要機器人邀請連結，請先加入 支援伺服器 並且通知 `_yincheng_`，感謝配合!!
+**於 `2024/08/22` 成為已驗證機器人 ✅**
 
+如果在使用機器人遇到什麼問題，可以用[issues](https://github.com/YINLA-TEAM/YINLA/issues)回報給我，或是私訊@YinCheng0106的DC，加入支援的伺服器也是可以。
+
+- [服務條款](https://hackmd.io/@YinCheng0106/YINLA_TOS)
 - [支援伺服器](https://discord.gg/mnCHdBbh65)
 ## 貢獻者
 

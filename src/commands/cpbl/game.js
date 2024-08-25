@@ -168,17 +168,6 @@ module.exports = {
         .setDescription("查詢賽事詳細資訊(一軍例行賽)，資料讀取時間較久，請耐心等待")
         .addIntegerOption(option => (
             option
-                .setName('game_number')
-                .setNameLocalizations({
-                    "zh-TW" : "比賽編號",
-                })
-                .setDescription("場次範圍：1~360")
-                .setRequired(true)
-                .setMinValue(1)
-                .setMaxValue(360)
-        ))
-        .addIntegerOption(option => (
-            option
                 .setName('game_year')
                 .setNameLocalizations({
                     "zh-TW" : "比賽年份",
@@ -187,6 +176,17 @@ module.exports = {
                 .setRequired(true)
                 .setMinValue(1990)
                 .setMaxValue(new Date().getFullYear())
+        ))
+        .addIntegerOption(option => (
+            option
+                .setName('game_number')
+                .setNameLocalizations({
+                    "zh-TW" : "比賽編號",
+                })
+                .setDescription("場次範圍：1~360")
+                .setRequired(true)
+                .setMinValue(1)
+                .setMaxValue(360)
         )),
 
     async execute (interaction) {

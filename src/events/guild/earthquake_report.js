@@ -1,16 +1,21 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js')
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
 const axios = require('axios');
-const cron = require("cron");
+const cron = require('cron');
+
+let previousReportContent = "";
 
 module.exports = {
     name: 'earthquake_report',
-    async execute(interaction, client) {
+    event: 'earthquake_report',
+    once: false,
+    async execute(client) {
+        console.log("地震報告任務已啟動");
         const job = new cron.CronJob("0/10 * * * * *", function () {
             axios.get(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/E-A0015-001?Authorization=${process.env.cwb_key}`)
                 .then(eqResult => {
                     const { records } = eqResult.data;
                     const Earthquake = records.Earthquake[0];
-                    // 檢查是否有更新
+
                     if (Earthquake.ReportContent !== previousReportContent) {
                         const No = String(Earthquake.EarthquakeNo);
                         const Color = {
@@ -20,38 +25,30 @@ module.exports = {
                             紅色: "Red",
                         };
                         const Content = Earthquake.ReportContent.substring(11);
-
                         const Time = new Date(Earthquake.EarthquakeInfo.OriginTime);
 
-                        const timecode = ""
-                            + Time.getFullYear()
-                            + (Time.getMonth() + 1 < 10 ? "0" : "") + (Time.getMonth() + 1)
-                            + (Time.getDate() < 10 ? "0" : "") + Time.getDate()
-                            + (Time.getHours() < 10 ? "0" : "") + Time.getHours()
-                            + (Time.getMinutes() < 10 ? "0" : "") + Time.getMinutes()
-                            + (Time.getSeconds() < 10 ? "0" : "") + Time.getSeconds();
+                        const timecode = Time.getFullYear() +
+                            (Time.getMonth() + 1 < 10 ? "0" : "") + (Time.getMonth() + 1) +
+                            (Time.getDate() < 10 ? "0" : "") + Time.getDate() +
+                            (Time.getHours() < 10 ? "0" : "") + Time.getHours() +
+                            (Time.getMinutes() < 10 ? "0" : "") + Time.getMinutes() +
+                            (Time.getSeconds() < 10 ? "0" : "") + Time.getSeconds();
 
-                        const cwb_code
-                            = "EQ"
-                            + Earthquake.EarthquakeNo
-                            + "-"
-                            + (Time.getMonth() + 1 < 10 ? "0" : "") + (Time.getMonth() + 1)
-                            + (Time.getDate() < 10 ? "0" : "") + Time.getDate()
-                            + "-"
-                            + (Time.getHours() < 10 ? "0" : "") + Time.getHours()
-                            + (Time.getMinutes() < 10 ? "0" : "") + Time.getMinutes()
-                            + (Time.getSeconds() < 10 ? "0" : "") + Time.getSeconds();
+                        const cwb_code = "EQ" +
+                            Earthquake.EarthquakeNo + "-" +
+                            (Time.getMonth() + 1 < 10 ? "0" : "") + (Time.getMonth() + 1) +
+                            (Time.getDate() < 10 ? "0" : "") + Time.getDate() + "-" +
+                            (Time.getHours() < 10 ? "0" : "") + Time.getHours() +
+                            (Time.getMinutes() < 10 ? "0" : "") + Time.getMinutes() +
+                            (Time.getSeconds() < 10 ? "0" : "") + Time.getSeconds();
 
-                        const Image = "https://www.cwb.gov.tw/Data/earthquake/img/EC"
-                            + (Earthquake.EarthquakeNo % 1000 == 0 ? "L" : "")
-                            + (Earthquake.EarthquakeNo % 1000 == 0 ? timecode : timecode.slice(4, timecode.length - 2))
-                            + (Earthquake.EarthquakeInfo.EarthquakeMagnitude.MagnitudeValue * 10)
-                            + (Earthquake.EarthquakeNo % 1000 == 0 ? "" : Earthquake.EarthquakeNo.toString().substring(3))
-                            + "_H.png";
+                        const Image = "https://www.cwb.gov.tw/Data/earthquake/img/EC" +
+                            (Earthquake.EarthquakeNo % 1000 == 0 ? "L" : "") +
+                            (Earthquake.EarthquakeNo % 1000 == 0 ? timecode : timecode.slice(4, timecode.length - 2)) +
+                            (Earthquake.EarthquakeInfo.EarthquakeMagnitude.MagnitudeValue * 10) +
+                            (Earthquake.EarthquakeNo % 1000 == 0 ? "" : Earthquake.EarthquakeNo.toString().substring(3)) + "_H.png";
 
-                        const Web = "https://www.cwb.gov.tw/V8/C/E/EQ/"
-                            + cwb_code
-                            + ".html";
+                        const Web = "https://www.cwb.gov.tw/V8/C/E/EQ/" + cwb_code + ".html";
 
                         const url = new ActionRowBuilder()
                             .addComponents([
@@ -65,13 +62,11 @@ module.exports = {
                                     .setURL(Earthquake.Web),
                             ]);
 
-
-
                         const Depth = String(Earthquake.EarthquakeInfo.FocalDepth);
                         const Location = Earthquake.EarthquakeInfo.Epicenter.Location;
                         const Magnitude = String(Earthquake.EarthquakeInfo.EarthquakeMagnitude.MagnitudeValue);
 
-                        embed = new EmbedBuilder()
+                        const embed = new EmbedBuilder()
                             .setAuthor({
                                 name: "[功能測試中] 地震報告",
                                 iconURL: "https://i.imgur.com/qIxk1H1.png"
@@ -106,7 +101,10 @@ module.exports = {
                                     inline: true
                                 },
                             ])
-                            .setFooter({ text: "交通部中央氣象局", iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png" })
+                            .setFooter({
+                                text: "交通部中央氣象局",
+                                iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png"
+                            })
                             .setTimestamp(Time);
 
                         Earthquake.Intensity.ShakingArea
@@ -114,12 +112,17 @@ module.exports = {
                             .forEach(ShakingArea => embed.addFields({ name: ShakingArea.AreaDesc, value: ShakingArea.CountyName }));
                         client.channels.cache
                             .get("792626519373512714")
-                            .send({ embed, url });
+                            .send({ embeds: [embed], components: [url] });
+                        previousReportContent = Earthquake.ReportContent;
+                    } else {
+                        console.log("沒有新的地震報告");
                     }
-                    previousReportContent = Earthquake.ReportContent;
-                    console.log("same")
+                })
+                .catch(error => {
+                    console.error("無法取得地震資料:", error);
                 });
-        },console.log('已發布'),true,'Asia/Taipei');
+        }, console.log('地震報告任務已啟動'), true, 'Asia/Taipei');
+
         job.start();
     }
 }

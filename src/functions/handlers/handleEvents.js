@@ -40,6 +40,7 @@ module.exports = (client) => {
             default:
                 break;
         }
+        console.log(`事件類型：${folder} ✅`)
         }
     }
 }

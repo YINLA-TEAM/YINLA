@@ -26,7 +26,7 @@ client.handleEvents();
 client.handleCommands();
 client.handleComponents();
 client.login(process.env.token).then(() => {
-    client.user.setActivity(`/help｜YINLA`, {type: ActivityType.Watching});
+    client.user.setActivity(`/中華職棒賽事｜YINLA`, {type: ActivityType.Watching});
 });
 (async () => {
     await connect(process.env.databaseToken).catch(console.error);
