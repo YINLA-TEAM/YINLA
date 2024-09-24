@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install curl gnupg -y \
 
 # 複製專案檔案
 COPY src/ /bot/src/
-COPY package.json .env /bot/
+COPY package.json /bot/
 
 # 設定工作目錄
 WORKDIR /bot
