@@ -28,5 +28,5 @@ jobs:
           DOCKER_BUILD_NO_SUMMARY: true
         with:
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           tags: ${{ vars.DOCKERHUB_USERNAME }}/yinla:latest
