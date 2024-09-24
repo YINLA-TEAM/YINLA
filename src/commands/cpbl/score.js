@@ -2,7 +2,12 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const puppeteer = require('puppeteer');
 
 async function fetchCPBLScore() {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        headless: true,
+        defaultViewport: null,
+        executablePath: '/usr/bin/google-chrome',
+        args: ['--no-sandbox'],
+    });
     const page = await browser.newPage();
 
     await page.goto('https://www.cpbl.com.tw/');

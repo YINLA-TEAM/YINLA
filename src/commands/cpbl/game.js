@@ -34,7 +34,12 @@ async function fetchCPBLPlayer(link) {
     if (link === undefined) {
         return;
     }
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        headless: true,
+        defaultViewport: null,
+        executablePath: '/usr/bin/google-chrome',
+        args: ['--no-sandbox'],
+    });
     const page = await browser.newPage();
 
     await page.goto(`https://www.cpbl.com.tw${link}`, { waitUntil: 'networkidle2' });
@@ -56,7 +61,12 @@ async function fetchCPBLPlayer(link) {
 }
 
 async function fetchCPBLGame(game_number, game_year) {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        headless: true,
+        defaultViewport: null,
+        executablePath: '/usr/bin/google-chrome',
+        args: ['--no-sandbox'],
+    });
     const page = await browser.newPage();
     
     // 打開目標網頁

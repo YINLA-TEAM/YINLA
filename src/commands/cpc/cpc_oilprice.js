@@ -2,7 +2,12 @@ const puppeteer = require('puppeteer');
 const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Colors } = require('discord.js');
 
 async function fetchCPCOilPrice() {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        headless: true,
+        defaultViewport: null,
+        executablePath: '/usr/bin/google-chrome',
+        args: ['--no-sandbox'],
+    });
     const page = await browser.newPage();
 
     await page.goto('https://www.cpc.com.tw/', { waitUntil: 'networkidle2' });
