@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js')
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -31,9 +31,37 @@ module.exports = {
             ephemeral: true
         });
 
-        const  newMessage = `<:play:827734196243398668>｜機器人開機時間：\`${msToHMS(client.uptime)}\`\n:globe_with_meridians:｜**API**：\`${client.ws.ping}\` ms\n<:Discord_Bot:986319391660593172>｜**機器人延遲**：\`${message.createdTimestamp - interaction.createdTimestamp}\` ms\n**👥｜使用者**：\`${client.users.cache.size}\`\n**👾｜伺服器**：\`${client.guilds.cache.size}\``
+        const botInfoEmbed = new EmbedBuilder()
+            .setAuthor({
+                name:`YINLA`,
+            })
+            .setTitle('機器人狀態')
+            .setThumbnail(client.user.displayAvatarURL())
+            .setColor('Random')
+            .addFields([{
+                    name: `機器人開機時間`,
+                    value: msToHMS(client.uptime),
+                    inline: true
+                }, {
+                    name: `API延遲`,
+                    value: `${client.ws.ping} ms`,
+                    inline: true
+                }, {
+                    name: `機器人延遲`,
+                    value: `${message.createdTimestamp - interaction.createdTimestamp} ms`,
+                    inline: true
+                }, {
+                    name: `使用者數量`,
+                    value: `${client.users.cache.size} 人`,
+                    inline: true
+                }, {
+                    name: `伺服器數量`,
+                    value: `${client.guilds.cache.size} 個`,
+                    inline: true
+                }
+            ])
         await interaction.editReply({
-            content : newMessage
+            embeds : [ botInfoEmbed ],
         })
     }
 }
