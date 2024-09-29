@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { Client, ActivityType , Collection, GatewayIntentBits } = require('discord.js');
-const { connect } = require('mongoose');
+const { connect, mongoose } = require('mongoose');
 const fs = require('fs');
 
 const client = new Client({intents: [32767, GatewayIntentBits.MessageContent]});
@@ -28,6 +28,8 @@ client.handleComponents();
 client.login(process.env.token).then(() => {
     client.user.setActivity(`/中華職棒賽事｜YINLA`, {type: ActivityType.Watching});
 });
+
+mongoose.set('strictQuery', false);
 (async () => {
     await connect(process.env.databaseToken).catch(console.error);
 })();

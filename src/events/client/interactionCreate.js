@@ -30,7 +30,7 @@ module.exports = {
             } catch (err) {
                 console.error(err);
             }
-        } else if (interaction.isSelectMenu()) {
+        } else if (interaction.isStringSelectMenu()) {
             const { selectMenus } = client;
             const { customId } = interaction;
             const menu = selectMenus.get(customId);
@@ -71,7 +71,7 @@ module.exports = {
 
             try {
                 await command.autocomplete(interaction, client);
-            } catch (err) {
+            } catch (error) {
                 console.error(error);
             }
         }
