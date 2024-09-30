@@ -52,7 +52,7 @@ module.exports = {
             } catch (error) {
                 console.error(error);
             }
-        } else if (interaction.isMessageContextMenuCommand()) {
+        } else if (interaction.isContextMenuCommand()) {
             const { commands } = client;
             const { commandName } = interaction;
             const cotextCommand = commands.get(commandName);

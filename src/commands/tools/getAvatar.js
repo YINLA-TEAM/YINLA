@@ -1,4 +1,4 @@
-const { ContextMenuCommandBuilder, ApplicationCommandType ,EmbedBuilder} = require('discord.js')
+const { ContextMenuCommandBuilder, ApplicationCommandType, EmbedBuilder} = require('discord.js')
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
@@ -12,11 +12,11 @@ module.exports = {
         .setType(ApplicationCommandType.User),
 
     async execute(interaction, client) {
-        const embed = new EmbedBuilder()
+        const getAvatarEmbed = new EmbedBuilder()
             .setAuthor({
                 name:`取得大頭貼`,
             })
-            .setTitle(`${interaction.targetUser.username}`)
+            .setTitle(`${interaction.targetUser.username.replaceAll("_", "\\_")}`)
             .setImage(`${interaction.targetUser.displayAvatarURL()}`)
             .setColor(`Random`)
             .setFooter({
@@ -26,7 +26,7 @@ module.exports = {
             .setTimestamp(Date.now())
 
         await interaction.reply({
-            embeds:[embed],
+            embeds:[ getAvatarEmbed ],
             ephemeral: true
         })
     }

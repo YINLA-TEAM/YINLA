@@ -34,7 +34,7 @@ module.exports = {
     async execute(interaction, client) {
         const member = interaction.options.getMember("成員") || interaction.member;
         const embed = new EmbedBuilder()
-            .setTitle(member.user.username)
+            .setTitle(member.user.username.replaceAll("_", "\\_"))
             .setColor('Random')
             .setThumbnail(member.user.displayAvatarURL())
             .setTimestamp(Date.now())
