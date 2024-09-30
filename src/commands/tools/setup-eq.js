@@ -39,7 +39,7 @@ module.exports = {
                     });
                     const succes_creat_eq_msg = new EmbedBuilder()
                     .setTitle(`✅ 成功設定 **地震報告推播**`)
-                    .setColor(`Red`)
+                    .setColor(`Green`)
 
                     interaction.reply({
                         embeds:[succes_creat_eq_msg],
@@ -48,7 +48,7 @@ module.exports = {
                 } else {
                     const err_creat_eq_msg = new EmbedBuilder()
                     .setTitle(`❌ 請確認使否有設定過推播頻道`)
-                    .setColor(`Green`)
+                    .setColor(`Red`)
 
                     interaction.reply({
                         embeds:[err_creat_eq_msg],
