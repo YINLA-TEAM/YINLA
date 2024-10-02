@@ -29,7 +29,6 @@ module.exports = {
                         if (!eqChannel) return;
 
                         if (Earthquake.ReportContent !== previousReportContent) {
-                            // 發送訊息的程式碼保持不變
                             const No = String(Earthquake.EarthquakeNo);
                             const Color = {
                                 綠色: "Green",

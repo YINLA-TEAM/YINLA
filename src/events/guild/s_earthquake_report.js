@@ -24,7 +24,7 @@ module.exports = {
                             return;
                         }
 
-                        let previousReportContent = data.E_LastReportContent || "";
+                        let previousReportContent = data.S_LastReportContent || "";
                         const eqChannel = guild.channels.cache.get(data.Channel);
                         if (!eqChannel) return;
 
@@ -60,16 +60,6 @@ module.exports = {
                                 (Earthquake.EarthquakeNo % 1000 == 0 ? timecode : timecode.slice(4, timecode.length - 2)) +
                                 (Earthquake.EarthquakeInfo.EarthquakeMagnitude.MagnitudeValue * 10) +
                                 (Earthquake.EarthquakeNo % 1000 == 0 ? "" : Earthquake.EarthquakeNo.toString().substring(3)) + "_H.png";
-
-                            const Image_i = "https://www.cwa.gov.tw/Data/earthquake/zip/EQ" +
-                                Earthquake.EarthquakeNo + "-" +
-                                Time.getFullYear() + "-" +
-                                (Time.getMonth() + 1 < 10 ? "0" : "") + (Time.getMonth() + 1) +
-                                (Time.getDate() < 10 ? "0" : "") + Time.getDate() + "-" +
-                                (Time.getHours() < 10 ? "0" : "") + Time.getHours() +
-                                (Time.getMinutes() < 10 ? "0" : "") + Time.getMinutes() +
-                                (Time.getSeconds() < 10 ? "0" : "") + Time.getSeconds() + "/" +
-                                Time.getFullYear() + Earthquake.EarthquakeNo.toString().substring(3) + "i.png";
 
                             const Web = "https://www.cwa.gov.tw/V8/C/E/EQ/" + cwa_code + ".html";
 
@@ -154,7 +144,7 @@ module.exports = {
                                 components: [url]
                             });
 
-                            data.E_LastReportContent = Earthquake.ReportContent;
+                            data.S_LastReportContent = Earthquake.ReportContent;
                             await data.save();
                         } else {
                             console.log(`沒有新的地震報告`);
