@@ -1,4 +1,4 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const eqSchema = require("../../Model/eqChannel");
 const axios = require('axios');
 const cron = require('cron');
@@ -54,13 +54,13 @@ module.exports = {
                                 (Time.getMinutes() < 10 ? "0" : "") + Time.getMinutes() +
                                 (Time.getSeconds() < 10 ? "0" : "") + Time.getSeconds();
 
-                            const Image = "https://www.cwa.gov.tw/Data/earthquake/img/EC" +
+                            let Image = "https://www.cwa.gov.tw/Data/earthquake/img/EC" +
                                 (Earthquake.EarthquakeNo % 1000 == 0 ? "L" : "") +
                                 (Earthquake.EarthquakeNo % 1000 == 0 ? timecode : timecode.slice(4, timecode.length - 2)) +
                                 (Earthquake.EarthquakeInfo.EarthquakeMagnitude.MagnitudeValue * 10) +
                                 (Earthquake.EarthquakeNo % 1000 == 0 ? "" : Earthquake.EarthquakeNo.toString().substring(3)) + "_H.png";
 
-                            const Image_i = "https://www.cwa.gov.tw/Data/earthquake/zip/EQ" +
+                            let Image_i = "https://www.cwa.gov.tw/Data/earthquake/zip/EQ" +
                                 Earthquake.EarthquakeNo + "-" +
                                 Time.getFullYear() + "-" +
                                 (Time.getMonth() + 1 < 10 ? "0" : "") + (Time.getMonth() + 1) +
@@ -70,6 +70,28 @@ module.exports = {
                                 (Time.getSeconds() < 10 ? "0" : "") + Time.getSeconds() + "/" +
                                 Time.getFullYear() + Earthquake.EarthquakeNo.toString().substring(3) + "i.png";
 
+                            await new Promise((resolve) => {
+                                const checker = (retryCount = 0) => {
+                                    fetch(Image, { method: "GET" })
+                                        .then(async (res) => {
+                                            if (res.ok) {
+                                                const buf = await res.arrayBuffer();
+                                                if (buf.byteLength > 0) {
+                                                    const sent = await client.channels.cache
+                                                        .get("1290219563715395604")
+                                                        .send({ files: [new AttachmentBuilder().setFile(Image)] });
+                                                    Image = sent.attachments.first().url;
+                                                    resolve(true);
+                                                }
+                                            } else {
+                                                setTimeout(checker, 8000, retryCount + 1);
+                                            }
+                                        })
+                                        .catch(() => { setTimeout(checker, 8000, retryCount + 1); });
+                                };
+                                checker();
+                            });
+                            
                             const Web = "https://www.cwa.gov.tw/V8/C/E/EQ/" + cwa_code + ".html";
 
                             const url = new ActionRowBuilder()
