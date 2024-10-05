@@ -3,6 +3,9 @@ const eqSchema = require("../../Model/eqChannel");
 const axios = require('axios');
 const cron = require('cron');
 
+let checkImage = "";
+let cwaImage = "";
+
 module.exports = {
     name: 'ready',
     once: false,
@@ -70,28 +73,30 @@ module.exports = {
                                 (Time.getSeconds() < 10 ? "0" : "") + Time.getSeconds() + "/" +
                                 Time.getFullYear() + Earthquake.EarthquakeNo.toString().substring(3) + "i.png";
 
-                            await new Promise((resolve) => {
-                                const checker = (retryCount = 0) => {
-                                    fetch(Image, { method: "GET" })
-                                        .then(async (res) => {
-                                            if (res.ok) {
-                                                const buf = await res.arrayBuffer();
-                                                if (buf.byteLength > 0) {
-                                                    const sent = await client.channels.cache
-                                                        .get("1290219563715395604")
-                                                        .send({ files: [new AttachmentBuilder().setFile(Image)] });
-                                                    Image = sent.attachments.first().url;
-                                                    resolve(true);
+                            if(checkImage !== Image){
+                                checkImage = Image;
+                                await new Promise((resolve) => {
+                                    const checker = (retryCount = 0) => {
+                                        fetch(Image, { method: "GET" })
+                                            .then(async (res) => {
+                                                if (res.ok) {
+                                                    const buf = await res.arrayBuffer();
+                                                    if (buf.byteLength > 0) {
+                                                        const sent = await client.channels.cache
+                                                            .get("1290219563715395604")
+                                                            .send({ files: [new AttachmentBuilder().setFile(Image)] });
+                                                        cwaImage = sent.attachments.first().url;
+                                                        resolve(true);
+                                                    }
+                                                } else {
+                                                    setTimeout(checker, 8000, retryCount + 1);
                                                 }
-                                            } else {
-                                                setTimeout(checker, 8000, retryCount + 1);
-                                            }
-                                        })
-                                        .catch(() => { setTimeout(checker, 8000, retryCount + 1); });
-                                };
-                                checker();
-                            });
-                            
+                                            })
+                                            .catch(() => { setTimeout(checker, 8000, retryCount + 1); });
+                                    };
+                                    checker();
+                                });
+                            }
                             const Web = "https://www.cwa.gov.tw/V8/C/E/EQ/" + cwa_code + ".html";
 
                             const url = new ActionRowBuilder()
@@ -132,7 +137,7 @@ module.exports = {
                                 })
                                 .setDescription(Content)
                                 .setColor(Color[Earthquake.ReportColor])
-                                .setImage(Image)
+                                .setImage(cwaImage)
                                 .addFields([
                                     {
                                         name: '編號',

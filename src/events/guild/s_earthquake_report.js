@@ -3,6 +3,9 @@ const eqSchema = require("../../Model/eqChannel");
 const axios = require('axios');
 const cron = require('cron');
 
+let checkImage = "";
+let cwaImage = "";
+
 module.exports = {
     name: 'ready',
     once: false,
@@ -60,8 +63,10 @@ module.exports = {
                                 (Earthquake.EarthquakeInfo.EarthquakeMagnitude.MagnitudeValue * 10) +
                                 (Earthquake.EarthquakeNo % 1000 == 0 ? "" : Earthquake.EarthquakeNo.toString().substring(3)) + "_H.png";
                             
+                            if(checkImage !== Image){
+                                checkImage = Image;
                                 await new Promise((resolve) => {
-                                    const checker = (retryCount = 0) => {                                
+                                    const checker = (retryCount = 0) => {
                                         fetch(Image, { method: "GET" })
                                             .then(async (res) => {
                                                 if (res.ok) {
@@ -70,7 +75,7 @@ module.exports = {
                                                         const sent = await client.channels.cache
                                                             .get("1290219563715395604")
                                                             .send({ files: [new AttachmentBuilder().setFile(Image)] });
-                                                        Image = sent.attachments.first().url;
+                                                        cwaImage = sent.attachments.first().url;
                                                         resolve(true);
                                                     }
                                                 } else {
@@ -81,6 +86,7 @@ module.exports = {
                                     };
                                     checker();
                                 });
+                            }
                                 
                             const Web = "https://www.cwa.gov.tw/V8/C/E/EQ/" + cwa_code + ".html";
 
@@ -122,7 +128,7 @@ module.exports = {
                                 })
                                 .setDescription(Content)
                                 .setColor(Color[Earthquake.ReportColor])
-                                .setImage(Image)
+                                .setImage(cwaImage)
                                 .addFields([
                                     {
                                         name: '編號',
