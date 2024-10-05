@@ -9,8 +9,11 @@
 
 **於 `2024/08/22` 成為已驗證機器人 ✅**
 
+目前機器人並非24H運行，啟動時間為 8:00AM 到 隔日3:00AM
+
 如果在使用機器人遇到什麼問題，可以用[issues](https://github.com/YINLA-TEAM/YINLA/issues)回報給我，或是私訊@YinCheng0106的DC，加入支援的伺服器也是可以。
 
+- [邀請連結](https://discord.com/oauth2/authorize?client_id=914150570250625044&permissions=1759214307376375&integration_type=0&scope=applications.commands+bot)
 - [服務條款](https://hackmd.io/@YinCheng0106/YINLA_TOS)
 - [支援伺服器](https://discord.gg/mnCHdBbh65)
 ## 貢獻者
