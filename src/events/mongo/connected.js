@@ -3,6 +3,6 @@ const chalk = require("chalk");
 module.exports = {
     name: "connected",
     execute() {
-        console.log(chalk.green("[Database Status]：已連線"));
+        console.log(chalk.green("[DB] 已連線"));
     },
 };

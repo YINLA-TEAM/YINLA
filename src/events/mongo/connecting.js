@@ -3,6 +3,6 @@ const chalk = require("chalk");
 module.exports = {
     name: "connecting",
     async execute() {
-        console.log(chalk.cyan("[Database Status]：連線中..."));
+        console.log(chalk.cyan("[DB] 連線中..."));
     },
 };
