@@ -87,10 +87,13 @@ module.exports = {
                                 if (res.ok) {
                                     const buf = await res.arrayBuffer();
                                     if (buf.byteLength > 0) {
-                                        const sent = await client.channels.cache
-                                            .get("1290219563715395604")
-                                            .send({ files: [new AttachmentBuilder().setFile(Image)] });
-                                        cwaImage = sent.attachments.first().url;
+                                        if(checkImage !== Image){
+                                            const sent = await client.channels.cache
+                                                .get("1290219563715395604")
+                                                .send({ files: [new AttachmentBuilder().setFile(Image)] });
+                                            cwaImage = sent.attachments.first().url;
+                                            checkImage = Image;
+                                        }
                                         resolve(true);
                                     }
                                 } else {
