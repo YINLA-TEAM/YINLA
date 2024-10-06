@@ -12,22 +12,22 @@ module.exports = {
     async execute(client) {
         const job = new cron.CronJob("0/15 * * * * *", async function () {
             try {
-                const eqResult = await axios.get(`https://opendata.cwa.gov.tw/api/v1/rest/datastore/E-A0015-001?Authorization=${process.env.cwa_key}`);
+                const eqResult = await axios.get(`https://opendata.cwa.gov.tw/api/v1/rest/datastore/E-A0016-001?Authorization=${process.env.cwa_key}`);
                 const { records } = eqResult.data;
                 const Earthquake = records.Earthquake[0];
 
                 client.guilds.cache.forEach(async (guild) => {
                     eqSchema.findOne({ Guild: guild.id }, async (err, data) => {
                         if (err) {
-                            console.error('資料庫錯誤:', err);
+                            console.error('[錯誤] 資料庫錯誤:', err);
                             return;
                         }
                         if (!data) {
-                            console.log(`Guild ID: ${guild.id} 找不到對應的資料`);
+                            console.log(`[事件] Guild ID: ${guild.id} 未設定地震推播頻道`);
                             return;
                         }
 
-                        let previousReportContent = data.E_LastReportContent || "";
+                        let previousReportContent = data.S_LastReportContent || "";
                         const eqChannel = guild.channels.cache.get(data.Channel);
                         if (!eqChannel) return;
 
@@ -62,17 +62,7 @@ module.exports = {
                                 (Earthquake.EarthquakeNo % 1000 == 0 ? timecode : timecode.slice(4, timecode.length - 2)) +
                                 (Earthquake.EarthquakeInfo.EarthquakeMagnitude.MagnitudeValue * 10) +
                                 (Earthquake.EarthquakeNo % 1000 == 0 ? "" : Earthquake.EarthquakeNo.toString().substring(3)) + "_H.png";
-
-                            let Image_i = "https://www.cwa.gov.tw/Data/earthquake/zip/EQ" +
-                                Earthquake.EarthquakeNo + "-" +
-                                Time.getFullYear() + "-" +
-                                (Time.getMonth() + 1 < 10 ? "0" : "") + (Time.getMonth() + 1) +
-                                (Time.getDate() < 10 ? "0" : "") + Time.getDate() + "-" +
-                                (Time.getHours() < 10 ? "0" : "") + Time.getHours() +
-                                (Time.getMinutes() < 10 ? "0" : "") + Time.getMinutes() +
-                                (Time.getSeconds() < 10 ? "0" : "") + Time.getSeconds() + "/" +
-                                Time.getFullYear() + Earthquake.EarthquakeNo.toString().substring(3) + "i.png";
-
+                            
                             if(checkImage !== Image){
                                 checkImage = Image;
                                 await new Promise((resolve) => {
@@ -97,6 +87,7 @@ module.exports = {
                                     checker();
                                 });
                             }
+                                
                             const Web = "https://www.cwa.gov.tw/V8/C/E/EQ/" + cwa_code + ".html";
 
                             const url = new ActionRowBuilder()
@@ -176,23 +167,23 @@ module.exports = {
                                 .forEach(ShakingArea => embed.addFields({ name: ShakingArea.AreaDesc, value: ShakingArea.CountyName }));
 
                             eqChannel.send({
-                                embeds: [embed],
-                                components: [url]
+                                embeds: [ embed ],
+                                components: [ url ]
                             });
 
-                            data.E_LastReportContent = Earthquake.ReportContent;
+                            data.S_LastReportContent = Earthquake.ReportContent;
                             await data.save();
                         } else {
-                            console.log(`沒有新的地震報告`);
+                            console.log(`[事件] 沒有新的地震報告`);
                         }
                     });
                 });
             } catch (error) {
-                console.error("無法取得地震資料:", error);
+                console.error("[錯誤] 無法取得地震資料:", error);
             }
         }, null, true, 'Asia/Taipei');
 
         job.start();
-        console.log('地震報告任務已啟動_E');
+        console.log('[啟動] 地震報告任務_S');
     }
 }

@@ -1,13 +1,13 @@
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require("discord.js");
-const eqSchema = require("../../Model/eqChannel");
+const cpcSchema = require("../../Model/cpcChannel");
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName(`setup-eqchannel`)
+        .setName(`setup-cpcchannel`)
         .setNameLocalizations({
-            "zh-TW" : "設定地震報告推播",
+            "zh-TW" : "設定中油油價推播",
         })
-        .setDescription("設定 地震報告推播頻道")
+        .setDescription("設定 中油油價推播頻道")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addChannelOption(option => 
             option.setName("頻道")
@@ -18,7 +18,7 @@ module.exports = {
         async execute(interaction) {
             const { options } = interaction;
             
-            const eqChannel = options.getChannel("頻道");
+            const cpcChannel = options.getChannel("頻道");
 
             if(!interaction.guild.members.me.permissions.has(PermissionFlagsBits.Administrator)) {
                 const no_admin_msg = new EmbedBuilder()
@@ -26,32 +26,33 @@ module.exports = {
                     .setColor(`Red`)
 
                 interaction.reply({
-                    embeds:[ no_admin_msg ],
+                    embeds: [ no_admin_msg ],
                     ephemeral:true
                 })
             }
 
-            eqSchema.findOne({Guild:interaction.guild.id}, async (err,data) =>{
+            cpcSchema.findOne({Guild:interaction.guild.id}, async (err,data) =>{
                 if(!data) {
-                    const newEQ = await eqSchema.create({
+                    const newCPC = await cpcSchema.create({
                         Guild: interaction.guild.id,
-                        Channel: eqChannel.id,
+                        Channel: cpcChannel.id,
                     });
-                    const succes_creat_eq_msg = new EmbedBuilder()
-                    .setTitle(`✅ 成功設定 **地震報告推播**`)
+                    const succes_creat_cpc_msg = new EmbedBuilder()
+                    .setTitle(`✅ 成功設定 **中油油價推播**`)
+                    .setDescription(`中油的油價推播會在每週日的中午12點後推送`)
                     .setColor(`Green`)
 
                     interaction.reply({
-                        embeds:[ succes_creat_eq_msg ],
+                        embeds:[ succes_creat_cpc_msg ],
                         ephemeral:false
                     })
                 } else {
-                    const err_creat_eq_msg = new EmbedBuilder()
+                    const err_creat_cpc_msg = new EmbedBuilder()
                     .setTitle(`❌ 請確認使否有設定過推播頻道`)
                     .setColor(`Red`)
 
                     interaction.reply({
-                        embeds:[ err_creat_eq_msg ],
+                        embeds:[ err_creat_cpc_msg ],
                         ephemeral:true
                     })
                 };

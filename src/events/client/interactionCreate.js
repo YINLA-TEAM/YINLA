@@ -27,8 +27,8 @@ module.exports = {
 
             try {
                 await button.execute(interaction, client);
-            } catch (err) {
-                console.error(err);
+            } catch (error) {
+                console.error(error);
             }
         } else if (interaction.isStringSelectMenu()) {
             const { selectMenus } = client;

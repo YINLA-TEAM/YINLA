@@ -41,7 +41,7 @@ module.exports = {
                 .setColor(`Red`)
 
             interaction.reply({
-                embeds:no_admin_msg,
+                embeds:[ no_admin_msg ],
                 ephemeral:true
             })
         }
@@ -59,7 +59,7 @@ module.exports = {
                 .setColor(`Green`)
 
                 interaction.reply({
-                    embeds:[succes_creat_welcome_msg],
+                    embeds:[ succes_creat_welcome_msg ],
                     ephemeral:true
                 })
             } else {
@@ -68,7 +68,7 @@ module.exports = {
                 .setColor(`Red`)
 
                 interaction.reply({
-                    embeds:[err_creat_welcome_msg],
+                    embeds:[ err_creat_welcome_msg ],
                     ephemeral:true
                 })
             }
