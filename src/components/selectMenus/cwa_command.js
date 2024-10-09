@@ -44,34 +44,48 @@ module.exports = {
                 iconURL:client.user.displayAvatarURL()
             })
             .setDescription(`查詢近期兩天的氣象，並且利用口語化的方式報導`)
+        
+        const embed6 = new EmbedBuilder()
+            .setTitle(`☀️｜紫外線指數`)
+            .setAuthor({
+                name:`YINLA`,
+                iconURL:client.user.displayAvatarURL()
+            })
+            .setDescription(`查詢該地區當下的紫外線指數`)
 
         if (interaction.values[0] == `eq`) {
             await interaction.reply({
-                embeds:[embed1],
+                embeds: [ embed1 ],
                 ephemeral: true
             });
         }
         if (interaction.values[0] == `radar`) {
             await interaction.reply({
-                embeds:[embed2],
+                embeds: [ embed2 ],
                 ephemeral: true
             });
         }
         if (interaction.values[0] == `alert`) {
             await interaction.reply({
-                embeds:[embed3],
+                embeds: [ embed3 ],
                 ephemeral: true
             });
         }
         if (interaction.values[0] == `station`) {
             await interaction.reply({
-                embeds:[embed4],
+                embeds: [ embed4 ],
                 ephemeral: true
             });
         }
         if (interaction.values[0] == `tool`) {
             await interaction.reply({
-                embeds:[embed5],
+                embeds: [ embed5 ],
+                ephemeral: true
+            });
+        }
+        if (interaction.values[0] == `uv`) {
+            await interaction.reply({
+                embeds: [ embed6 ],
                 ephemeral: true
             });
         }

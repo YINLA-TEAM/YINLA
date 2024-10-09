@@ -58,7 +58,25 @@ module.exports = {
                 label: `應用程式`,
                 description:"應用程式",
                 value: `3`
-            })
+            }),
+            new StringSelectMenuOptionBuilder({
+                emoji:`<a:Baseballemoji:1293226431916281987>`,
+                label: `棒球相關指令`,
+                description:"目前提供中華職棒的相關數據",
+                value: `4`
+            }),
+            new StringSelectMenuOptionBuilder({
+                emoji:`🛢️`,
+                label: `汽油相關指令`,
+                description:"查詢汽油相關指令的功能",
+                value: `5`
+            }),
+            new StringSelectMenuOptionBuilder({
+                emoji:`📢`,
+                label: `推播相關指令`,
+                description:"查詢目前推播的功能",
+                value: `6`
+            }),
         );
 
     await interaction.reply({

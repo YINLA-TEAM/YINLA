@@ -103,6 +103,7 @@ module.exports = {
                                                 .get("1290219563715395604")
                                                 .send({ files: [new AttachmentBuilder().setFile(Image)] });
                                             cwaImage = sent.attachments.first().url;
+                                            console.log(`[事件] 地震報告圖已生成`)
                                             checkImage = Image;
                                         }
                                         resolve(true);
@@ -167,10 +168,7 @@ module.exports = {
                             console.error('[錯誤] 資料庫錯誤:', err);
                             return;
                         }
-                        if (!data) {
-                            console.log(`[事件] Guild ID: ${guild.id} 未設定地震推播頻道`);
-                            return;
-                        }
+                        if (!data) return;
 
                         let previousReportContent = data.E_LastReportContent || "";
                         const eqChannel = guild.channels.cache.get(data.Channel);
@@ -181,7 +179,7 @@ module.exports = {
                                 embeds: [ embed ],
                                 components: [ url ]
                             });
-
+                            console.log(`[發布] 地震報告_E`);
                             data.E_LastReportContent = Earthquake.ReportContent;
                             await data.save();
                         } else {

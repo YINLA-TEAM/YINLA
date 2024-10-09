@@ -26,7 +26,7 @@ module.exports = {
                     .setEmoji('<:bot:1069839984007331961>')
                     .setLabel('點擊邀請我')
                     .setStyle(ButtonStyle.Link)
-                    .setURL('https://discord.com/api/oauth2/authorize?client_id=914150570250625044&permissions=8&scope=bot%20applications.commands')
+                    .setURL('https://discord.com/oauth2/authorize?client_id=914150570250625044&permissions=1759214307376375&integration_type=0&scope=applications.commands+bot')
             )
             .addComponents(
                 new ButtonBuilder()

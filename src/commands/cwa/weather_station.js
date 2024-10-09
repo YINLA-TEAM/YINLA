@@ -13,8 +13,6 @@ module.exports = {
         const wtResult = await axios.get(`https://opendata.cwa.gov.tw/api/v1/rest/datastore/O-A0001-001?Authorization=${process.env.cwa_key}&StationId=C0F9R0`)
         const { records } = wtResult.data;
 
-        
-
         const station = records.Station[0];
         const locaName = station.GeoInfo.CountyName + " " + station.GeoInfo.TownName;
         const wtStatus = station.WeatherElement.Weather;

@@ -170,7 +170,7 @@ module.exports = {
                                 embeds: [ embed ],
                                 components: [ url ]
                             });
-
+                            console.log(`[發布] 地震報告_S`);
                             data.S_LastReportContent = Earthquake.ReportContent;
                             await data.save();
                         } else {
