@@ -1,48 +1,37 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Colors } = require('discord.js');
 const cpcSchema = require('../../Model/cpcChannel');
-const puppeteer = require('puppeteer');
+const cheerio = require('cheerio');
 const cron = require('cron');
 
 
 async function fetchCPCOilPrice() {
-    const browser = await puppeteer.launch({
-        headless: true,
-        defaultViewport: null,
-        executablePath: '/usr/bin/google-chrome',
-        args: ['--no-sandbox'],
-    });
-    const page = await browser.newPage();
+    const res = await fetch("https://www.cpc.com.tw/GetOilPriceJson.aspx?type=TodayOilPriceString", { method: 'GET' });
+    const data = await res.json();
+    const $ = cheerio.load(data.UpOrDown_Html)
 
-    await page.goto('https://www.cpc.com.tw/', { waitUntil: 'networkidle2' });
+    const UpOrDown = [];
 
-    const OilData = await page.evaluate(() => {
-        const date = document.querySelector('#t_PriceUpdate')?.textContent.trim();      // 調整日期
-        const upsORdowns = document.querySelector('.sys')?.textContent.trim();          // 調降or調漲
-        const rate = document.querySelector('.rate')?.textContent.trim();               // 調整幅度
+    $('div').each((i, elem) => {
+        const sys = $(elem).find('.sys').text().trim();
+        const rate = $(elem).find('.rate i').text(). trim();
 
-        const nine_two_price = document.querySelector('.today_price_ct li:nth-child(1) .today_price_info .price')?.textContent.trim() || "無資料";
-        const nine_five_price = document.querySelector('.today_price_ct li:nth-child(2) .today_price_info .price')?.textContent.trim() || "無資料";
-        const nine_eight_price = document.querySelector('.today_price_ct li:nth-child(3) .today_price_info .price')?.textContent.trim() || "無資料";
-        const ethanolFuel_price = document.querySelector('.today_price_ct li:nth-child(4) .today_price_info .price')?.textContent.trim() || "無資料";
-        const superDiesel_price = document.querySelector('.today_price_ct li:nth-child(5) .today_price_info .price')?.textContent.trim() || "無資料";
-        const LPG_price = document.querySelector('.today_price_ct li:nth-child(6) .today_price_info .price')?.textContent.trim() || "無資料";
+        UpOrDown.push({
+            sys,
+            rate
+        })
+    })
 
-        return {
-            date,
-            upsORdowns,
-            rate,
-
-            nine_two_price,
-            nine_five_price,
-            nine_eight_price,
-            ethanolFuel_price,
-            superDiesel_price,
-            LPG_price,
-        };
-    });
-
-    await browser.close();
-    return OilData;
+    return {
+        PriceUpdate : data.PriceUpdate,
+        nine_two_price : data.sPrice1,
+        nine_five_price : data.sPrice2,
+        nine_eight_price : data.sPrice3,
+        ethanolFuel_price : data.sPrice4,
+        superDiesel_price : data.sPrice5,
+        LPG_price : data.sPrice6,
+        UpOrDown : UpOrDown[0].sys,
+        rate : UpOrDown[0].rate,
+    }
 }
 
 let oil;
