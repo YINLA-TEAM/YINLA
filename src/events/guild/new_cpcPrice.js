@@ -40,20 +40,20 @@ module.exports = {
     name: 'ready',
     once: false,
     async execute(client) {
-        const job = new cron.CronJob("* 10 12 * * 0", async function () {
+        const job = new cron.CronJob("0 10 12 * * 0", async function () {
             try {
                 oil = await fetchCPCOilPrice();
                 let oil_embed_color = Colors.Green;
 
-                if(oil.upsORdowns === "調漲") oil_embed_color = Colors.Red;
-                else if(oil.upsORdowns === "調降") oil_embed_color = Colors.Green;
+                if(oil.UpOrDown === "調漲") oil_embed_color = Colors.Red;
+                else if(oil.UpOrDown === "調降") oil_embed_color = Colors.Green;
 
                 const oil_embed = new EmbedBuilder()
                     .setAuthor({
                         name: "台灣中油",
                         iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/CPC_Corporation%2C_Taiwan_Seal.svg/800px-CPC_Corporation%2C_Taiwan_Seal.svg.png"
                     })
-                    .setTitle(`下週汽油價格${oil.upsORdowns} ${oil.rate}`)
+                    .setTitle(`下週汽油價格${oil.UpOrDown} ${oil.rate}`)
                     .setDescription(`自 **${oil.date}** 零時起實施，單位：元/公升`)
                     .setColor(oil_embed_color)
                     .addFields([
