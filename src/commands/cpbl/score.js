@@ -16,8 +16,8 @@ const fetchCPBLScore = async() => {
 
                 awayTeam: game?.VisitingTeamName,            //客隊隊名
                 homeTeam: game?.HomeTeamName,                //主隊隊名
-                awayScore: game?.VisitingTotalScore = null ? '0' : game?.VisitingTotalScore,         //客隊分數
-                homeScore: game?.HomeTotalScore = null ? '0' : game?.HomeTotalScore,             //主隊分數
+                awayScore: game?.VisitingTotalScore == null ? '0' : game?.VisitingTotalScore,         //客隊分數
+                homeScore: game?.HomeTotalScore == null ? '0' : game?.HomeTotalScore,             //主隊分數
                 awayTeam_code: game?.VisitingTeamCode,       //
                 homeTeam_code: game?.HomeTeamCode,
                 awayTeam_W: game?.VisitingGameResultWCnt,
