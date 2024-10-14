@@ -64,7 +64,7 @@ const fetchCPBLScore = async() => {
     return gameArray;
 }
 
-const teamIcon = () => {
+const teamIcon = (team_name) => {
     try {
         const icon = {
             "中信兄弟": "<:cpbl_B:914141522541297696>",

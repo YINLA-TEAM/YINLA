@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const cheerio = require("cheerio");
 
-function teamIcon(team_name) {
+const teamIcon = (team_name) => {
     try {
         const icon = {
             "中信兄弟": "<:cpbl_B:914141522541297696>",
@@ -10,17 +10,24 @@ function teamIcon(team_name) {
             "統一7-ELEVEn獅": "<:cpbl_L:1033396606491431012>",
             "樂天桃猿": "<:cpbl_R:1033396046849646654>",
             "台鋼雄鷹": "<:cpbl_T:1273206632150470678>",
-            "三商": "<:cpbl_Tiger:1275824989441888266>",
-            "兄弟": "<:cpbl_B_O:1275825371744571455>",
-            "時報": "<:cpbl_E:1275825666914386065>",
-            "俊國": "<:cpbl_Bears:1275825871898411100>",
-            "興農": "<:cpbl_S:1275826268700672041>",
-            "中信": "<:cpbl_W:1275826947745775728>",
-            "第一": "<:cpbl_L:1275827544351965194>",
-            "誠泰": "<:cpbl_C:1275827950838874122>",
-            "Lamigo": "<:cpbl_Lamigo:1275828301214253138>",
-            "米迪亞": "<:cpbl_T_REX:1275828691842371704>",
-            "義大": "<:cpbl_Rhino:1275828995019247770>",
+            "中信兄弟二軍": "<:cpbl_B:914141522541297696>",
+            "味全龍二軍": "<:cpbl_D:1033396051224305734>",
+            "富邦悍將二軍": "<:cpbl_G:1033396049227829331>",
+            "統一7-ELEVEn獅二軍": "<:cpbl_L:1033396606491431012>",
+            "樂天桃猿二軍": "<:cpbl_R:1033396046849646654>",
+            "台鋼雄鷹二軍": "<:cpbl_T:1273206632150470678>",
+            "ACN011": "<:cpbl_B:914141522541297696>",
+            "AAA011": "<:cpbl_D:1033396051224305734>",
+            "AEO011": "<:cpbl_G:1033396049227829331>",
+            "ADD011": "<:cpbl_L:1033396606491431012>",
+            "AJL011": "<:cpbl_R:1033396046849646654>",
+            "AKP011": "<:cpbl_T:1273206632150470678>",
+            "ACN022": "<:cpbl_B:914141522541297696>",
+            "AAA022": "<:cpbl_D:1033396051224305734>",
+            "AEO022": "<:cpbl_G:1033396049227829331>",
+            "ADD022": "<:cpbl_L:1033396606491431012>",
+            "AJL022": "<:cpbl_R:1033396046849646654>",
+            "AKP022": "<:cpbl_T:1273206632150470678>",
         };
         
         return icon[team_name] || " ";
@@ -29,7 +36,7 @@ function teamIcon(team_name) {
     }
 }
 
-async function fetchCPBLStanding() {
+const fetchCPBLStanding = async() => {
     const response = await fetch("https://www.cpbl.com.tw", { method: 'GET' });
     const data = await response.text();
     const $ = cheerio.load(data);
