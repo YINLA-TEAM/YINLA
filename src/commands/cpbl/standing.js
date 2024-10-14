@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const puppeteer = require('puppeteer');
+const cheerio = require("cheerio");
 
 function teamIcon(team_name) {
     try {
@@ -30,37 +30,35 @@ function teamIcon(team_name) {
 }
 
 async function fetchCPBLStanding() {
-    const browser = await puppeteer.launch({
-        headless: true,
-        defaultViewport: null,
-        executablePath: '/usr/bin/google-chrome',
-        args: ['--no-sandbox'],
+    const response = await fetch("https://www.cpbl.com.tw", { method: 'GET' });
+    const data = await response.text();
+    const $ = cheerio.load(data);
+
+    const dataArray = [];
+
+    $('.index_standing_table tbody tr').each((i, elem) => {
+        if (i === 0) return;
+        const rank = $(elem).find('.rank').text().trim();
+        const team = $(elem).find('.team_name a').attr('title');
+        const gamesPlayed = $(elem).find('td').eq(1).text().trim();
+        const winDrawLoss = $(elem).find('td').eq(2).text().trim();
+        const winRate = $(elem).find('td').eq(3).text().trim();
+        const gamesBehind = $(elem).find('td').eq(4).text().trim();
+        const streak = $(elem).find('td').eq(5).text().trim();
+        if (team == undefined) return;
+
+        dataArray.push({
+            rank,
+            team,
+            gamesPlayed,
+            winDrawLoss,
+            winRate,
+            gamesBehind,
+            streak,
+        });
     });
-    const page = await browser.newPage();
 
-    await page.goto('https://www.cpbl.com.tw', { waitUntil: 'domcontentloaded' });
-
-    const standingData = await page.evaluate(() => {
-        const rows = Array.from(document.querySelectorAll('.index_standing_table tbody tr'));
-        return rows.map(row => {
-            const rank = row.querySelector('.rank')?.innerText.trim() || ''; // 抓取排名
-            const team = row.querySelector('.team_name a')?.innerText.trim() || ''; // 抓取隊伍名稱
-            const gamesPlayed = row.querySelectorAll('td')[1]?.innerText.trim() || ''; // 抓取出賽數
-            const winDrawLoss = row.querySelectorAll('td')[2]?.innerText.trim() || ''; // 抓取勝-敗-和
-            const winRate = row.querySelectorAll('td')[3]?.innerText.trim() || ''; // 抓取勝率
-            const gamesBehind = row.querySelectorAll('td')[4]?.innerText.trim() || ''; // 抓取勝差
-            const streak = row.querySelectorAll('td')[5]?.innerText.trim() || ''; // 抓取連勝/連敗
-
-            if (!rank || !team || !gamesPlayed) {
-                return null;
-            }
-
-            return { rank, team, gamesPlayed, winDrawLoss, winRate, gamesBehind, streak };
-        }).filter(Boolean);
-    });
-    // 關閉瀏覽器
-    await browser.close();
-    return standingData;
+    return dataArray;
 }
 
 module.exports = {
@@ -69,7 +67,20 @@ module.exports = {
         .setNameLocalizations({
             "zh-TW" : "中華職棒球隊成績",
         })
-        .setDescription('查看 中華職棒目前賽季球隊成績'),
+        .setDescription('查看 中華職棒目前賽季球隊成績')
+        .addStringOption(option => (
+            option
+                .setName("season")
+                .setNameLocalizations({
+                    "zh-TW": "賽季",
+                })
+                .setDescription("上半季 or 下半季"))
+                .setRequired(true)
+                .addChoices(
+                    { name: '上半季', value: "上半季" },
+                    { name: '下半季', value: "下半季" },
+                )
+        ),
 
     async execute (interaction) {
         const WaitMessage = await interaction.deferReply({
@@ -78,14 +89,22 @@ module.exports = {
         });
 
         const data = await fetchCPBLStanding();
-
+        let season = "";
         let broad = [];
 
-        for(let i = 0; i < data.length; i++){
-            let info = `## \`${data[i].rank}\` ${teamIcon(data[i].team)} \`${data[i].gamesPlayed}\` \`${data[i].winDrawLoss}\` \`${data[i].winRate}\` \`${data[i].gamesBehind}\` \`${data[i].streak}\``;
-            broad.push(info);
+        if(interaction.options.getString('season') === "上半季"){
+            season = "上半賽季";
+            for(let i = 0; i < data.length / 2; i++){
+                let info = `## \`${data[i].rank}\` ${teamIcon(data[i].team)} \`${data[i].gamesPlayed}\` \`${data[i].winDrawLoss}\` \`${data[i].winRate}\` \`${data[i].gamesBehind}\` \`${data[i].streak}\``;
+                broad.push(info);
+            }
+        } else if(interaction.options.getString('season') === "下半季"){
+            season = "下半賽季";
+            for(let i = data.length/2; i < data.length; i++){
+                let info = `## \`${data[i].rank}\` ${teamIcon(data[i].team)} \`${data[i].gamesPlayed}\` \`${data[i].winDrawLoss}\` \`${data[i].winRate}\` \`${data[i].gamesBehind}\` \`${data[i].streak}\``;
+                broad.push(info);
+            }
         }
-
 
         const standingEmbed = new EmbedBuilder()
             .setAuthor({
@@ -93,7 +112,7 @@ module.exports = {
                 url:"https://www.cpbl.com.tw",
                 iconURL:"https://www.cpbl.com.tw/theme/common/images/project/logo_new.png"
             })
-            .setTitle("目前賽季球隊成績")
+            .setTitle(`${season} 球隊成績`)
             .setDescription(`${broad.join("\n")}`)
             .setColor("Blue")
 
