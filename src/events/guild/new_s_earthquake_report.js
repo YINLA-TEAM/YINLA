@@ -156,10 +156,7 @@ module.exports = {
                             console.error('[錯誤] 資料庫錯誤:', err);
                             return;
                         }
-                        if (!data) {
-                            console.log(`[事件] Guild ID: ${guild.id} 未設定地震推播頻道`);
-                            return;
-                        }
+                        if (!data) return;
 
                         let previousReportContent = data.S_LastReportContent || "";
                         const eqChannel = guild.channels.cache.get(data.Channel);
