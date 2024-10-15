@@ -50,106 +50,165 @@ const fetchCPBLPlayer = async(acnt) => {
 }
 
 const fetchCPBLGame = async(game_number, game_year, game_type) => {
-    const response = await fetch(`https://www.cpbl.com.tw/box/getlive?year=${game_year}&kindCode=${game_type}&gameSno=${game_number}`, { method: 'POST' });
-    const data = await response.json();
-    const game = JSON.parse(data.CurtGameDetailJson); 
-    const game_Scoreboard = JSON.parse(data.ScoreboardJson); // 計分表
+    try {
+        const response = await fetch(`https://www.cpbl.com.tw/box/getlive?year=${game_year}&kindCode=${game_type}&gameSno=${game_number}`, { method: 'POST' });
+        const data = await response.json();
+        const game = JSON.parse(data.CurtGameDetailJson); 
+        const game_Scoreboard = JSON.parse(data.ScoreboardJson); // 計分表
 
-    const gameScoreBoardArray = [];
-    
-    return {
-        // 賽事資訊
-        gameSNo: game?.GameSno,                     //賽事編號
-        gameStatus: game?.GameStatus,               //賽事狀態
-        gameType: game?.KindCode,
-        gameDuringTime: game?.GameDuringTime,
-        gameAudience_cnt: game?.AudienceCnt,
-        gameAudienceIsFull: game?.IsFull,
-        gameTimeS: game?.GameDateTimeS,
-        gameTimeE: game?.GameDateTimeE,
+        const VisitingScoreboard = {};
+        const HomeScoreboard = {};
 
-        // 主客隊資料數據
-        awayTeam: game?.VisitingTeamName,            //客隊隊名
-        homeTeam: game?.HomeTeamName,                //主隊隊名
-        awayScore: game?.VisitingTotalScore,         //客隊分數
-        homeScore: game?.HomeTotalScore,             //主隊分數
-        awayTeam_code: game?.VisitingTeamCode,       //
-        homeTeam_code: game?.HomeTeamCode,
-        awayTeam_W: game?.VisitingGameResultWCnt,
-        awayTeam_L: game?.VisitingGameResultLCnt,
-        awayTeam_T: game?.VisitingGameResultTCnt,
-        homeTeam_W: game?.HomeGameResultWCnt,
-        homeTeam_L: game?.HomeGameResultLCnt,
-        homeTeam_T: game?.HomeGameResultTCnt,
+        let VisitingScoreArray = [];
+        let VisitingTotalScore = 0;
+        let VisitingTotalHitting = 0;
+        let VisitingTotalError = 0;
 
-        // 場地/時間/局數
-        place: game?.FieldAbbe,
-        place_time: game?.PreExeDate,
-        inning: game?.CurtBatting?.InningSeq,
-        inning_top_bot: game?.CurtBatting?.VisitingHomeType,
-        schedule: game?.GameStatusChi,
+        let HomeScoreArray = [];
+        let HomeTotalScore = 0;
+        let HomeTotalHitting = 0;
+        let HomeTotalError = 0;
 
-        // 先發投手
-        away_sp_name: game?.VisitingFirstMover,
-        away_sp_Acnt: game?.VisitingFirstAcnt,
-        home_sp_name: game?.HomeFirstMover,
-        home_sp_Acnt: game?.HomeFirstAcnt,
+        game_Scoreboard.forEach((inning) => {
+            if (inning.VisitingHomeType === '1') {
+                if (!VisitingScoreboard[inning.InningSeq]) {
+                    VisitingScoreboard[inning.InningSeq] = {
+                        ScoreCnt: 0,
+                        HittingCnt: 0,
+                        ErrorCnt: 0
+                    };
+                }
+                VisitingScoreArray.unshift(inning.ScoreCnt);
+                VisitingScoreboard[inning.InningSeq].ScoreCnt += inning.ScoreCnt;
+                VisitingScoreboard[inning.InningSeq].HittingCnt += inning.HittingCnt;
+                VisitingScoreboard[inning.InningSeq].ErrorCnt += inning.ErrorCnt;
+                
+                VisitingTotalScore += inning.ScoreCnt;
+                VisitingTotalHitting += inning.HittingCnt;
+                VisitingTotalError += inning.ErrorCnt;
+            } else {
+                if (!HomeScoreboard[inning.InningSeq]) {
+                    HomeScoreboard[inning.InningSeq] = {
+                        ScoreCnt: 0,
+                        HittingCnt: 0,
+                        ErrorCnt: 0
+                    };
+                }
+                HomeScoreArray.unshift(inning.ScoreCnt);
+                HomeScoreboard[inning.InningSeq].ScoreCnt += inning.ScoreCnt;
+                HomeScoreboard[inning.InningSeq].HittingCnt += inning.HittingCnt;
+                HomeScoreboard[inning.InningSeq].ErrorCnt += inning.ErrorCnt;
+                
+                HomeTotalScore += inning.ScoreCnt;
+                HomeTotalHitting += inning.HittingCnt;
+                HomeTotalError += inning.ErrorCnt;
+            }
+        });
+        
+        return {
+            // 賽事資訊
+            gameSNo: game?.GameSno,                     //賽事編號
+            gameStatus: game?.GameStatus,               //賽事狀態
+            gameType: game?.KindCode,
+            gameDuringTime: game?.GameDuringTime,
+            gameAudience_cnt: game?.AudienceCnt,
+            gameAudienceIsFull: game?.IsFull,
+            gameTimeS: game?.GameDateTimeS,
+            gameTimeE: game?.GameDateTimeE,
 
-        // SBOP數據
-        strike_cnt: game?.CurtBatting?.StrikeCnt,
-        ball_cnt: game?.CurtBatting?.BallCnt,
-        out_cnt: game?.CurtBatting?.OutCnt,
-        pitch_cnt: game?.CurtBatting?.PitchCnt,
+            // 主客隊資料數據
+            awayTeam: game?.VisitingTeamName,            //客隊隊名
+            homeTeam: game?.HomeTeamName,                //主隊隊名
+            awayScore: game?.VisitingTotalScore == null ? '0' : game?.VisitingTotalScore,         //客隊分數
+            homeScore: game?.HomeTotalScore == null ? '0' : game?.HomeTotalScore,             //主隊分數
+            awayTeam_code: game?.VisitingTeamCode,
+            homeTeam_code: game?.HomeTeamCode,
+            awayTeam_W: game?.VisitingGameResultWCnt,
+            awayTeam_L: game?.VisitingGameResultLCnt,
+            awayTeam_T: game?.VisitingGameResultTCnt,
+            homeTeam_W: game?.HomeGameResultWCnt,
+            homeTeam_L: game?.HomeGameResultLCnt,
+            homeTeam_T: game?.HomeGameResultTCnt,
 
-        // 目前打者
-        hitter_no: game?.CurtBatting?.HitterUniformNo,
-        hitter_name: game?.CurtBatting?.HitterName,
-        hitter_Acnt: game?.CurtBatting?.HitterAcnt,
-        hitter_team: game?.CurtBatting?.VisitingHomeType == 1 ? game.VisitingTeamCode : game.HomeTeamCode,
+            // 場地/時間/局數
+            place: game?.FieldAbbe,
+            place_time: game?.PreExeDate,
+            inning: game?.CurtBatting?.InningSeq,
+            inning_top_bot: game?.CurtBatting?.VisitingHomeType,
+            schedule: game?.GameStatusChi,
 
-        // 目前投手
-        pitcher_no: game?.CurtBatting?.PitcherUniformNo,
-        pitcher_name: game?.CurtBatting?.PitcherName,
-        pitcher_Acnt: game?.CurtBatting?.PitcherAcnt,
-        pitcher_team: game?.CurtBatting?.VisitingHomeType == 1 ? game.HomeTeamCode : game.VisitingTeamCode,
+            // 先發投手
+            away_sp_name: game?.VisitingFirstMover,
+            away_sp_Acnt: game?.VisitingFirstAcnt,
+            home_sp_name: game?.HomeFirstMover,
+            home_sp_Acnt: game?.HomeFirstAcnt,
 
-        // 勝利投手
-        wins_pitcher_name: game?.WinningPitcherName,
-        wins_pitcher_cnt: game?.WinningPitcherAcnt,
-        wins_pitcher_team: game?.WinningType == 1 ? game.VisitingTeamCode : game.HomeTeamCode,
+            // SBOP數據
+            strike_cnt: game?.CurtBatting?.StrikeCnt,
+            ball_cnt: game?.CurtBatting?.BallCnt,
+            out_cnt: game?.CurtBatting?.OutCnt,
+            pitch_cnt: game?.CurtBatting?.PitchCnt,
 
-        // 敗戰投手
-        loses_pitcher_name: game?.LosePitcherName,
-        loses_pitcher_Acnt: game?.LosePitcherAcnt,
-        loses_pitcher_team: game?.WinningType == 1 ? game.HomeTeamCode : game.VisitingTeamCode,
+            // 目前打者
+            hitter_no: game?.CurtBatting?.HitterUniformNo,
+            hitter_name: game?.CurtBatting?.HitterName,
+            hitter_Acnt: game?.CurtBatting?.HitterAcnt,
+            hitter_team: game?.CurtBatting?.VisitingHomeType == 1 ? game.VisitingTeamName : game.HomeTeamName,
 
-        // MVP
-        mvp_name: game?.HitterName == '' ? game?.PitcherName : game?.HitterName,
-        mvp_Acnt: game?.HitterAcnt == '' ? game?.PitcherAcnt : game?.HitterAcnt,
-        mvp_cnt: game?.MvpCnt,
+            // 目前投手
+            pitcher_no: game?.CurtBatting?.PitcherUniformNo,
+            pitcher_name: game?.CurtBatting?.PitcherName,
+            pitcher_Acnt: game?.CurtBatting?.PitcherAcnt,
+            pitcher_team: game?.CurtBatting?.VisitingHomeType == 1 ? game.HomeTeamName : game.VisitingTeamName,
 
-        // 打者MVP
-        hit_cnt: game?.HitCnt,
-        runBattedIn_cnt: game?.RunBattedInCnt,
-        score_cnt: game?.ScoreCnt,
-        hitting_cnt: game?.HittingCnt,
-        homerun_cnt: game?.HomeRunCnt,
+            // 勝利投手
+            wins_pitcher_name: game?.WinningPitcherName,
+            wins_pitcher_cnt: game?.WinningPitcherAcnt,
+            wins_pitcher_team: game?.WinningType == 1 ? game.VisitingTeamName : game.HomeTeamName,
 
-        // 投手MVP
-        inningPitched_cnt: game?.InningPitchedCnt,
-        inningPitchedDiv3_cnt: game?.InningPitchedDiv3Cnt,
-        strikeOut_cnt: game?.StrikeOutCnt,
-        run_cnt: game?.RunCnt,
+            // 敗戰投手
+            loses_pitcher_name: game?.LosePitcherName,
+            loses_pitcher_Acnt: game?.LosePitcherAcnt,
+            loses_pitcher_team: game?.WinningType == 1 ? game.HomeTeamName : game.VisitingTeamName,
 
-        // 裁判
-        headUmpire: game?.HeadUmpire,
-        oneBaseReferee: game?.OneBaseReferee,
-        twoBaseRederee: game?.TwoBaseReferee,
-        threeBaseReferee: game?.TrheeBaseReferee,
-        leftFieldReferee: game?.LeftFieldReferee == '' ? "無" : game?.LeftFieldReferee,
-        rightFieldReferee: game?.RightFieldReferee == '' ? "無" : game?.RightFieldReferee,
+            // MVP
+            mvp_name: game?.HitterName == '' ? game?.PitcherName : game?.HitterName,
+            mvp_Acnt: game?.HitterAcnt == '' ? game?.PitcherAcnt : game?.HitterAcnt,
+            mvp_cnt: game?.MvpCnt,
 
-        gameScoreBoardArray,
+            // 打者MVP
+            hit_cnt: game?.HitCnt,
+            runBattedIn_cnt: game?.RunBattedInCnt,
+            score_cnt: game?.ScoreCnt,
+            hitting_cnt: game?.HittingCnt,
+            homerun_cnt: game?.HomeRunCnt,
+
+            // 投手MVP
+            inningPitched_cnt: game?.InningPitchedCnt,
+            inningPitchedDiv3_cnt: game?.InningPitchedDiv3Cnt,
+            strikeOut_cnt: game?.StrikeOutCnt,
+            run_cnt: game?.RunCnt,
+
+            // 裁判
+            headUmpire: game?.HeadUmpire,
+            oneBaseReferee: game?.OneBaseReferee,
+            twoBaseRederee: game?.TwoBaseReferee,
+            threeBaseReferee: game?.TrheeBaseReferee,
+            leftFieldReferee: game?.LeftFieldReferee == '' ? "無" : game?.LeftFieldReferee,
+            rightFieldReferee: game?.RightFieldReferee == '' ? "無" : game?.RightFieldReferee,
+
+            VisitingScoreArray,
+            VisitingTotalScore,
+            VisitingTotalHitting,
+            VisitingTotalError,
+            HomeScoreArray,
+            HomeTotalScore,
+            HomeTotalHitting,
+            HomeTotalError
+        }
+    } catch (error) {
+        console.log(error)
+        return false;
     }
 }
 
@@ -184,7 +243,7 @@ module.exports = {
         ))
         .addStringOption(option => (
             option
-                .setName("type")
+                .setName("game_type")
                 .setNameLocalizations({
                     "zh-TW": "賽事類型",
                 })
@@ -210,7 +269,7 @@ module.exports = {
 
         let game_number = interaction.options.getInteger('game_number');
         let game_year = interaction.options.getInteger('game_year');
-        let game_type = interaction.options.getString('game_number');
+        let game_type = interaction.options.getString('game_type');
 
         const game = await fetchCPBLGame(game_number, game_year, game_type);
         let player = null;
@@ -220,7 +279,7 @@ module.exports = {
             await interaction.editReply(`# 🚨：\`${game_year}\`年 比賽編號 \`${game_number}\` 尚未開始或無數據`);
             return;
         }
-
+        let innings = Array.from({ length: game.VisitingScoreArray.length }, (_, i) => i + 1);
         const CpblGameDetailEmbed = new EmbedBuilder()
             .setAuthor({
                 name: "中華職棒",
@@ -229,9 +288,9 @@ module.exports = {
             })
             .setTitle(`${teamIcon(game.awayTeam)} ${game.awayTeam} vs. ${teamIcon(game.homeTeam)} ${game.homeTeam}`)
             .setDescription(
-                `# <:cpbl_logo:1275836738304217181> ${game.inning.map(i => `\`${i}\``).join(' ')} | \`R\` \`H\` \`E\`\n` +
-                `# ${teamIcon(game.awayTeam)} ${game.awayScores.map(s => `\`${s}\``).join(' ')} | \`${game.awayTotal}\` \`${game.awayHit}\` \`${game.awayErr}\`\n` +
-                `# ${teamIcon(game.homeTeam)} ${game.homeScores.map(s => `\`${s}\``).join(' ')} | \`${game.homeTotal}\` \`${game.homeHit}\` \`${game.homeErr}\``
+                `# <:cpbl_logo:1275836738304217181> ${innings.map(i => `\`${i}\``).join(' ')} | \`R\` \`H\` \`E\`\n` +
+                `# ${teamIcon(game.awayTeam)} ${game.VisitingScoreArray.map(s => `\`${s}\``).join(' ')} | \`${game.VisitingTotalScore}\` \`${game.VisitingTotalHitting}\` \`${game.VisitingTotalError}\`\n` +
+                `# ${teamIcon(game.homeTeam)} ${game.HomeScoreArray.map(s => `\`${s}\``).join(' ')} | \`${game.HomeTotalScore}\` \`${game.HomeTotalHitting}\` \`${game.HomeTotalError}\``
             )
             .setColor("Green")
             .setFooter({
@@ -248,26 +307,26 @@ module.exports = {
 
         const CplbEmbeds = [CpblGameDetailEmbed];
 
-            if (game.mvp_name) {
+            if (game.mvp_name !== '') {
                 player = await fetchCPBLPlayer(game.mvp_Acnt);
                 const MVPEmbed = new EmbedBuilder();
-                if(game.MVP_batter_pitcher.substring(0,2) === "打數"){
+                if(game.hit_cnt !== null){
                     MVPEmbed
                     .setAuthor({
                         name: "MVP 最有價值球員",
                         url:"https://www.cpbl.com.tw",
                         iconURL:"https://www.cpbl.com.tw/theme/common/images/project/logo_new.png"
                     })
-                    .setDescription(`# ${teamIcon(winner_team)} [${game.mvp_name}](https://www.cpbl.com.tw${game.MVP_link})`)
-                    .setThumbnail(player?.image_url || "")
+                    .setDescription(`# ${teamIcon(game.wins_pitcher_team)} [${game.mvp_name}](https://www.cpbl.com.tw/team/person?acnt=${game.mvp_Acnt})`)
+                    .setThumbnail(player[0].imageURL == undefined ? "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png" : `https://www.cpbl.com.tw${player[0].imageURL}`)
                     .setColor("Gold")
                     .addFields([
-                        { name: "當年度獲選MVP次數", value: game.MVP_year_count, inline:false },
-                        { name: "打數", value: game.MVP_hit_count_IP, inline:true },
-                        { name: "打點", value: game.MVP_hit_point_K, inline:true },
-                        { name: "得分", value: game.MVP_get_score_R, inline:true },
-                        { name: "安打", value: game.MVP_hit, inline:true },
-                        { name: "全壘打", value: game.MVP_homerun, inline:true },
+                        { name: "當年度獲選MVP次數", value: `${game.mvp_cnt}`, inline:false },
+                        { name: "打數", value: `${game.hit_cnt}`, inline:true },
+                        { name: "打點", value: `${game.runBattedIn_cnt}`, inline:true },
+                        { name: "得分", value: `${game.score_cnt}`, inline:true },
+                        { name: "安打", value: `${game.hitting_cnt}`, inline:true },
+                        { name: "全壘打", value: `${game.homerun_cnt}`, inline:true },
                     ])
                 } else {
                     MVPEmbed
@@ -276,14 +335,14 @@ module.exports = {
                         url:"https://www.cpbl.com.tw",
                         iconURL:"https://www.cpbl.com.tw/theme/common/images/project/logo_new.png"
                     })
-                    .setDescription(`# ${teamIcon(winner_team)} [${game.MVP}](https://www.cpbl.com.tw${game.MVP_link})`)
-                    .setThumbnail(player?.image_url || "")
+                    .setDescription(`# ${teamIcon(game.wins_pitcher_team)} [${game.mvp_name}](https://www.cpbl.com.tw/team/person?acnt=${game.mvp_Acnt})`)
+                    .setThumbnail(player[0].imageURL == undefined ? "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png" : `https://www.cpbl.com.tw${player[0].imageURL}`)
                     .setColor("Gold")
                     .addFields([
-                        { name: "當年度獲選MVP次數", value: game.MVP_year_count, inline:false },
-                        { name: "投球局數", value: game.MVP_hit_count_IP, inline:true },
-                        { name: "奪三振數", value: game.MVP_hit_point_K, inline:true },
-                        { name: "失分數", value: game.MVP_get_score_R, inline:true },
+                        { name: "當年度獲選MVP次數", value: `${game.mvp_cnt}`, inline:false },
+                        { name: "投球局數", value: `${game.inningPitched_cnt}`, inline:true },
+                        { name: "奪三振數", value: `${game.strikeOut_cnt}`, inline:true },
+                        { name: "失分數", value: `${game.run_cnt}`, inline:true },
                     ])
                 }
         

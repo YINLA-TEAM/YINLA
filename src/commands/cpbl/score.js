@@ -180,7 +180,7 @@ module.exports = {
                         const playBall_Embed = new EmbedBuilder()
                             .setAuthor({ name: "中華職棒", url:"https://www.cpbl.com.tw", iconURL:"https://www.cpbl.com.tw/theme/common/images/project/logo_new.png"})
                             .setTitle(`[${game[i].gameType == 'C' || 'E' || 'F' ? `GAME ${game[i].gameSNo}` : game[i].gameSNo.toString().padStart(3,'0')}] ${game[i].awayTeam} vs. ${game[i].homeTeam}`)
-                            .setDescription(`# ${teamIcon(game[i].awayTeam)} \`${game[i].awayScore}\` ${game[i].inning + game[i].inning_top_bot == 1 ? "上" : "下"} \`${game[i].homeScore}\` ${teamIcon(game[i].homeTeam)}`)
+                            .setDescription(`# ${teamIcon(game[i].awayTeam)} \`${game[i].awayScore}\` ${game[i].inning}${game[i].inning_top_bot == 1 ? "上" : "下"} \`${game[i].homeScore}\` ${teamIcon(game[i].homeTeam)}`)
                             .setColor('Green')
                             .addFields([
                                 { name: "投手", value: `${teamIcon(game[i].pitcher_team)} [${game[i].pitcher_no + " " + game[i].pitcher_name}](https://www.cpbl.com.tw/team/person?acnt=${game[i].pitcher_Acnt})`, inline: true },
@@ -252,7 +252,7 @@ module.exports = {
                         const savaGame_Embed = new EmbedBuilder()
                             .setAuthor({ name: "中華職棒", url:"https://www.cpbl.com.tw", iconURL:"https://www.cpbl.com.tw/theme/common/images/project/logo_new.png"})
                             .setTitle(`[${game[i].gameType == 'C' || 'E' || 'F' ? `GAME ${game[i].gameSNo}` : game[i].gameSNo.toString().padStart(3,'0')}] ${game[i].awayTeam} vs. ${game[i].homeTeam}`)
-                            .setDescription(`# ${teamIcon(game[i].awayTeam)} \`${game[i].awayScore}\` ${game[i].inning + game[i].inning_top_bot == 1 ? "上" : "下"} \`${game[i].homeScore}\` ${teamIcon(game[i].homeTeam)}\n## 保留比賽`)
+                            .setDescription(`# ${teamIcon(game[i].awayTeam)} \`${game[i].awayScore}\` ${game[i].inning}${game[i].inning_top_bot == 1 ? "上" : "下"} \`${game[i].homeScore}\` ${teamIcon(game[i].homeTeam)}\n## 保留比賽`)
                             .setColor('Yellow')
                             .addFields([
                                 { name: "投手", value: `${teamIcon(game[i].pitcher_team)} [${game[i].pitcher_no + " " + game[i].pitcher_name}](https://www.cpbl.com.tw/team/person?acnt=${game[i].pitcher_Acnt})`, inline: true },
@@ -270,7 +270,7 @@ module.exports = {
                         const stopGame_Embed = new EmbedBuilder()
                             .setAuthor({ name: "中華職棒", url:"https://www.cpbl.com.tw", iconURL:"https://www.cpbl.com.tw/theme/common/images/project/logo_new.png"})
                             .setTitle(`[${game[i].gameType == 'C' || 'E' || 'F' ? `GAME ${game[i].gameSNo}` : game[i].gameSNo.toString().padStart(3,'0')}] ${game[i].awayTeam} vs. ${game[i].homeTeam}`)
-                            .setDescription(`# ${teamIcon(game[i].awayTeam)} \`${game[i].awayScore}\` ${game[i].inning + game[i].inning_top_bot == 1 ? "上" : "下"} \`${game[i].homeScore}\` ${teamIcon(game[i].homeTeam)}\n## 比賽暫停`)
+                            .setDescription(`# ${teamIcon(game[i].awayTeam)} \`${game[i].awayScore}\` ${game[i].inning}${game[i].inning_top_bot == 1 ? "上" : "下"} \`${game[i].homeScore}\` ${teamIcon(game[i].homeTeam)}\n## 比賽暫停`)
                             .setColor('Orange')
                             .addFields([
                                 { name: "投手", value: `${teamIcon(game[i].pitcher_team)} [${game[i].pitcher_no + " " + game[i].pitcher_name}](https://www.cpbl.com.tw/team/person?acnt=${game[i].pitcher_Acnt})`, inline: true },
