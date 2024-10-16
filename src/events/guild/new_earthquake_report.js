@@ -77,18 +77,18 @@ module.exports = {
                 const Magnitude = String(Earthquake.EarthquakeInfo.EarthquakeMagnitude.MagnitudeValue);
 
                 let Depth_msg = "";
-                if(0 <= Depth < 31) Depth_msg = `\`🔴\` **${Depth}** 公里\n  \`(極淺層)\``;
-                else if(31 <= Depth < 71) Depth_msg = `\`🟠\` **${Depth}** 公里\n  \`(淺層)\``;
-                else if(71 <= Depth < 301) Depth_msg = `\`🟡\` **${Depth}** 公里\n  \`(中層)\``;
+                if(0 <= Depth && Depth < 31) Depth_msg = `\`🔴\` **${Depth}** 公里\n  \`(極淺層)\``;
+                else if(31 <= Depth && Depth < 71) Depth_msg = `\`🟠\` **${Depth}** 公里\n  \`(淺層)\``;
+                else if(71 <= Depth && Depth < 301) Depth_msg = `\`🟡\` **${Depth}** 公里\n  \`(中層)\``;
                 else if(301 <= Depth) Depth_msg = `\`🟢\` **${Depth}** 公里\n  \`(深層)\``;
 
                 let Magnitude_msg = "";
                 if(Magnitude < 2.0) Magnitude_msg = `\`⚪\` 芮氏 **${Magnitude}**\n  \`(極微)\``;
-                else if(2.0 <= Magnitude < 4.0) Magnitude_msg = `\`⚪\` 芮氏 **${Magnitude}**\n  \`(微小)\``;
-                else if(4.0 <= Magnitude < 5.0) Magnitude_msg = `\`🟢\` 芮氏 **${Magnitude}**\n  \`(輕微)\``;
-                else if(5.0 <= Magnitude < 6.0) Magnitude_msg = `\`🟡\` 芮氏 **${Magnitude}**\n  \`(中強)\``;
-                else if(6.0 <= Magnitude < 7.0) Magnitude_msg = `\`🔴\` 芮氏 **${Magnitude}**\n  \`(強烈)\``;
-                else if(7.0 <= Magnitude < 8.0) Magnitude_msg = `\`🟣\` 芮氏 **${Magnitude}**\n  \`(重大)\``;
+                else if(2.0 <= Magnitude && Magnitude < 4.0) Magnitude_msg = `\`⚪\` 芮氏 **${Magnitude}**\n  \`(微小)\``;
+                else if(4.0 <= Magnitude && Magnitude < 5.0) Magnitude_msg = `\`🟢\` 芮氏 **${Magnitude}**\n  \`(輕微)\``;
+                else if(5.0 <= Magnitude && Magnitude < 6.0) Magnitude_msg = `\`🟡\` 芮氏 **${Magnitude}**\n  \`(中強)\``;
+                else if(6.0 <= Magnitude && Magnitude < 7.0) Magnitude_msg = `\`🔴\` 芮氏 **${Magnitude}**\n  \`(強烈)\``;
+                else if(7.0 <= Magnitude && Magnitude < 8.0) Magnitude_msg = `\`🟣\` 芮氏 **${Magnitude}**\n  \`(重大)\``;
                 else if(8.0 <= Magnitude) Magnitude_msg = `\`🟤\` 芮氏 **${Magnitude}**\n  \`(極大)\``;
 
                 await new Promise((resolve) => {
