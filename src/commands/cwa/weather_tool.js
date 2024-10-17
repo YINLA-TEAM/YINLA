@@ -14,10 +14,7 @@ module.exports = {
                 .setNameLocalizations({
                     "zh-TW": "縣市",
                 })
-                .setDescription("請選擇行政區"))
-                .setDescriptionLocalizations({
-                    "zh-TW": "請選擇行政區 (由資料編號排序)",
-                })
+                .setDescription("請選擇行政區 (由資料編號排序)"))
                 .setRequired(true)
                 .addChoices(
                     { name: '台北市', value: '009' },

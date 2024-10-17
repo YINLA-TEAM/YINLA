@@ -7,8 +7,6 @@ module.exports = {
         .setNameLocalizations({
             "zh-TW" : "將訊息翻譯成英文",
             "zh-CN" : "将讯息翻译成英文",
-            "ja" : "情報を英語に翻訳する",
-            "ko" : "메시지를 영어로 번역"
         })
         .setType(ApplicationCommandType.Message),
 

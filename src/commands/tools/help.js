@@ -6,15 +6,11 @@ module.exports = {
         .setNameLocalizations({
             "zh-TW" : "指令",
             "zh-CN" : "指令",
-            "ja" : "命令",
-            "ko" : "지침"
         })
         .setDescription('commands list')
         .setDescriptionLocalizations({
             "zh-TW" : "指令列表",
             "zh-CN" : "指令列表",
-            "ja" : "コマンド一覧",
-            "ko" : "명령 목록"
         }),
     async execute (interaction , client) {
         const embed = new EmbedBuilder()

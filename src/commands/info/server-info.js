@@ -5,17 +5,9 @@ module.exports = {
         .setName('server-info')
         .setNameLocalizations({
             "zh-TW" : "伺服器資訊",
-            "zh-CN" : "伺服器资讯",
-            "ja" : "サーバー情報",
-            "ko" : "서버정보"
         })
-        .setDescription('伺服器介紹')
-        .setDescriptionLocalizations({
-            "zh-TW" : "伺服器介紹",
-            "zh-CN" : "伺服器介绍",
-            "ja" : "サーバー紹介",
-            "ko" : "서버 소개"
-        }),
+        .setDescription('伺服器介紹'),
+
     async execute (interaction , client) {
         const embed =  new EmbedBuilder()
             .setTitle(interaction.guild.name)

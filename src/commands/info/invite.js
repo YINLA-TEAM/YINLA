@@ -6,10 +6,7 @@ module.exports = {
         .setNameLocalizations({
             "zh-TW":"邀請我"
         })
-        .setDescription('invite me join to your server')
-        .setDescriptionLocalizations({
-            "zh-TW":"邀請我加入你的伺服器"
-        }),
+        .setDescription('邀請我加入你的伺服器'),
 
     async execute(interaction, client) {
         const invite_embed = new EmbedBuilder()

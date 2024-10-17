@@ -6,8 +6,6 @@ module.exports = {
         .setNameLocalizations({
             "zh-TW" : "取得大頭貼",
             "zh-CN" : "取得大头贴",
-            "ja" : "ステッカーをもらう",
-            "ko" : "스티커를 받다",
         })
         .setType(ApplicationCommandType.User),
 

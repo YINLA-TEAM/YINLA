@@ -7,8 +7,6 @@ module.exports = {
         .setNameLocalizations({
             "zh-TW" : "設定歡迎訊息",
             "zh-CN" : "设定欢迎讯息",
-            "ja" : "ウェルカムメッセージを設定する",
-            "ko" : "환영메시지설정"
         })
         .setDescription("設定歡迎頻道")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)

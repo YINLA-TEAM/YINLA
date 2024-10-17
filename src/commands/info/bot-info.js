@@ -5,17 +5,8 @@ module.exports = {
         .setName('bot-info')
         .setNameLocalizations({
             "zh-TW" : "機器人資訊",
-            "zh-CN" : "机器人资讯",
-            "ja" : "ロボット情報",
-            "ko" : "로봇정보"
         })
-        .setDescription('查看機器人狀態')
-        .setDescriptionLocalizations({
-            "zh-TW" : "查看機器人狀態",
-            "zh-CN" : "查看机器人状态",
-            "ja" : "ボットのステータスを表示する",
-            "ko" : "봇 상태 보기"
-        }),
+        .setDescription('查看機器人狀態'),
     
     async execute (interaction , client) {
         function msToHMS(ms) {
@@ -43,7 +34,7 @@ module.exports = {
                     value: msToHMS(client.uptime),
                     inline: true
                 }, {
-                    name: `API延遲`,
+                    name: `WebSocket 延遲`,
                     value: `${client.ws.ping} ms`,
                     inline: true
                 }, {

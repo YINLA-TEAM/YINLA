@@ -15,9 +15,6 @@ module.exports = {
                     "zh-TW": "類型",
                 })
                 .setDescription("有編號 or 無編號"))
-                .setDescriptionLocalizations({
-                    "zh-TW": "有編號 or 無編號",
-                })
                 .setRequired(true)
                 .addChoices(
                     { name: '有編號', value: '有編號' },
@@ -25,7 +22,7 @@ module.exports = {
                 )
         ),
 
-    async execute(interaction, client) {
+    async execute(interaction) {
         
         if(interaction.options.getString('type') == '無編號'){
             cwaID = 'E-A0016-001'
@@ -89,11 +86,37 @@ module.exports = {
                     .setURL(Earthquake.Web),
             ]);
 
-
-
         const Depth = String(Earthquake.EarthquakeInfo.FocalDepth);
         const Location = Earthquake.EarthquakeInfo.Epicenter.Location;
         const Magnitude = String(Earthquake.EarthquakeInfo.EarthquakeMagnitude.MagnitudeValue);
+
+        let Depth_msg = "";
+                if(0 <= Depth && Depth < 31) {
+                    Depth_msg = `\`🔴\` **${Depth}** 公里\n  \`(極淺層)\``;
+                } else if(31 <= Depth && Depth < 71) {
+                    Depth_msg = `\`🟠\` **${Depth}** 公里\n  \`(淺層)\``
+                } else if(71 <= Depth && Depth < 301) {
+                    Depth_msg = `\`🟡\` **${Depth}** 公里\n  \`(中層)\``
+                } else if(301 <= Depth) {
+                    Depth_msg = `\`🟢\` **${Depth}** 公里\n  \`(深層)\``
+                };
+
+        let Magnitude_msg = "";
+            if(Magnitude < 2.0) {
+                Magnitude_msg = `\`⚪\` 芮氏 **${Magnitude}**\n  \`(極微)\``;
+            } else if(2.0 <= Magnitude && Magnitude < 4.0){
+                Magnitude_msg = `\`⚪\` 芮氏 **${Magnitude}**\n  \`(微小)\``;
+            } else if(4.0 <= Magnitude && Magnitude < 5.0){
+                Magnitude_msg = `\`🟢\` 芮氏 **${Magnitude}**\n  \`(輕微)\``;
+            } else if(5.0 <= Magnitude && Magnitude < 6.0){
+                Magnitude_msg = `\`🟡\` 芮氏 **${Magnitude}**\n  \`(中強)\``;
+            } else if(6.0 <= Magnitude && Magnitude < 7.0){
+                Magnitude_msg = `\`🔴\` 芮氏 **${Magnitude}**\n  \`(強烈)\``;
+            } else if(7.0 <= Magnitude && Magnitude < 8.0){
+                Magnitude_msg = `\`🟣\` 芮氏 **${Magnitude}**\n  \`(重大)\``;
+            } else if(8.0 <= Magnitude && Magnitude){
+                Magnitude_msg = `\`🟤\` 芮氏 **${Magnitude}**\n  \`(極大)\``;
+            }
 
         embed = new EmbedBuilder()
             .setAuthor({
@@ -121,12 +144,12 @@ module.exports = {
                 },
                 {
                     name: '規模',
-                    value: "芮氏 " + Magnitude,
+                    value: Magnitude_msg,
                     inline: true
                 },
                 {
                     name: '深度',
-                    value: Depth + " 公里",
+                    value: Depth_msg,
                     inline: true
                 },
             ])

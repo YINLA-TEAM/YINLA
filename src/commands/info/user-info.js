@@ -5,32 +5,12 @@ module.exports = {
         .setName('user-info')
         .setNameLocalizations({
             "zh-TW" : "個人簡介",
-            "zh-CN" : "个人简介",
-            "ja" : "個人プロフィール",
-            "ko" : "개인프로필"
         })
         .setDescription('取得個人簡介')
-        .setDescriptionLocalizations({
-            "zh-TW" : "個人簡介",
-            "zh-CN" : "取得个人简介",
-            "ja" : "プロフィールを取得する",
-            "ko" : "프로필을 얻다"
-        })
         .addUserOption(new SlashCommandUserOption()
 			.setName("成員")
-            .setNameLocalizations({
-                "zh-TW" : "成員",
-                "zh-CN" : "成员",
-                "ja" : "メンバー",
-                "ko" : "회원"
-            })
-			.setDescription("誰的個人簡介"))
-            .setDescriptionLocalizations({
-                "zh-TW" : "誰的個人簡介",
-                "zh-CN" : "谁的个人简介",
-                "ja" : "誰のプロフィール",
-                "ko" : "누구의 프로필"
-            }),
+			.setDescription("誰的個人簡介")),
+
     async execute(interaction, client) {
         const member = interaction.options.getMember("成員") || interaction.member;
         const embed = new EmbedBuilder()
