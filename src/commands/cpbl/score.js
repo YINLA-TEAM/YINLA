@@ -10,15 +10,15 @@ const fetchCPBLScore = async() => {
         
         game_detail.forEach((game) => {
             gameArray.push({
-                gameSNo: game?.GameSno,                      //賽事編號
-                gameStatus: game?.GameStatus,                //賽事狀態
+                gameSNo: game?.GameSno,
+                gameStatus: game?.GameStatus,
                 gameType: game?.KindCode,
 
-                awayTeam: game?.VisitingTeamName,            //客隊隊名
-                homeTeam: game?.HomeTeamName,                //主隊隊名
-                awayScore: game?.VisitingTotalScore == null ? '0' : game?.VisitingTotalScore,         //客隊分數
-                homeScore: game?.HomeTotalScore == null ? '0' : game?.HomeTotalScore,             //主隊分數
-                awayTeam_code: game?.VisitingTeamCode,       //
+                awayTeam: game?.VisitingTeamName,
+                homeTeam: game?.HomeTeamName,
+                awayScore: game?.VisitingTotalScore == null ? '0' : game?.VisitingTotalScore,
+                homeScore: game?.HomeTotalScore == null ? '0' : game?.HomeTotalScore,
+                awayTeam_code: game?.VisitingTeamCode,
                 homeTeam_code: game?.HomeTeamCode,
                 awayTeam_W: game?.VisitingGameResultWCnt,
                 awayTeam_L: game?.VisitingGameResultLCnt,
@@ -163,7 +163,7 @@ module.exports = {
                         // 如有必要才進行 或 比賽尚未開始
                         const ifNeededGame_Embed = new EmbedBuilder()
                             .setAuthor({ name: "中華職棒", url:"https://www.cpbl.com.tw", iconURL:"https://www.cpbl.com.tw/theme/common/images/project/logo_new.png"})
-                            .setTitle(`[${game[i].gameType == 'C' || 'E' || 'F' ? `GAME ${game[i].gameSNo}` : game[i].gameSNo.toString().padStart(3,'0')}] ${game[i].awayTeam} vs. ${game[i].homeTeam}`)
+                            .setTitle(`[${game[i].gameType == 'C' || 'E' || 'F' ? `GAME ${game[i].gameSNo}` : game[i].gameSNo.toString().padStart(3,'0')}] ${teamIcon(game[i].awayTeam)} vs. ${teamIcon(game[i].homeTeam)}`)
                             .setDescription(`# 比賽尚未開始`)
                             .addFields([
                                 { name: "客隊先發投手", value: game[i].away_sp_Acnt == '' ? "未公布" : `${teamIcon(game[i].awayTeam_code)} [${game[i].away_sp_name}](https://www.cpbl.com.tw/team/person?acnt=${game[i].away_sp_Acnt})`, inline: true },
@@ -172,7 +172,7 @@ module.exports = {
                                 { name: "客隊勝敗和", value: `${game[i].awayTeam_W}-${game[i].awayTeam_L}-${game[i].awayTeam_T}`, inline: true },
                                 { name: "主隊勝敗和", value: `${game[i].homeTeam_W}-${game[i].homeTeam_L}-${game[i].homeTeam_T}`, inline: true },
                             ])
-                            .setFooter({ text: `🏟️ ${game[i].place}棒球場 ◉ ${gameType(game[i].gameType)}` })
+                            .setFooter({ text: `🏟️ ${game[i].place}棒球場 • ${gameType(game[i].gameType)}` })
                         game_embed_list.push(ifNeededGame_Embed);
                         break;
                     case 2:
@@ -190,7 +190,7 @@ module.exports = {
                                 { name: "出局數", value: `${game[i].out_cnt}`, inline: true },
                                 { name: "投手球數", value: `${game[i].pitch_cnt} 球`, inline: true },
                             ])
-                            .setFooter({ text: `🏟️ ${game[i].place}棒球場 ◉ ${gameType(game[i].gameType)}` })
+                            .setFooter({ text: `🏟️ ${game[i].place}棒球場 • ${gameType(game[i].gameType)}` })
                         game_embed_list.push(playBall_Embed);
                         break;
                     case 3:
@@ -207,7 +207,7 @@ module.exports = {
                                 { name: "客隊勝敗和", value: `${game[i].awayTeam_W}-${game[i].awayTeam_L}-${game[i].awayTeam_T}`, inline: true },
                                 { name: "主隊勝敗和", value: `${game[i].homeTeam_W}-${game[i].homeTeam_L}-${game[i].homeTeam_T}`, inline: true },
                             ])
-                            .setFooter({ text: `🏟️ ${game[i].place}棒球場 ◉ ${gameType(game[i].gameType)}` })
+                            .setFooter({ text: `🏟️ ${game[i].place}棒球場 • ${gameType(game[i].gameType)}` })
                         game_embed_list.push(endGame_Embed);
                         break;
                     case 4:
@@ -224,7 +224,7 @@ module.exports = {
                                 { name: "客隊勝敗和", value: `${game[i].awayTeam_W}-${game[i].awayTeam_L}-${game[i].awayTeam_T}`, inline: true },
                                 { name: "主隊勝敗和", value: `${game[i].homeTeam_W}-${game[i].homeTeam_L}-${game[i].homeTeam_T}`, inline: true },
                             ])
-                            .setFooter({ text: `🏟️ ${game[i].place}棒球場 ◉ ${gameType(game[i].gameType)}` })
+                            .setFooter({ text: `🏟️ ${game[i].place}棒球場 • ${gameType(game[i].gameType)}` })
                         game_embed_list.push(startingOrder_Embed);
                         break;
                     case 5:
@@ -234,7 +234,7 @@ module.exports = {
                             .setTitle(`[${game[i].gameType == 'C' || 'E' || 'F' ? `GAME ${game[i].gameSNo}` : game[i].gameSNo.toString().padStart(3,'0')}] ${game[i].awayTeam} vs. ${game[i].homeTeam}`)
                             .setDescription(`# 賽事已取消`)
                             .setColor('DarkRed')
-                            .setFooter({ text: `🏟️ ${game[i].place}棒球場 ◉ ${gameType(game[i].gameType)}` })
+                            .setFooter({ text: `🏟️ ${game[i].place}棒球場 • ${gameType(game[i].gameType)}` })
                         game_embed_list.push(cancelGame_Embed);
                         break;
                     case 6:
@@ -244,7 +244,7 @@ module.exports = {
                             .setTitle(`[${game[i].gameType == 'C' || 'E' || 'F' ? `GAME ${game[i].gameSNo}` : game[i].gameSNo.toString().padStart(3,'0')}] ${game[i].awayTeam} vs. ${game[i].homeTeam}`)
                             .setDescription(`# 賽事已延賽`)
                             .setColor('Red')
-                            .setFooter({ text: `🏟️ ${game[i].place}棒球場 ◉ ${gameType(game[i].gameType)}` })
+                            .setFooter({ text: `🏟️ ${game[i].place}棒球場 • ${gameType(game[i].gameType)}` })
                         game_embed_list.push(postPoned_Embed);
                         break;
                     case 7:
@@ -262,7 +262,7 @@ module.exports = {
                                 { name: "出局數", value: `${game[i].out_cnt}`, inline: true },
                                 { name: "投手球數", value: `${game[i].pitch_cnt} 球`, inline: true },
                             ])
-                            .setFooter({ text: `🏟️ ${game[i].place}棒球場 ◉ ${gameType(game[i].gameType)}` })
+                            .setFooter({ text: `🏟️ ${game[i].place}棒球場 • ${gameType(game[i].gameType)}` })
                         game_embed_list.push(savaGame_Embed);
                         break;
                     case 8:
@@ -280,7 +280,7 @@ module.exports = {
                                 { name: "出局數", value: `${game[i].out_cnt}`, inline: true },
                                 { name: "投手球數", value: `${game[i].pitch_cnt} 球`, inline: true },
                             ])
-                            .setFooter({ text: `🏟️ ${game[i].place}棒球場 ◉ ${gameType(game[i].gameType)}` })
+                            .setFooter({ text: `🏟️ ${game[i].place}棒球場 • ${gameType(game[i].gameType)}` })
                         game_embed_list.push(stopGame_Embed);
                         break;
                 }

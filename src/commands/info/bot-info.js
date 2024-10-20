@@ -30,7 +30,7 @@ module.exports = {
             .setThumbnail(client.user.displayAvatarURL())
             .setColor('Random')
             .addFields([{
-                    name: `機器人開機時間`,
+                    name: `開機時間`,
                     value: msToHMS(client.uptime),
                     inline: true
                 }, {

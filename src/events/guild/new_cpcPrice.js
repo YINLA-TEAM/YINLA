@@ -54,7 +54,7 @@ module.exports = {
                         iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/CPC_Corporation%2C_Taiwan_Seal.svg/800px-CPC_Corporation%2C_Taiwan_Seal.svg.png"
                     })
                     .setTitle(`下週汽油價格${oil.UpOrDown} ${oil.rate}`)
-                    .setDescription(`自 **${oil.date}** 零時起實施，單位：元/公升`)
+                    .setDescription(`自 **${oil.PriceUpdate}** 零時起實施，單位：元/公升`)
                     .setColor(oil_embed_color)
                     .addFields([
                         { name: "92無鉛", value: oil.nine_two_price ,inline: true },
@@ -89,9 +89,9 @@ module.exports = {
                             console.log(`[事件] Guild ID: ${guild.id} 未設定中油油價推播頻道`);
                             return;
                         }
-                        let previousOilPriceUpdateDate = data.priceUpdateDate || "";
+                        let previousOilPriceUpdateDate = data.PriceUpdate || "";
                         const cpcChannel = guild.channels.cache.get(data.Channel);
-                        if (oil.date !== previousOilPriceUpdateDate){
+                        if (oil.PriceUpdate !== previousOilPriceUpdateDate){
                             cpcChannel.send({
                                 embeds: [ oil_embed ],
                                 components: [ url ]
