@@ -35,7 +35,8 @@ module.exports = {
 
         await interaction.reply({
             embeds:[invite_embed],
-            components:[invite_button]
+            components:[invite_button],
+            ephemeral: true
         })
     }
 }

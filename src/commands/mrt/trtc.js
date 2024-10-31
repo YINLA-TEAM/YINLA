@@ -7,6 +7,7 @@ const fetchTRTCweb = async() => {
     const $ = cheerio.load(data);
 
     const routeArray = [];
+    const status = [];
 
     $('.route').each((i, elem) => {
         const RouteName = $(elem).find('.routetitle').text().trim();
@@ -20,13 +21,25 @@ const fetchTRTCweb = async() => {
         })
     })
 
-    return routeArray;
+    const Announcement = $('#abgne_marquee marquee')?.text().trim() || "目前沒有公告事項";
+    const IMG = $('#abgne_marquee marquee a')?.attr('href') || null;
+
+    status.push({
+        Announcement,
+        IMG,
+    })
+
+    return {
+        routeArray,
+        status
+    };
 }
 
 const stautuType = (route, msg) => {
     let statu = "";
     if(msg == route + "目前正常營運") statu = "🟢 目前正常營運";
     else if(msg == route + "目前非營運時間") statu = "⚪️ 目前非營運時間";
+    else if(msg == route + "系統異常") statu = "🟠 系統異常"
     else statu = '🟡' + msg;
     return statu;
 }
@@ -53,7 +66,11 @@ module.exports = {
             })
             .setThumbnail('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Taipei_mrt_logo.svg/2473px-Taipei_mrt_logo.svg.png')
             .setTitle("目前營運狀態")
-            .setDescription(data.map((route) => `**${route.RouteTag}** - **${route.RouteName}**：${stautuType(route.RouteName, route.RouteStatus)}`).join('\n'))
+            .setDescription(
+                `${data.routeArray.map((route) => `**${route.RouteTag}** - **${route.RouteName}**：${stautuType(route.RouteName, route.RouteStatus)}`).join('\n')}\n
+                \`\`\`${data.status[0].Announcement}\`\`\`
+            `)
+            .setImage(data.status[0].IMG)
             .setColor('Blue')
             .setFooter({ text: "資料來源 臺北大眾捷運股份有限公司" })
 

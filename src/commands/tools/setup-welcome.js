@@ -8,7 +8,7 @@ module.exports = {
             "zh-TW" : "設定歡迎訊息",
             "zh-CN" : "设定欢迎讯息",
         })
-        .setDescription("設定歡迎頻道")
+        .setDescription("設定歡迎頻道，如果要重新設定訊息內容請移除再建立(一個伺服器限一個頻道)")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addChannelOption(option => 
             option.setName("頻道")
@@ -20,6 +20,19 @@ module.exports = {
             .setDescription("設定加入應得的身分組")
             .setRequired(true)
         )
+        .addStringOption(option => (
+            option
+                .setName("setup-remove")
+                .setNameLocalizations({
+                    "zh-TW": "建立或移除",
+                })
+                .setDescription("如果要建立在新的頻道，請先移除再建立(一個伺服器限一個頻道)")
+                .setRequired(true)
+                .addChoices(
+                    { name: '建立', value: '建立' },
+                    { name: '移除', value: '移除' },
+                )
+        ))
         .addStringOption(option=>
             option.setName("歡迎訊息")
             .setDescription("設定歡迎訊息")
@@ -45,7 +58,7 @@ module.exports = {
         }
 
         welcomeSchema.findOne({Guild:interaction.guild.id}, async (err,data) =>{
-            if(!data) {
+            if(!data && interaction.options.getString('setup-remove') == '建立') {
                 const newWelcome = await welcomeSchema.create({
                     Guild:interaction.guild.id,
                     Channel: welcomeChannel.id,
@@ -60,7 +73,7 @@ module.exports = {
                     embeds:[ succes_creat_welcome_msg ],
                     ephemeral:true
                 })
-            } else {
+            } else if(interaction.options.getString('setup-remove') == '建立') {
                 const err_creat_welcome_msg = new EmbedBuilder()
                 .setTitle(`❌ 請確認使否有設定過推播頻道`)
                 .setColor(`Red`)
@@ -68,6 +81,18 @@ module.exports = {
                 interaction.reply({
                     embeds:[ err_creat_welcome_msg ],
                     ephemeral:true
+                })
+            } else if(interaction.options.getString('setup-remove') == '移除') {
+                const rmWelcome = await welcomeSchema.deleteOne({
+                    Guild:interaction.guild.id,
+                })
+                const rm_welcome_msg = new EmbedBuilder()
+                .setTitle(`✅ 成功移除 **歡迎訊息**`)
+                .setColor(`Green`)
+
+                interaction.reply({
+                    embeds: [ rm_welcome_msg ],
+                    ephemeral: false
                 })
             }
         })

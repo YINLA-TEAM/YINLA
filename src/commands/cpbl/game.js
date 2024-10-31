@@ -29,6 +29,29 @@ const teamIcon = (team_name) => {
     }
 }
 
+const gameType = (type) => {
+    switch (type) {
+        case "A":
+            return "一軍例行賽";
+        case "B":
+            return "一軍明星賽";
+        case "C":
+            return "一軍總冠軍賽";
+        case "D":
+            return "二軍例行賽";
+        case "E":
+            return "一軍季後挑戰賽";
+        case "F":
+            return "二軍總冠軍賽";
+        case "G":
+            return "一軍熱身賽";
+        case "H":
+            return "未來之星邀請賽";
+        default:
+            return "";
+    }
+}
+
 const fetchCPBLPlayer = async(acnt) => {
     if(acnt === undefined) return;
     const response = await fetch(`https://www.cpbl.com.tw/team/person?Acnt=${acnt}`, { method: 'GET'});
@@ -113,8 +136,10 @@ const fetchCPBLGame = async(game_number, game_year, game_type) => {
             gameDuringTime: game?.GameDuringTime,
             gameAudience_cnt: game?.AudienceCnt,
             gameAudienceIsFull: game?.IsFull,
-            gameTimeS: game?.GameDateTimeS,
-            gameTimeE: game?.GameDateTimeE,
+            gameTimeS: new Date(game?.GameDateTimeS),
+            gameTimeE: new Date(game?.GameDateTimeE),
+            gameField: game?.FieldAbbe,
+            gameFieldNo: game?.FieldNo,
 
             // 主客隊資料數據
             awayTeam: game?.VisitingTeamName,            //客隊隊名
@@ -212,6 +237,15 @@ const fetchCPBLGame = async(game_number, game_year, game_type) => {
     }
 }
 
+const msToHMS = (ms) => {
+        let seconds = ms / 1000; 
+        const hours = parseInt( seconds / 3600 ); 
+        seconds = seconds % 3600; 
+        const minutes = parseInt( seconds / 60 ); 
+        seconds = seconds % 60; 
+        return(`${hours}:${minutes}:${~~(seconds)}`);
+}
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('cpbl_game')
@@ -236,7 +270,7 @@ module.exports = {
                 .setNameLocalizations({
                     "zh-TW" : "比賽編號",
                 })
-                .setDescription("場次範圍：1~360")
+                .setDescription("請輸入有效的比賽編號")
                 .setRequired(true)
                 .setMinValue(1)
                 .setMaxValue(360)
@@ -247,7 +281,7 @@ module.exports = {
                 .setNameLocalizations({
                     "zh-TW": "賽事類型",
                 })
-                .setDescription("一軍例行賽、一軍明星賽、一軍總冠軍賽、二軍例行賽、一軍季後挑戰賽、二軍總冠軍賽、一軍熱身賽、未來之星邀請賽")
+                .setDescription("一軍例行賽、一軍明星賽、一軍總冠軍賽、二軍例行賽、一軍季後挑戰賽、二軍總冠軍賽、一軍熱身賽")
                 .setRequired(true)
                 .addChoices(
                     { name: '一軍例行賽', value: 'A' },
@@ -257,7 +291,6 @@ module.exports = {
                     { name: '一軍總冠軍賽', value: 'C' },
                     { name: '二軍例行賽', value: 'D' },
                     { name: '二軍總冠軍賽', value: 'F' },
-                    { name: '未來之星邀請賽', value: 'H' },
                 )
         )),
 
@@ -271,14 +304,16 @@ module.exports = {
         let game_year = interaction.options.getInteger('game_year');
         let game_type = interaction.options.getString('game_type');
 
+        const CplbEmbeds = [];
         const game = await fetchCPBLGame(game_number, game_year, game_type);
         let player = null;
 
-        if (!game) {
+        if (!game || game.gameStatus === 1 || game.gameStatus === 6 || game.gameStatus === 5) {
             // 如果比賽尚未開始
-            await interaction.editReply(`# 🚨：\`${game_year}\`年 比賽編號 \`${game_number}\` 尚未開始或無數據`);
+            await interaction.editReply(`## 🚨：\`${game_year}\`年，\`${gameType(game_type)}\` 編號 \`${game_number}\` 尚未開始或無數據`);
             return;
         }
+
         let innings = Array.from({ length: game.VisitingScoreArray.length }, (_, i) => i + 1);
         const CpblGameDetailEmbed = new EmbedBuilder()
             .setAuthor({
@@ -294,60 +329,73 @@ module.exports = {
             )
             .setColor("Green")
             .setFooter({
-                text: `🏟️ ${game_year} • 第 ${game_number} 場次 • ${game.place}棒球場`,
+                text: `🏟️ ${game_year} • 第 ${game_number} 場次 • ${game.place}棒球場 • ${gameType(game_type)}`,
             })
             .addFields([
-                { name: "主審", value: game.headUmpire, inline: true },
-                { name: "一壘審", value: game.oneBaseReferee, inline: true },
-                { name: "二壘審", value: game.twoBaseRederee, inline: true },
-                { name: "三壘審", value: game.threeBaseReferee, inline: true },
-                { name: "左線審", value: game.leftFieldReferee, inline: true },
-                { name: "右線審", value: game.rightFieldReferee, inline: true },
+                { name: "主審", value: game.headUmpire == '' ? "無" : game.headUmpire, inline: true },
+                { name: "一壘審", value: game.oneBaseReferee == '' ? "無" : game.oneBaseReferee, inline: true },
+                { name: "二壘審", value: game.twoBaseRederee == '' ? "無" : game.twoBaseRederee, inline: true },
+                { name: "三壘審", value: game.threeBaseReferee == '' ? "無" : game.threeBaseReferee, inline: true },
+                { name: "左線審", value: game.leftFieldReferee == '' ? "無" : game.leftFieldReferee, inline: true },
+                { name: "右線審", value: game.rightFieldReferee == '' ? "無" : game.rightFieldReferee, inline: true },
             ]);
+        CplbEmbeds.push(CpblGameDetailEmbed);
 
-        const CplbEmbeds = [CpblGameDetailEmbed];
+        if (game.gameStatus == 3){
+            const GameFieldDetail = new EmbedBuilder()
+                .setTitle(`🏟️ ${game.gameField}`)
+                .setColor('Green')
+                .addFields([
+                    { name: "觀眾數", value: `${game.gameAudience_cnt} 人${game.gameAudienceIsFull == '1' ? "(滿)" : ""}`, inline: true },
+                    { name: "** **", value: "** **", inline: true },
+                    { name: "** **", value: "** **", inline: true },
+                    { name: "開始時間", value: `<t:${game.gameTimeS.getTime() / 1000}>`, inline: true },
+                    { name: "結束時間", value: `<t:${game.gameTimeE.getTime() / 1000}>`, inline: true },
+                    { name: "花費時間", value: `${msToHMS((game.gameTimeE.getTime()) - (game.gameTimeS.getTime()))}`, inline: true },
+                ]);
+            CplbEmbeds.push(GameFieldDetail);
+        }
 
-            if (game.mvp_name !== '') {
-                player = await fetchCPBLPlayer(game.mvp_Acnt);
-                const MVPEmbed = new EmbedBuilder();
-                if(game.hit_cnt !== null){
-                    MVPEmbed
-                    .setAuthor({
-                        name: "MVP 最有價值球員",
-                        url:"https://www.cpbl.com.tw",
-                        iconURL:"https://www.cpbl.com.tw/theme/common/images/project/logo_new.png"
-                    })
-                    .setDescription(`# ${teamIcon(game.wins_pitcher_team)} [${game.mvp_name}](https://www.cpbl.com.tw/team/person?acnt=${game.mvp_Acnt})`)
-                    .setThumbnail(player[0].imageURL == undefined ? "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png" : `https://www.cpbl.com.tw${player[0].imageURL}`)
-                    .setColor("Gold")
-                    .addFields([
-                        { name: "當年度獲選MVP次數", value: `${game.mvp_cnt}`, inline:false },
-                        { name: "打數", value: `${game.hit_cnt}`, inline:true },
-                        { name: "打點", value: `${game.runBattedIn_cnt}`, inline:true },
-                        { name: "得分", value: `${game.score_cnt}`, inline:true },
-                        { name: "安打", value: `${game.hitting_cnt}`, inline:true },
-                        { name: "全壘打", value: `${game.homerun_cnt}`, inline:true },
-                    ])
-                } else {
-                    MVPEmbed
-                    .setAuthor({
-                        name: "MVP 最有價值球員",
-                        url:"https://www.cpbl.com.tw",
-                        iconURL:"https://www.cpbl.com.tw/theme/common/images/project/logo_new.png"
-                    })
-                    .setDescription(`# ${teamIcon(game.wins_pitcher_team)} [${game.mvp_name}](https://www.cpbl.com.tw/team/person?acnt=${game.mvp_Acnt})`)
-                    .setThumbnail(player[0].imageURL == undefined ? "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png" : `https://www.cpbl.com.tw${player[0].imageURL}`)
-                    .setColor("Gold")
-                    .addFields([
-                        { name: "當年度獲選MVP次數", value: `${game.mvp_cnt}`, inline:false },
-                        { name: "投球局數", value: `${game.inningPitched_cnt}`, inline:true },
-                        { name: "奪三振數", value: `${game.strikeOut_cnt}`, inline:true },
-                        { name: "失分數", value: `${game.run_cnt}`, inline:true },
-                    ])
-                }
-        
-                CplbEmbeds.push(MVPEmbed);
+        if (game.mvp_name !== '') {
+            player = await fetchCPBLPlayer(game.mvp_Acnt);
+            const MVPEmbed = new EmbedBuilder();
+            if(game.hit_cnt !== null){
+                MVPEmbed
+                .setAuthor({
+                    name: "MVP 最有價值球員",
+                    url:"https://www.cpbl.com.tw",
+                    iconURL:"https://www.cpbl.com.tw/theme/common/images/project/logo_new.png"
+                })
+                .setDescription(`# ${teamIcon(game.wins_pitcher_team)} [${game.mvp_name}](https://www.cpbl.com.tw/team/person?acnt=${game.mvp_Acnt})`)
+                .setThumbnail(player[0].imageURL == undefined ? "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png" : `https://www.cpbl.com.tw${player[0].imageURL}`)
+                .setColor("Gold")
+                .addFields([
+                    { name: "當年度獲選MVP次數", value: `${game.mvp_cnt}`, inline:false },
+                    { name: "打數", value: `${game.hit_cnt}`, inline:true },
+                    { name: "打點", value: `${game.runBattedIn_cnt}`, inline:true },
+                    { name: "得分", value: `${game.score_cnt}`, inline:true },
+                    { name: "安打", value: `${game.hitting_cnt}`, inline:true },
+                    { name: "全壘打", value: `${game.homerun_cnt}`, inline:true },
+                ])
+            } else {
+                MVPEmbed
+                .setAuthor({
+                    name: "MVP 最有價值球員",
+                    url:"https://www.cpbl.com.tw",
+                    iconURL:"https://www.cpbl.com.tw/theme/common/images/project/logo_new.png"
+                })
+                .setDescription(`# ${teamIcon(game.wins_pitcher_team)} [${game.mvp_name}](https://www.cpbl.com.tw/team/person?acnt=${game.mvp_Acnt})`)
+                .setThumbnail(player[0].imageURL == undefined ? "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png" : `https://www.cpbl.com.tw${player[0].imageURL}`)
+                .setColor("Gold")
+                .addFields([
+                    { name: "當年度獲選MVP次數", value: `${game.mvp_cnt}`, inline:false },
+                    { name: "投球局數", value: `${game.inningPitched_cnt}`, inline:true },
+                    { name: "奪三振數", value: `${game.strikeOut_cnt}`, inline:true },
+                    { name: "失分數", value: `${game.run_cnt}`, inline:true },
+                ])
             }
+            CplbEmbeds.push(MVPEmbed);
+        }
 
         const SuccessMessage = await interaction.editReply({
             embeds : CplbEmbeds
