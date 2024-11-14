@@ -77,13 +77,13 @@ module.exports = {
                 const Magnitude = String(Earthquake.EarthquakeInfo.EarthquakeMagnitude.MagnitudeValue);
 
                 let Depth_msg = "";
-                if(0 <= Depth && Depth < 31) {
+                if(0 <= Depth && Depth <= 30) {
                     Depth_msg = `\`🔴\` **${Depth}** 公里\n  \`(極淺層)\``;
-                } else if(31 <= Depth && Depth < 71) {
+                } else if(30 < Depth && Depth <= 70) {
                     Depth_msg = `\`🟠\` **${Depth}** 公里\n  \`(淺層)\``
-                } else if(71 <= Depth && Depth < 301) {
+                } else if(70 < Depth && Depth <= 300) {
                     Depth_msg = `\`🟡\` **${Depth}** 公里\n  \`(中層)\``
-                } else if(301 <= Depth) {
+                } else if(300 < Depth) {
                     Depth_msg = `\`🟢\` **${Depth}** 公里\n  \`(深層)\``
                 };
 
