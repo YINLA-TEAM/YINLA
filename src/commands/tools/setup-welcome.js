@@ -12,7 +12,7 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addChannelOption(option => 
             option.setName("頻道")
-            .setDescription("選擇頻道發送")
+            .setDescription("選擇頻道發送 (如果要移除推播請任意填入一個頻道)")
             .setRequired(true)
         )
         .addRoleOption(option => 

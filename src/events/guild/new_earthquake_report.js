@@ -64,10 +64,12 @@ module.exports = {
                 const url = new ActionRowBuilder()
                     .addComponents([
                         new ButtonBuilder()
+                            .setEmoji("📰")
                             .setLabel("地震報告")
                             .setStyle(ButtonStyle.Link)
                             .setURL(Web),
                         new ButtonBuilder()
+                            .setEmoji("📡")
                             .setLabel("地震測報中心")
                             .setStyle(ButtonStyle.Link)
                             .setURL(Earthquake.Web),

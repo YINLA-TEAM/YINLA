@@ -77,10 +77,12 @@ module.exports = {
         const url = new ActionRowBuilder()
             .addComponents([
                 new ButtonBuilder()
+                    .setEmoji("📰")
                     .setLabel("地震報告")
                     .setStyle(ButtonStyle.Link)
                     .setURL(Web),
                 new ButtonBuilder()
+                    .setEmoji("📡")
                     .setLabel("地震測報中心")
                     .setStyle(ButtonStyle.Link)
                     .setURL(Earthquake.Web),
@@ -91,13 +93,13 @@ module.exports = {
         const Magnitude = String(Earthquake.EarthquakeInfo.EarthquakeMagnitude.MagnitudeValue);
 
         let Depth_msg = "";
-                if(0 <= Depth && Depth < 31) {
+                if(0 <= Depth && Depth <= 30) {
                     Depth_msg = `\`🔴\` **${Depth}** 公里\n  \`(極淺層)\``;
-                } else if(31 <= Depth && Depth < 71) {
+                } else if(30 < Depth && Depth <= 70) {
                     Depth_msg = `\`🟠\` **${Depth}** 公里\n  \`(淺層)\``
-                } else if(71 <= Depth && Depth < 301) {
+                } else if(70 < Depth && Depth <= 300) {
                     Depth_msg = `\`🟡\` **${Depth}** 公里\n  \`(中層)\``
-                } else if(301 <= Depth) {
+                } else if(300 < Depth) {
                     Depth_msg = `\`🟢\` **${Depth}** 公里\n  \`(深層)\``
                 };
 
@@ -121,7 +123,7 @@ module.exports = {
         embed = new EmbedBuilder()
             .setAuthor({
                 name: "地震報告",
-                iconURL: "https://i.imgur.com/qIxk1H1.png"
+                iconURL: "https://i.imgur.com/SPU2Os0.png"
             })
             .setDescription(Content)
             .setColor(Color[Earthquake.ReportColor])

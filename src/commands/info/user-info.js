@@ -14,7 +14,7 @@ module.exports = {
     async execute(interaction, client) {
         const member = interaction.options.getMember("成員") || interaction.member;
         const embed = new EmbedBuilder()
-            .setTitle(member.user.username.replaceAll("_", "\\_"))
+            .setTitle(`${member.user.globalName} (${member.user.username.replaceAll("_", "\\_")})`)
             .setColor('Random')
             .setThumbnail(member.user.displayAvatarURL())
             .setTimestamp(Date.now())
@@ -24,20 +24,18 @@ module.exports = {
                 iconURL: member.user.displayAvatarURL(),
                 name: `個人簡介`
             })
-
             .setFooter({
                 iconURL: client.user.displayAvatarURL(),
                 text: `YINLA`
             })
-
             .addFields([
                 {
                     name: `🪪｜使用者ID`,
-                    value: `\`${member.id}\``,
+                    value: `\`${member.user.id}\``,
                 },
                 {
                     name: `💩｜伺服器暱稱`,
-                    value:`\`${member.nickname}\``,
+                    value:`\`${member.nickname === null ? "未設定" : member.nickname}\``,
                 },
                 {
                     name: `🔰｜創立帳號時間`,
@@ -52,7 +50,7 @@ module.exports = {
                     value: `${member.user.bot? '\`✅\`':'\`❎\`'}`
                 }
             ]);
-
+            console.log(member)
         await interaction.reply({
             embeds: [embed],
             ephemeral: true

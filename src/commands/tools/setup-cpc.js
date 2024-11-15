@@ -15,7 +15,7 @@ module.exports = {
                 .setNameLocalizations({
                     "zh-TW" : "頻道"
                 })
-                .setDescription("選擇頻道推播")
+                .setDescription("選擇頻道推播 (如果要移除推播請任意填入一個頻道)")
                 .setRequired(true)
         )
         .addStringOption(option => (
