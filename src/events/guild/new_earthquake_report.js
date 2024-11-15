@@ -9,6 +9,7 @@ let cwaImage = "";
 module.exports = {
     name: 'ready',
     once: false,
+
     async execute(client) {
         const job = new cron.CronJob("0/15 * * * * *", async function () {
             try {
@@ -132,8 +133,8 @@ module.exports = {
 
                 const embed = new EmbedBuilder()
                     .setAuthor({
-                        name: "地震報告 [功能測試中]",
-                        iconURL: "https://i.imgur.com/qIxk1H1.png"
+                        name: "地震報告",
+                        iconURL: "https://i.imgur.com/SPU2Os0.png"
                     })
                     .setDescription(Content)
                     .setColor(Color[Earthquake.ReportColor])
