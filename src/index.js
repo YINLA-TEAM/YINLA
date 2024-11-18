@@ -26,7 +26,7 @@ client.handleEvents();
 client.handleCommands();
 client.handleComponents();
 client.login(process.env.token).then(() => {
-    client.user.setActivity(`/中華職棒賽事｜YINLA`, {type: ActivityType.Watching});
+    client.user.setActivity(`${process.env.bot_status}`, {type: ActivityType.Watching});
 });
 
 mongoose.set('strictQuery', false);
