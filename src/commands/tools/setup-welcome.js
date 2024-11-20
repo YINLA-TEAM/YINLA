@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ChannelType } = require("discord.js");
 const welcomeSchema = require("../../Model/welcome");
 
 module.exports = {
@@ -13,6 +13,7 @@ module.exports = {
         .addChannelOption(option => 
             option.setName("頻道")
             .setDescription("選擇頻道發送 (如果要移除推播請任意填入一個頻道)")
+            .addChannelTypes(ChannelType.GuildText)
             .setRequired(true)
         )
         .addRoleOption(option => 

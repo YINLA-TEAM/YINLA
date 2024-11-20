@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ChannelType } = require("discord.js");
 const cpcSchema = require("../../Model/cpcChannel");
 
 module.exports = {
@@ -16,6 +16,7 @@ module.exports = {
                     "zh-TW" : "頻道"
                 })
                 .setDescription("選擇頻道推播 (如果要移除推播請任意填入一個頻道)")
+                .addChannelTypes(ChannelType.GuildText)
                 .setRequired(true)
         )
         .addStringOption(option => (
