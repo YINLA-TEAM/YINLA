@@ -28,11 +28,15 @@ module.exports = {
         function F_Alert_Embed(number) {
             const Weather_Alerts = records.record[number];
             const Type = Weather_Alerts.datasetInfo.datasetDescription;
-            //const Location = Weather_Alerts.locationName;
+            const Location = [];
+
+            Weather_Alerts.hazardConditions.hazards.hazard[0].info.affectedAreas.location.forEach( n =>{
+                Location.push(n.locationName);
+            });
 
             const S_time = Date.parse(Weather_Alerts.datasetInfo.validTime.startTime) / 1000;
             const E_time = Date.parse(Weather_Alerts.datasetInfo.validTime.endTime) / 1000;
-            const I_time = new Date(Weather_Alerts.datasetInfo.issueTime); //String
+            const I_time = new Date(Weather_Alerts.datasetInfo.issueTime);
 
             const Content = Weather_Alerts.contents.content.contentText.trim();
 
@@ -45,10 +49,15 @@ module.exports = {
                 .setColor('Red')
                 .setDescription(`\`\`\`${Content}\`\`\``)
                 .setFooter({
-                    text: `交通部中央氣象署 • 發布於 ${I_time}`,
+                    text: `交通部中央氣象署 • 發布於`,
                     iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png"
                 })
+                .setTimestamp(I_time)
                 .addFields([
+                    {
+                        name: "影響區域",
+                        value: `${Location.map(n => `**${n}**`).join("、")}`
+                    },
                     {
                         name: "開始時間",
                         value: `<t:${S_time}>__(<t:${S_time}:R>)__`
