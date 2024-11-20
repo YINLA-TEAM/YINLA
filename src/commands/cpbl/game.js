@@ -1,56 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const cheerio = require('cheerio');
-
-const teamIcon = (team_name) => {
-    try {
-        const icon = {
-            "中信兄弟": "<:cpbl_B:914141522541297696>",
-            "味全龍": "<:cpbl_D:1033396051224305734>",
-            "富邦悍將": "<:cpbl_G:1033396049227829331>",
-            "統一7-ELEVEn獅": "<:cpbl_L:1033396606491431012>",
-            "樂天桃猿": "<:cpbl_R:1033396046849646654>",
-            "台鋼雄鷹": "<:cpbl_T:1273206632150470678>",
-            "三商": "<:cpbl_Tiger:1275824989441888266>",
-            "兄弟": "<:cpbl_B_O:1275825371744571455>",
-            "時報": "<:cpbl_E:1275825666914386065>",
-            "俊國": "<:cpbl_Bears:1275825871898411100>",
-            "興農": "<:cpbl_S:1275826268700672041>",
-            "中信": "<:cpbl_W:1275826947745775728>",
-            "第一": "<:cpbl_L:1275827544351965194>",
-            "誠泰": "<:cpbl_C:1275827950838874122>",
-            "Lamigo": "<:cpbl_Lamigo:1275828301214253138>",
-            "米迪亞": "<:cpbl_T_REX:1275828691842371704>",
-            "義大": "<:cpbl_Rhino:1275828995019247770>",
-        };
-        
-        return icon[team_name] || " ";
-    } catch (error) {
-        return " ";
-    }
-}
-
-const gameType = (type) => {
-    switch (type) {
-        case "A":
-            return "一軍例行賽";
-        case "B":
-            return "一軍明星賽";
-        case "C":
-            return "一軍總冠軍賽";
-        case "D":
-            return "二軍例行賽";
-        case "E":
-            return "一軍季後挑戰賽";
-        case "F":
-            return "二軍總冠軍賽";
-        case "G":
-            return "一軍熱身賽";
-        case "H":
-            return "未來之星邀請賽";
-        default:
-            return "";
-    }
-}
+const { teamIcon, gameType } = require('../../data/cpblType.js');
 
 const fetchCPBLPlayer = async(acnt) => {
     if(acnt === undefined) return;

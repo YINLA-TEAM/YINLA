@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { teamIcon, gameType } = require('../../data/cpblType.js');
 
 const fetchCPBLScore = async() => {
     try {
@@ -67,64 +68,6 @@ const fetchCPBLScore = async() => {
         console.log(error)
         return false;
     } 
-}
-
-const teamIcon = (team_name) => {
-    try {
-        const icon = {
-            "中信兄弟": "<:cpbl_B:914141522541297696>",
-            "味全龍": "<:cpbl_D:1033396051224305734>",
-            "富邦悍將": "<:cpbl_G:1033396049227829331>",
-            "統一7-ELEVEn獅": "<:cpbl_L:1033396606491431012>",
-            "樂天桃猿": "<:cpbl_R:1033396046849646654>",
-            "台鋼雄鷹": "<:cpbl_T:1273206632150470678>",
-            "中信兄弟二軍": "<:cpbl_B:914141522541297696>",
-            "味全龍二軍": "<:cpbl_D:1033396051224305734>",
-            "富邦悍將二軍": "<:cpbl_G:1033396049227829331>",
-            "統一7-ELEVEn獅二軍": "<:cpbl_L:1033396606491431012>",
-            "樂天桃猿二軍": "<:cpbl_R:1033396046849646654>",
-            "台鋼雄鷹二軍": "<:cpbl_T:1273206632150470678>",
-            "ACN011": "<:cpbl_B:914141522541297696>",
-            "AAA011": "<:cpbl_D:1033396051224305734>",
-            "AEO011": "<:cpbl_G:1033396049227829331>",
-            "ADD011": "<:cpbl_L:1033396606491431012>",
-            "AJL011": "<:cpbl_R:1033396046849646654>",
-            "AKP011": "<:cpbl_T:1273206632150470678>",
-            "ACN022": "<:cpbl_B:914141522541297696>",
-            "AAA022": "<:cpbl_D:1033396051224305734>",
-            "AEO022": "<:cpbl_G:1033396049227829331>",
-            "ADD022": "<:cpbl_L:1033396606491431012>",
-            "AJL022": "<:cpbl_R:1033396046849646654>",
-            "AKP022": "<:cpbl_T:1273206632150470678>",
-        };
-        
-        return icon[team_name] || " ";
-    } catch (error) {
-        return " ";
-    }
-}
-
-const gameType = (type) => {
-    switch (type) {
-        case "A":
-            return "一軍例行賽";
-        case "B":
-            return "一軍明星賽";
-        case "C":
-            return "一軍總冠軍賽";
-        case "D":
-            return "二軍例行賽";
-        case "E":
-            return "一軍季後挑戰賽";
-        case "F":
-            return "二軍總冠軍賽";
-        case "G":
-            return "一軍熱身賽";
-        case "H":
-            return "未來之星邀請賽";
-        default:
-            return "";
-    }
 }
 
 module.exports = {

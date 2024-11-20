@@ -1,40 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const cheerio = require("cheerio");
-
-const teamIcon = (team_name) => {
-    try {
-        const icon = {
-            "中信兄弟": "<:cpbl_B:914141522541297696>",
-            "味全龍": "<:cpbl_D:1033396051224305734>",
-            "富邦悍將": "<:cpbl_G:1033396049227829331>",
-            "統一7-ELEVEn獅": "<:cpbl_L:1033396606491431012>",
-            "樂天桃猿": "<:cpbl_R:1033396046849646654>",
-            "台鋼雄鷹": "<:cpbl_T:1273206632150470678>",
-            "中信兄弟二軍": "<:cpbl_B:914141522541297696>",
-            "味全龍二軍": "<:cpbl_D:1033396051224305734>",
-            "富邦悍將二軍": "<:cpbl_G:1033396049227829331>",
-            "統一7-ELEVEn獅二軍": "<:cpbl_L:1033396606491431012>",
-            "樂天桃猿二軍": "<:cpbl_R:1033396046849646654>",
-            "台鋼雄鷹二軍": "<:cpbl_T:1273206632150470678>",
-            "ACN011": "<:cpbl_B:914141522541297696>",
-            "AAA011": "<:cpbl_D:1033396051224305734>",
-            "AEO011": "<:cpbl_G:1033396049227829331>",
-            "ADD011": "<:cpbl_L:1033396606491431012>",
-            "AJL011": "<:cpbl_R:1033396046849646654>",
-            "AKP011": "<:cpbl_T:1273206632150470678>",
-            "ACN022": "<:cpbl_B:914141522541297696>",
-            "AAA022": "<:cpbl_D:1033396051224305734>",
-            "AEO022": "<:cpbl_G:1033396049227829331>",
-            "ADD022": "<:cpbl_L:1033396606491431012>",
-            "AJL022": "<:cpbl_R:1033396046849646654>",
-            "AKP022": "<:cpbl_T:1273206632150470678>",
-        };
-        
-        return icon[team_name] || " ";
-    } catch (error) {
-        return " ";
-    }
-}
+const { teamIcon } = require("../../data/cpblType.js");
 
 const fetchCPBLStanding = async() => {
     const response = await fetch("https://www.cpbl.com.tw", { method: 'GET' });
