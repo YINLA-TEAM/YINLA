@@ -47,16 +47,25 @@ module.exports = {
 
         const oil = await fetchCPCOilPrice();
         let oil_embed_color = Colors.Green;
+        let oil_embed_title = "";
 
-        if(oil.UpOrDown === "調漲") oil_embed_color = Colors.Red;
-        else if(oil.UpOrDown === "調降") oil_embed_color = Colors.Green;
+        if(oil.rate === '0.0') {
+            oil_embed_color = Colors.Grey;
+            oil_embed_title = "本週汽油價格不調整";
+        } else if(oil.UpOrDown === "調漲") {
+            oil_embed_color = Colors.Red;
+            oil_embed_title = `本週汽油價格${oil.UpOrDown} ${oil.rate}`;
+        } else if(oil.UpOrDown === "調降") {
+            oil_embed_color = Colors.Green;
+            oil_embed_title = `本週汽油價格${oil.UpOrDown} ${oil.rate}`;
+        }
 
         const oil_embed = new EmbedBuilder()
             .setAuthor({
                 name: "台灣中油",
                 iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/CPC_Corporation%2C_Taiwan_Seal.svg/800px-CPC_Corporation%2C_Taiwan_Seal.svg.png"
             })
-            .setTitle(`本週汽油價格${oil.UpOrDown} ${oil.rate}`)
+            .setTitle(oil_embed_title)
             .setDescription(`自 **${oil.PriceUpdate}** 零時起實施，單位：元/公升`)
             .setColor(oil_embed_color)
             .addFields([
