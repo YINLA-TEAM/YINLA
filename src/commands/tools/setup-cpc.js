@@ -40,13 +40,15 @@ module.exports = {
 
             if(!interaction.guild.members.me.permissions.has(PermissionFlagsBits.Administrator)) {
                 const no_admin_msg = new EmbedBuilder()
-                    .setTitle(`❌ **你沒有權限**`)
+                    .setTitle(`❌ **你沒有權限** 或者 **機器人沒有頻道權限**`)
+                    .setDescription('機器人必須擁有 **"管理頻道(Manage Channels)"** 的權限')
                     .setColor(`Red`)
 
                 interaction.reply({
                     embeds: [ no_admin_msg ],
                     ephemeral: true
                 })
+                return;
             }
 
             cpcSchema.findOne({Guild:interaction.guild.id}, async (err,data) =>{
