@@ -9,33 +9,28 @@ module.exports = {
         })
         .setDescription("即時的雷達回波圖"),
 
-    async execute (interaction) {
-        const Wait_Embed = new EmbedBuilder()
-        .setTitle(`<a:Loading:1035224546267123802> 資料擷取中...`)
-        .setColor('Blue')
+        async execute (interaction) {
+            const WaitMessage = await interaction.deferReply({
+                fetchReply: true,
+                ephemeral: true
+            });
+            
+            const radarResult = await axios.get(`https://opendata.cwa.gov.tw/fileapi/v1/opendataapi/O-A0058-003?Authorization=${process.env.cwa_key}&format=JSON`);
+            const { cwaopendata } = radarResult.data;
 
-        const WaitMessage = await interaction.reply({
-            fetchReply: true,
-            ephemeral: true,
-            embeds: [ Wait_Embed ]
-        });
+            const radar_IMG = cwaopendata.dataset.resource.ProductURL +"?"+ cwaopendata.dataset.DateTime
 
-        const radarResult = await axios.get(`https://opendata.cwa.gov.tw/fileapi/v1/opendataapi/O-A0058-003?Authorization=${process.env.cwa_key}&format=JSON`);
-        const { cwaopendata } = radarResult.data;
+            const radar_embed = new EmbedBuilder()
+                .setColor('Random')
+                .setTitle("雷達回波圖")
+                .setFooter({
+                    text: "由 交通部中央氣象署 提供",
+                    iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png"
+                })
+                .setImage(radar_IMG)
 
-        const radar_IMG = cwaopendata.dataset.resource.ProductURL +"?"+ cwaopendata.dataset.DateTime
-
-        const radar_embed = new EmbedBuilder()
-            .setColor('Random')
-            .setTitle("雷達回波圖")
-            .setFooter({
-                text: "由 交通部中央氣象署 提供",
-                iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png"
+            const SuccessMessage = await interaction.editReply({
+                embeds:[radar_embed]
             })
-            .setImage(radar_IMG)
-
-        const SuccessMessage = await interaction.editReply({
-            embeds:[radar_embed]
-        })
 }
 }

@@ -23,14 +23,9 @@ module.exports = {
         ),
 
     async execute(interaction) {
-        const Wait_Embed = new EmbedBuilder()
-            .setTitle(`<a:Loading:1035224546267123802> 資料擷取中...`)
-            .setColor('Blue')
-
-        const WaitMessage = await interaction.reply({
+        const WaitMessage = await interaction.deferReply({
             fetchReply: true,
-            ephemeral: true,
-            embeds: [ Wait_Embed ]
+            ephemeral: true
         });
         
         if(interaction.options.getString('type') == '無編號'){

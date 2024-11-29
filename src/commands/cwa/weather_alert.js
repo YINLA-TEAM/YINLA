@@ -10,14 +10,9 @@ module.exports = {
         .setDescription('檢視 天氣警報'),
 
     async execute(interaction) {
-        const Wait_Embed = new EmbedBuilder()
-            .setTitle(`<a:Loading:1035224546267123802> 資料擷取中...`)
-            .setColor('Blue')
-
-        const WaitMessage = await interaction.reply({
+        const WaitMessage = await interaction.deferReply({
             fetchReply: true,
-            ephemeral: true,
-            embeds: [ Wait_Embed ]
+            ephemeral: true
         });
 
         const waResult = await axios.get(`https://opendata.cwa.gov.tw/api/v1/rest/datastore/W-C0033-002?Authorization=${process.env.cwa_key}`);
