@@ -10,6 +10,16 @@ module.exports = {
         .setDescription('檢視 氣象站相關資訊(此為實驗功能，僅能檢視 台中龍井 的觀測站)'),
 
     async execute(interaction){
+        const Wait_Embed = new EmbedBuilder()
+            .setTitle(`<a:Loading:1035224546267123802> 資料擷取中...`)
+            .setColor('Blue')
+
+        const WaitMessage = await interaction.reply({
+            fetchReply: true,
+            ephemeral: true,
+            embeds: [ Wait_Embed ]
+        });
+
         const wtResult = await axios.get(`https://opendata.cwa.gov.tw/api/v1/rest/datastore/O-A0001-001?Authorization=${process.env.cwa_key}&StationId=C0F9R0`)
         const { records } = wtResult.data;
 
@@ -65,7 +75,7 @@ module.exports = {
                 iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png"
             })
 
-            await interaction.reply({
+            const SuccessMessage = await interaction.editReply({
             embeds: [wtEmbed],
             ephemeral: true
         })

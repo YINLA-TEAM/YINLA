@@ -34,6 +34,16 @@ module.exports = {
         )),
     
     async execute(interaction) {
+        const Wait_Embed = new EmbedBuilder()
+            .setTitle(`<a:Loading:1035224546267123802> 資料擷取中...`)
+            .setColor('Blue')
+
+        const WaitMessage = await interaction.reply({
+            fetchReply: true,
+            ephemeral: true,
+            embeds: [ Wait_Embed ]
+        });
+
         const station = interaction.options.getString('station');
         let UVlevel_color = Colors.Red;
         let UVlevel_message = "";
@@ -103,11 +113,6 @@ module.exports = {
                 text: "交通部中央氣象署",
                 iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png"
             })
-
-        const WaitMessage = await interaction.deferReply({
-                fetchReply: true,
-                ephemeral: true
-            });
     
         const SuccessMessage = await interaction.editReply({
                 embeds: [UV_embed],

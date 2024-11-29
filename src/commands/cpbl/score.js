@@ -80,9 +80,14 @@ module.exports = {
     
     async execute (interaction) {
 
-        const WaitMessage = await interaction.deferReply({
+        const Wait_Embed = new EmbedBuilder()
+            .setTitle(`<a:Loading:1035224546267123802> 資料擷取中...`)
+            .setColor('Blue')
+
+        const WaitMessage = await interaction.reply({
             fetchReply: true,
-            ephemeral: true
+            ephemeral: true,
+            embeds: [ Wait_Embed ]
         });
 
         const game_embed_list = [];

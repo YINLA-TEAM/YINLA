@@ -17,9 +17,15 @@ module.exports = {
             seconds = seconds % 60; 
             return(`${hours}:${minutes}:${~~(seconds)}`);
         }
-        const message = await interaction.deferReply({
+
+        const Wait_Embed = new EmbedBuilder()
+            .setTitle(`<a:Loading:1035224546267123802> 資料擷取中...`)
+            .setColor('Blue')
+
+        const WaitMessage = await interaction.reply({
             fetchReply: true,
-            ephemeral: true
+            ephemeral: true,
+            embeds: [ Wait_Embed ]
         });
 
         const botInfoEmbed = new EmbedBuilder()
@@ -39,7 +45,7 @@ module.exports = {
                     inline: true
                 }, {
                     name: `機器人延遲`,
-                    value: `${message.createdTimestamp - interaction.createdTimestamp} ms`,
+                    value: `${WaitMessage.createdTimestamp - interaction.createdTimestamp} ms`,
                     inline: true
                 }, {
                     name: `使用者數量`,
@@ -51,7 +57,7 @@ module.exports = {
                     inline: true
                 }
             ])
-        await interaction.editReply({
+        const SuccessMessage = await interaction.editReply({
             embeds : [ botInfoEmbed ],
         })
     }

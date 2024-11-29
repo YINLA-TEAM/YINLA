@@ -23,6 +23,15 @@ module.exports = {
         ),
 
     async execute(interaction) {
+        const Wait_Embed = new EmbedBuilder()
+            .setTitle(`<a:Loading:1035224546267123802> 資料擷取中...`)
+            .setColor('Blue')
+
+        const WaitMessage = await interaction.reply({
+            fetchReply: true,
+            ephemeral: true,
+            embeds: [ Wait_Embed ]
+        });
         
         if(interaction.options.getString('type') == '無編號'){
             cwaID = 'E-A0016-001'
@@ -164,11 +173,6 @@ module.exports = {
         Earthquake.Intensity.ShakingArea
             .filter(v => !v.InfoStatus)
             .forEach(ShakingArea => embed.addFields({ name: ShakingArea.AreaDesc, value: ShakingArea.CountyName }));
-
-        const WaitMessage = await interaction.deferReply({
-            fetchReply: true,
-            ephemeral: true
-        });
 
         const SuccessMessage = await interaction.editReply({
             embeds: [embed],

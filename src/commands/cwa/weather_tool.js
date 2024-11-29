@@ -43,6 +43,16 @@ module.exports = {
         ),
 
     async execute(interaction){
+        const Wait_Embed = new EmbedBuilder()
+            .setTitle(`<a:Loading:1035224546267123802> 資料擷取中...`)
+            .setColor('Blue')
+
+        const WaitMessage = await interaction.reply({
+            fetchReply: true,
+            ephemeral: true,
+            embeds: [ Wait_Embed ]
+        });
+
         const wtResult  = await axios.get(`https://opendata.cwa.gov.tw/fileapi/v1/opendataapi/F-C0032-${interaction.options.getString('city')}?Authorization=${process.env.cwa_key}&downloadType=WEB&format=JSON`);
         const { cwaopendata } = wtResult.data;
         const wt_tool = cwaopendata.dataset;
@@ -66,11 +76,6 @@ module.exports = {
             text: `交通部中央氣象署 提供`,
             iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png"
         })
-        
-        const WaitMessage = await interaction.deferReply({
-            fetchReply: true,
-            ephemeral: true
-        });
 
         const SuccessMessage = await interaction.editReply({
             embeds: [wtEmbed],
