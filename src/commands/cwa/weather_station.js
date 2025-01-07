@@ -69,7 +69,7 @@ module.exports = {
                 iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png"
             })
 
-            await interaction.reply({
+        await interaction.editReply({
             embeds: [wtEmbed],
             ephemeral: true
         })
