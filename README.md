@@ -1,4 +1,4 @@
-<img alt="LOGO" src="https://i.imgur.com/Wd1DJY1.png" width="125px" height="125px" align="left" >
+<img alt="LOGO" src="https://i.imgur.com/0FomLnJ.png" width="125px" height="125px" align="left" >
 
 # **YINLA**
 
