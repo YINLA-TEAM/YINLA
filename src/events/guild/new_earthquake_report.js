@@ -113,7 +113,7 @@ module.exports = {
                             .then(async (res) => {
                                 if (res.ok) {
                                     const buf = await res.arrayBuffer();
-                                    if (buf.byteLength > 0) {
+                                    if (buf.byteLength > 4000) {
                                         if(checkImage !== Image){
                                             const sent = await client.channels.cache
                                                 .get("1290219563715395604")
