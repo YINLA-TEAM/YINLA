@@ -100,6 +100,8 @@ module.exports = {
                         }
                         let previousOilPriceUpdateDate = data.PriceUpdate || "";
                         const cpcChannel = guild.channels.cache.get(data.Channel);
+                        if(!cpcChannel) return;
+
                         if (oil.PriceUpdate !== previousOilPriceUpdateDate){
                             cpcChannel.send({
                                 embeds: [ oil_embed ],

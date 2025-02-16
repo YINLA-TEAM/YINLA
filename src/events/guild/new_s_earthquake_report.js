@@ -117,9 +117,9 @@ module.exports = {
                                 }
                             })
                             .catch(() => { setTimeout(checker, 8000, retryCount + 1); });
-                    };
-                    checker();
-                });
+                        };
+                        checker();
+                    });
 
                 const embed = new EmbedBuilder()
                     .setAuthor({
