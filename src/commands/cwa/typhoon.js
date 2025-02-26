@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, AttachmentBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -25,6 +25,7 @@ module.exports = {
                         name: "颱風資訊",
                         iconURL: "https://i.imgur.com/89MW4iJ.png"
                     })
+                    .setDescription("-# 手機用戶可能會無法顯示完整的內容")
                     .setColor('Random')
                     .setImage(typhoon_WARN + `?T=${Date.now()}`),
                 new EmbedBuilder().setURL("https://www.exmple.com")
@@ -34,13 +35,14 @@ module.exports = {
                         name: "定量降水預報",
                         iconURL: "https://yincheng.vercel.app/icon/rain.png"
                     })
+                    .setDescription("-# 手機用戶可能會無法顯示完整的內容")
                     .setColor('Random')
+                    .setImage("https://www.cwa.gov.tw/Data/fcst_img/QPF_ChFcstPrecip_12_12.png" + `?T=${Date.now()}`)
                     .setFooter({
                         text: "交通部中央氣象署",
                         iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png"
                     })
                     .setTimestamp(Date.now()),
-                new EmbedBuilder().setURL("https://www.cwa.gov.tw").setImage("https://www.cwa.gov.tw/Data/fcst_img/QPF_ChFcstPrecip_12_12.png" + `?T=${Date.now()}`),
                 new EmbedBuilder().setURL("https://www.cwa.gov.tw").setImage("https://www.cwa.gov.tw/Data/fcst_img/QPF_ChFcstPrecip_12_24.png" + `?T=${Date.now()}`),
                 new EmbedBuilder().setURL("https://www.cwa.gov.tw").setImage("https://www.cwa.gov.tw/Data/fcst_img/QPF_ChFcstPrecip_12_36.png" + `?T=${Date.now()}`),
                 new EmbedBuilder().setURL("https://www.cwa.gov.tw").setImage("https://www.cwa.gov.tw/Data/fcst_img/QPF_ChFcstPrecip_12_48.png" + `?T=${Date.now()}`),
