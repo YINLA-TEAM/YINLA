@@ -37,7 +37,18 @@ module.exports = {
                 content:`<@${member.user.id}>`,
                 embeds: [welcomeEmbed]
             })
-            member.roles.add(data.Role);
+
+            if(!data.Role) {
+                console.log('[錯誤]：沒有身份組');
+            } else {
+                try {
+                    member.roles.add(data.Role);
+                } catch(err) {
+                    console.log("[錯誤] ",err);
+                }
+            }
+
+            if(err) return console.log("[錯誤] ",err);
         })
     }
 }
