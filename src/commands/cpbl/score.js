@@ -6,6 +6,8 @@ const fetchCPBLScore = async() => {
         const response = await fetch("https://www.cpbl.com.tw/home/getdetaillist", { method: 'POST' });
         const data = await response.json();
         const game_detail = JSON.parse(data.GameDetailJson);
+
+        if(game_detail === null) return new Error('Game Not Found');
         
         const gameArray = [];
         
@@ -88,7 +90,10 @@ module.exports = {
         const game_embed_list = [];
         const game = await fetchCPBLScore();
 
-        if (!game) {
+        if(game instanceof Error){
+            await interaction.editReply(`# ❌：目前無賽事資料`);
+            return;
+        } else if (!game) {
             await interaction.editReply(`# 🚨：API擷取發生錯誤請回報`);
             return;
         }
