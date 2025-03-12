@@ -5,10 +5,16 @@ const fetchCPBLScore = async() => {
     try {
         const response = await fetch("https://www.cpbl.com.tw/home/getdetaillist", { method: 'POST' });
         const data = await response.json();
-        const game_detail = JSON.parse(data.GameDetailJson);
-
-        if(game_detail === null) return new Error('Game Not Found');
-        
+        let game_detail;
+        if(data.GameDetailJson === null) {
+            game_detail = JSON.parse(data.GameADetailJson);
+        } else if(data.GameADetailJson === null) {
+            game_detail = JSON.parse(data.GameDDetailJson);
+        } else if(data.GameDDetailJson === null) {
+            game_detail = JSON.parse(data.GameDetailJson);
+        } else {
+            return new Error('Game Not Found');
+        }
         const gameArray = [];
         
         game_detail.forEach((game) => {
