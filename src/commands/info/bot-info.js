@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -19,8 +19,8 @@ module.exports = {
         }
 
         const WaitMessage = await interaction.deferReply({
-            fetchReply: true,
-            ephemeral: true,
+            withResponse: true,
+            flags: MessageFlags.Ephemeral,
         });
 
         const botInfoEmbed = new EmbedBuilder()

@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const { teamIcon, gameType } = require('../../data/cpblType.js');
 
 const fetchCPBLScore = async() => {
@@ -89,8 +89,8 @@ module.exports = {
     async execute (interaction) {
 
         const WaitMessage = await interaction.deferReply({
-            fetchReply: true,
-            ephemeral: true
+            withResponse: true,
+            flags: MessageFlags.Ephemeral,
         });
 
         const game_embed_list = [];

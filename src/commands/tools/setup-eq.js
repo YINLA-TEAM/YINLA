@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ChannelType } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ChannelType, MessageFlags } = require("discord.js");
 const eqSchema = require("../../Model/eqChannel");
 
 module.exports = {
@@ -46,7 +46,7 @@ module.exports = {
 
                 interaction.reply({
                     embeds:[ no_admin_msg ],
-                    ephemeral:true
+                    flags: MessageFlags.Ephemeral,
                 })
                 return;
             }
@@ -72,7 +72,7 @@ module.exports = {
 
                     interaction.reply({
                         embeds:[ err_creat_eq_msg ],
-                        ephemeral:true
+                        flags: MessageFlags.Ephemeral,
                     })
                 } else if(interaction.options.getString('setup-remove') == '移除') {
                     const rmEQ = await eqSchema.deleteOne({
@@ -84,7 +84,6 @@ module.exports = {
 
                     interaction.reply({
                         embeds: [ rm_eq_msg ],
-                        ephemeral: false
                     })
                 } else {
                     const err_EQ = new EmbedBuilder()
@@ -93,7 +92,7 @@ module.exports = {
 
                     interaction.reply({
                         embeds: [ err_EQ ],
-                        ephemeral: true,
+                        flags: MessageFlags.Ephemeral,
                     })
                 };
             })

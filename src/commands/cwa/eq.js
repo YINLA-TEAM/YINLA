@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js')
+const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, MessageFlags } = require('discord.js')
 const axios = require('axios');
 
 module.exports = {
@@ -24,8 +24,8 @@ module.exports = {
 
     async execute(interaction) {
         const WaitMessage = await interaction.deferReply({
-            fetchReply: true,
-            ephemeral: true
+            withResponse: true,
+            flags: MessageFlags.Ephemeral,
         });
         
         if(interaction.options.getString('type') == '無編號'){

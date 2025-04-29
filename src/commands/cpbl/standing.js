@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const cheerio = require("cheerio");
 const { teamIcon } = require("../../data/cpblType.js");
 
@@ -57,8 +57,8 @@ module.exports = {
 
     async execute (interaction) {
         const WaitMessage = await interaction.deferReply({
-            fetchReply: true,
-            ephemeral: true
+            withResponse: true,
+            flags: MessageFlags.Ephemeral,
         });
 
         const data = await fetchCPBLStanding();

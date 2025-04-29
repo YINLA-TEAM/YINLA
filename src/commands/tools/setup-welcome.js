@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ChannelType } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ChannelType, MessageFlags } = require("discord.js");
 const welcomeSchema = require("../../Model/welcome");
 
 module.exports = {
@@ -55,7 +55,7 @@ module.exports = {
 
             interaction.reply({
                 embeds:[ no_admin_msg ],
-                ephemeral:true
+                flags: MessageFlags.Ephemeral,
             })
             return;
         }
@@ -74,7 +74,7 @@ module.exports = {
 
                 interaction.reply({
                     embeds:[ succes_creat_welcome_msg ],
-                    ephemeral:true
+                    flags: MessageFlags.Ephemeral,
                 })
             } else if(interaction.options.getString('setup-remove') == '建立') {
                 const err_creat_welcome_msg = new EmbedBuilder()
@@ -83,7 +83,7 @@ module.exports = {
 
                 interaction.reply({
                     embeds:[ err_creat_welcome_msg ],
-                    ephemeral:true
+                    flags: MessageFlags.Ephemeral,
                 })
             } else if(interaction.options.getString('setup-remove') == '移除') {
                 const rmWelcome = await welcomeSchema.deleteOne({
@@ -95,7 +95,6 @@ module.exports = {
 
                 interaction.reply({
                     embeds: [ rm_welcome_msg ],
-                    ephemeral: false
                 })
             }
         })

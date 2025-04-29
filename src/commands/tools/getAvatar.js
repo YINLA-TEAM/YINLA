@@ -1,4 +1,4 @@
-const { ContextMenuCommandBuilder, ApplicationCommandType, EmbedBuilder} = require('discord.js')
+const { ContextMenuCommandBuilder, ApplicationCommandType, EmbedBuilder, MessageFlags } = require('discord.js')
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
@@ -25,7 +25,7 @@ module.exports = {
 
         await interaction.reply({
             embeds:[ getAvatarEmbed ],
-            ephemeral: true
+            flags: MessageFlags.Ephemeral,
         })
     }
 }

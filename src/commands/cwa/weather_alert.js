@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js')
 const axios = require('axios');
 
 module.exports = {
@@ -11,8 +11,8 @@ module.exports = {
 
     async execute(interaction) {
         const WaitMessage = await interaction.deferReply({
-            fetchReply: true,
-            ephemeral: true
+            withResponse: true,
+            flags: MessageFlags.Ephemeral,
         });
 
         const waResult = await axios.get(`https://opendata.cwa.gov.tw/api/v1/rest/datastore/W-C0033-002?Authorization=${process.env.cwa_key}`);

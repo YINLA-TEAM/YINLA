@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, Colors } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags, Colors } = require('discord.js');
 const axios = require('axios');
 
 module.exports = {
@@ -35,8 +35,8 @@ module.exports = {
     
     async execute(interaction) {
         const WaitMessage = await interaction.deferReply({
-            fetchReply: true,
-            ephemeral: true
+            withResponse: true,
+            flags: MessageFlags.Ephemeral,
         });
 
         const station = interaction.options.getString('station');

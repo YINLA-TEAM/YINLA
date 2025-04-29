@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, StringSelectMenuBuilder, ActionRowBuilder, StringSelectMenuOptionBuilder, EmbedBuilder, ButtonBuilder , ButtonStyle} = require('discord.js')
+const { SlashCommandBuilder, StringSelectMenuBuilder, ActionRowBuilder, StringSelectMenuOptionBuilder, EmbedBuilder, ButtonBuilder , ButtonStyle, MessageFlags } = require('discord.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -80,8 +80,8 @@ module.exports = {
         components: [
             new ActionRowBuilder({components:[menu]}),
             new ActionRowBuilder({components:[button1,button2]})
-    ],
-        ephemeral: true
+        ],
+        flags: MessageFlags.Ephemeral,
     });
 },
 }

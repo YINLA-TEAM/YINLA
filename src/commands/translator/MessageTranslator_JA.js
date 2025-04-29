@@ -1,4 +1,4 @@
-const { ContextMenuCommandBuilder, ApplicationCommandType ,EmbedBuilder} = require('discord.js');
+const { ContextMenuCommandBuilder, ApplicationCommandType ,EmbedBuilder, MessageFlags } = require('discord.js');
 const translate = require('@iamtraction/google-translate');
 
 module.exports = {
@@ -19,7 +19,7 @@ module.exports = {
                 .setTimestamp(Date.now())
             await interaction.reply({
                 embeds:[error_embed],
-                ephemeral: true
+                flags: MessageFlags.Ephemeral,
             })
         } else if(interaction.targetMessage.content.length >= 500){
             const error_embed = new EmbedBuilder()
@@ -29,7 +29,7 @@ module.exports = {
                 .setTimestamp(Date.now())
             await interaction.reply({
                 embeds:[error_embed],
-                ephemeral: true
+                flags: MessageFlags.Ephemeral,
             })
         } else {
         const embed = new EmbedBuilder()
@@ -52,7 +52,7 @@ module.exports = {
 
         await interaction.reply({
             embeds:[embed],
-            ephemeral: true
+            flags: MessageFlags.Ephemeral,
         })
     }
     }

@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -14,8 +14,8 @@ module.exports = {
         const typhoon_URL = "https://www.cwa.gov.tw/V8/C/P/Typhoon/TY_WARN.html";
 
         const Wait_msg = await interaction.deferReply({
-            fetchReply: true,
-            ephemeral: true,
+            withResponse: true,
+            flags: MessageFlags.Ephemeral,
         });
 
         const typhoon_Embed = [

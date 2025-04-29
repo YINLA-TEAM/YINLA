@@ -1,5 +1,5 @@
 const cheerio = require('cheerio');
-const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Colors } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags, EmbedBuilder, Colors } = require('discord.js');
 
 async function fetchCPCOilPrice() {
     const res = await fetch("https://www.cpc.com.tw/GetOilPriceJson.aspx?type=TodayOilPriceString", { method: 'GET' });
@@ -41,8 +41,8 @@ module.exports = {
 
     async execute (interaction) {
         const WaitMessage = await interaction.deferReply({
-            fetchReply: true,
-            ephemeral: true,
+            withResponse: true,
+            flags: MessageFlags.Ephemeral,
         });
 
         const oil = await fetchCPCOilPrice();

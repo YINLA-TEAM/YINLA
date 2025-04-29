@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const cheerio = require('cheerio');
 const { teamIcon, gameType } = require('../../data/cpblType.js');
 
@@ -246,8 +246,8 @@ module.exports = {
 
     async execute (interaction) {
         const WaitMessage = await interaction.deferReply({
-            fetchReply: true,
-            ephemeral: true,
+            withResponse: true,
+            flags: MessageFlags.Ephemeral,
         });
 
         let game_number = interaction.options.getInteger('game_number');
@@ -256,6 +256,9 @@ module.exports = {
 
         const CplbEmbeds = [];
         const game = await fetchCPBLGame(game_number, game_year, game_type);
+
+        console.log(game.gameTimeS)
+
         let player = null;
 
         if (!game || game.gameStatus === 1 || game.gameStatus === 6 || game.gameStatus === 5) {

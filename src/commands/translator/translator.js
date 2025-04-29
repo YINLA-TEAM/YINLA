@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const tranlate = require('@iamtraction/google-translate');
 
 module.exports = {
@@ -72,7 +72,7 @@ module.exports = {
                 .setTimestamp(Date.now())
             await interaction.reply({
                 embeds:[error_embed],
-                ephemeral: true
+                flags: MessageFlags.Ephemeral,
             })
         } else {
             const translatedText = (await tranlate( text, {to: lan})).text;
@@ -90,7 +90,7 @@ module.exports = {
 
             await interaction.reply({
                 embeds: [translateEmbed],
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             })
         }
     }

@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -36,7 +36,7 @@ module.exports = {
         await interaction.reply({
             embeds:[invite_embed],
             components:[invite_button],
-            ephemeral: true
+            flags: MessageFlags.Ephemeral,
         })
     }
 }
