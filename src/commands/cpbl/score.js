@@ -6,6 +6,8 @@ const fetchCPBLScore = async() => {
         const response = await fetch("https://www.cpbl.com.tw/home/getdetaillist", { method: 'POST' });
         const data = await response.json();
         let game_detail;
+        const gameArray = [];
+
         if(data.GameDetailJson === null) {
             game_detail = JSON.parse(data.GameADetailJson);
         } else if(data.GameADetailJson === null) {
@@ -15,62 +17,65 @@ const fetchCPBLScore = async() => {
         } else {
             return new Error('Game Not Found');
         }
-        const gameArray = [];
         
-        game_detail.forEach((game) => {
-            gameArray.push({
-                gameSNo: game?.GameSno,
-                gameStatus: game?.GameStatus,
-                gameType: game?.KindCode,
-
-                awayTeam: game?.VisitingTeamName,
-                homeTeam: game?.HomeTeamName,
-                awayScore: game?.VisitingTotalScore == null ? '0' : game?.VisitingTotalScore,
-                homeScore: game?.HomeTotalScore == null ? '0' : game?.HomeTotalScore,
-                awayTeam_code: game?.VisitingTeamCode,
-                homeTeam_code: game?.HomeTeamCode,
-                awayTeam_W: game?.VisitingGameResultWCnt,
-                awayTeam_L: game?.VisitingGameResultLCnt,
-                awayTeam_T: game?.VisitingGameResultTCnt,
-                homeTeam_W: game?.HomeGameResultWCnt,
-                homeTeam_L: game?.HomeGameResultLCnt,
-                homeTeam_T: game?.HomeGameResultTCnt,
-
-                place: game?.FieldAbbe,
-                place_time: game?.PreExeDate,
-                inning: game?.CurtBatting?.InningSeq,
-                inning_top_bot: game?.CurtBatting?.VisitingHomeType,
-                schedule: game?.GameStatusChi,
-
-                away_sp_name: game?.VisitingFirstMover,
-                away_sp_Acnt: game?.VisitingFirstAcnt,
-                home_sp_name: game?.HomeFirstMover,
-                home_sp_Acnt: game?.HomeFirstAcnt,
-
-                strike_cnt: game?.CurtBatting?.StrikeCnt,
-                ball_cnt: game?.CurtBatting?.BallCnt,
-                out_cnt: game?.CurtBatting?.OutCnt,
-                pitch_cnt: game?.CurtBatting?.PitchCnt,
-
-                hitter_no: game?.CurtBatting?.HitterUniformNo,
-                hitter_name: game?.CurtBatting?.HitterName,
-                hitter_Acnt: game?.CurtBatting?.HitterAcnt,
-                hitter_team: game?.CurtBatting?.VisitingHomeType == 1 ? game.VisitingTeamCode : game.HomeTeamCode,
-
-                pitcher_no: game?.CurtBatting?.PitcherUniformNo,
-                pitcher_name: game?.CurtBatting?.PitcherName,
-                pitcher_Acnt: game?.CurtBatting?.PitcherAcnt,
-                pitcher_team: game?.CurtBatting?.VisitingHomeType == 1 ? game.HomeTeamCode : game.VisitingTeamCode,
-
-                wins_pitcher_name: game?.WinningPitcherName,
-                wins_pitcher_Acnt: game?.WinningPitcherAcnt,
-                wins_pitcher_team: game?.WinningType == 1 ? game.VisitingTeamCode : game.HomeTeamCode,
-
-                loses_pitcher_name: game?.LosePitcherName,
-                loses_pitcher_Acnt: game?.LosePitcherAcnt,
-                loses_pitcher_team: game?.WinningType == 1 ? game.HomeTeamCode : game.VisitingTeamCode,
-            })
-        })
+        if(game_detail === null){
+            return new Error('Game Not Found');
+        } else {
+            game_detail.forEach((game) => {
+                gameArray.push({
+                    gameSNo: game?.GameSno,
+                    gameStatus: game?.GameStatus,
+                    gameType: game?.KindCode,
+    
+                    awayTeam: game?.VisitingTeamName,
+                    homeTeam: game?.HomeTeamName,
+                    awayScore: game?.VisitingTotalScore == null ? '0' : game?.VisitingTotalScore,
+                    homeScore: game?.HomeTotalScore == null ? '0' : game?.HomeTotalScore,
+                    awayTeam_code: game?.VisitingTeamCode,
+                    homeTeam_code: game?.HomeTeamCode,
+                    awayTeam_W: game?.VisitingGameResultWCnt,
+                    awayTeam_L: game?.VisitingGameResultLCnt,
+                    awayTeam_T: game?.VisitingGameResultTCnt,
+                    homeTeam_W: game?.HomeGameResultWCnt,
+                    homeTeam_L: game?.HomeGameResultLCnt,
+                    homeTeam_T: game?.HomeGameResultTCnt,
+    
+                    place: game?.FieldAbbe,
+                    place_time: game?.PreExeDate,
+                    inning: game?.CurtBatting?.InningSeq,
+                    inning_top_bot: game?.CurtBatting?.VisitingHomeType,
+                    schedule: game?.GameStatusChi,
+    
+                    away_sp_name: game?.VisitingFirstMover,
+                    away_sp_Acnt: game?.VisitingFirstAcnt,
+                    home_sp_name: game?.HomeFirstMover,
+                    home_sp_Acnt: game?.HomeFirstAcnt,
+    
+                    strike_cnt: game?.CurtBatting?.StrikeCnt,
+                    ball_cnt: game?.CurtBatting?.BallCnt,
+                    out_cnt: game?.CurtBatting?.OutCnt,
+                    pitch_cnt: game?.CurtBatting?.PitchCnt,
+    
+                    hitter_no: game?.CurtBatting?.HitterUniformNo,
+                    hitter_name: game?.CurtBatting?.HitterName,
+                    hitter_Acnt: game?.CurtBatting?.HitterAcnt,
+                    hitter_team: game?.CurtBatting?.VisitingHomeType == 1 ? game.VisitingTeamCode : game.HomeTeamCode,
+    
+                    pitcher_no: game?.CurtBatting?.PitcherUniformNo,
+                    pitcher_name: game?.CurtBatting?.PitcherName,
+                    pitcher_Acnt: game?.CurtBatting?.PitcherAcnt,
+                    pitcher_team: game?.CurtBatting?.VisitingHomeType == 1 ? game.HomeTeamCode : game.VisitingTeamCode,
+    
+                    wins_pitcher_name: game?.WinningPitcherName,
+                    wins_pitcher_Acnt: game?.WinningPitcherAcnt,
+                    wins_pitcher_team: game?.WinningType == 1 ? game.VisitingTeamCode : game.HomeTeamCode,
+    
+                    loses_pitcher_name: game?.LosePitcherName,
+                    loses_pitcher_Acnt: game?.LosePitcherAcnt,
+                    loses_pitcher_team: game?.WinningType == 1 ? game.HomeTeamCode : game.VisitingTeamCode,
+                })
+            });
+        }
         return gameArray;
     } catch (error) {
         console.log(error)
