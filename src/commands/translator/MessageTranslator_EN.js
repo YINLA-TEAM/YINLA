@@ -1,4 +1,6 @@
-const { ContextMenuCommandBuilder, ApplicationCommandType ,EmbedBuilder, MessageFlags } = require('discord.js');
+const { ContextMenuCommandBuilder, ApplicationCommandType ,
+        EmbedBuilder, MessageFlags, ContainerBuilder,
+        TextDisplayBuilder, SeparatorSpacingSize } = require('discord.js');
 const translate = require('@iamtraction/google-translate');
 
 module.exports = {
@@ -10,7 +12,7 @@ module.exports = {
         })
         .setType(ApplicationCommandType.Message),
 
-    async execute(interaction, client) {
+    async execute(interaction) {
         if(interaction.targetMessage.content == ''){
             const error_embed = new EmbedBuilder()
                 .setTitle(`<:tranlate:1035826480904679424> 翻譯｜TRANSLATE`)
@@ -18,7 +20,7 @@ module.exports = {
                 .setColor(`#5185e3`)
                 .setTimestamp(Date.now())
             await interaction.reply({
-                embeds:[error_embed],
+                embeds:[ error_embed ],
                 flags: MessageFlags.Ephemeral,
             })
         } else if(interaction.targetMessage.content.length >= 500){
@@ -28,32 +30,41 @@ module.exports = {
                 .setColor(`#5185e3`)
                 .setTimestamp(Date.now())
             await interaction.reply({
-                embeds:[error_embed],
+                embeds:[ error_embed],
                 flags: MessageFlags.Ephemeral,
             })
         } else {
-        const embed = new EmbedBuilder()
-            .setTitle(`<:tranlate:1035826480904679424> 翻譯｜TRANSLATE`)
-            .setColor(`#5185e3`)
-            .setDescription(`翻譯不一定100%正確，僅供參考\n(最多可翻譯500字)`)
-            .setFooter({
-                iconURL: client.user.displayAvatarURL(),
-                text: `YINLA`
-            })
-            .setTimestamp(Date.now())
-            .addFields({
-                name:`原始訊息`,
-                value:`\`\`\`\n${interaction.targetMessage}\n\`\`\``
-            })
-            .addFields({
-                name:`翻譯訊息`,
-                value:`\`\`\`\n${(await translate(interaction.targetMessage,{to:'en'})).text}\n\`\`\``
-            })
+            const translate_header = new TextDisplayBuilder()
+                .setContent([
+                    `## <:tranlate:1035826480904679424> 翻譯｜TRANSLATE`,
+                    `翻譯不一定100%正確，僅供參考，(最多可翻譯500字)`,
+                ].join('\n'));
 
-        await interaction.reply({
-            embeds:[embed],
-            flags: MessageFlags.Ephemeral,
-        })
-    }
+            const original_msg = new TextDisplayBuilder()
+                .setContent([
+                    `- **原始訊息**`,
+                    ` \`\`\`${interaction.targetMessage}\`\`\``
+                ].join('\n'));
+
+            const translated_msg = new TextDisplayBuilder()
+                .setContent([
+                    `- **翻譯訊息**`,
+                    ` \`\`\`${(await translate(interaction.targetMessage,{to:'en'})).text}\`\`\``
+                ].join('\n'));
+
+            const translate_container = new ContainerBuilder()
+                .setId(1)
+                .setSpoiler(false)
+                .addTextDisplayComponents(translate_header)
+                .addSeparatorComponents(separator => separator.setSpacing(SeparatorSpacingSize.Small))
+                .addTextDisplayComponents(original_msg)
+                .addSeparatorComponents(separator => separator.setSpacing(SeparatorSpacingSize.Small))
+                .addTextDisplayComponents(translated_msg);
+
+            await interaction.reply({
+                components : [translate_container],
+                flags: [ MessageFlags.Ephemeral, MessageFlags.IsComponentsV2 ],
+            })
+        }
     }
 }

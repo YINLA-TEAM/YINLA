@@ -1,5 +1,6 @@
-const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
-const tranlate = require('@iamtraction/google-translate');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags, ContainerBuilder,
+        TextDisplayBuilder, SeparatorSpacingSize } = require('discord.js');
+const translate = require('@iamtraction/google-translate');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -60,7 +61,7 @@ module.exports = {
                 .setRequired(true)
             ),
 
-    async execute(interaction, client){
+    async execute(interaction){
         const lan = interaction.options.getString('lan');
         const text = interaction.options.getString('text');
 
@@ -75,22 +76,29 @@ module.exports = {
                 flags: MessageFlags.Ephemeral,
             })
         } else {
-            const translatedText = (await tranlate( text, {to: lan})).text;
-            const translateEmbed = new EmbedBuilder()
-            .setAuthor({
-                name: "翻譯｜TRANSLATE",
-            })
-            .setDescription(`\`\`\`${translatedText}\`\`\``)
-            .setColor('Random')
-            .setTimestamp(Date.now())
-            .setFooter({
-                iconURL: client.user.displayAvatarURL(),
-                text: `YINLA`
-            })
+            const translatedText = (await translate( text, {to: lan})).text;
+            const translate_header = new TextDisplayBuilder()
+            .setContent([
+                `## <:tranlate:1035826480904679424> 翻譯｜TRANSLATE`,
+                `翻譯不一定100%正確，僅供參考，(最多可翻譯500字)`,
+            ].join('\n'));
+
+            const translated_msg = new TextDisplayBuilder()
+                .setContent([
+                    `- **翻譯訊息**`,
+                    ` \`\`\`${translatedText}\`\`\``
+                ].join('\n'));
+
+            const translate_container = new ContainerBuilder()
+                .setId(1)
+                .setSpoiler(false)
+                .addTextDisplayComponents(translate_header)
+                .addSeparatorComponents(separator => separator.setSpacing(SeparatorSpacingSize.Small))
+                .addTextDisplayComponents(translated_msg);
 
             await interaction.reply({
-                embeds: [translateEmbed],
-                flags: MessageFlags.Ephemeral,
+                components : [translate_container],
+                flags: [ MessageFlags.Ephemeral, MessageFlags.IsComponentsV2 ],
             })
         }
     }
