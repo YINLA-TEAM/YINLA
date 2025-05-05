@@ -1,4 +1,5 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Colors } = require('discord.js');
+const { ContainerBuilder, TextDisplayBuilder, MessageFlags, MediaGalleryBuilder, MediaGalleryItemBuilder,
+    SeparatorSpacingSize, ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, } = require('discord.js');
 const cpcSchema = require('../../Model/cpcChannel');
 const cheerio = require('cheerio');
 const cron = require('cron');
@@ -42,41 +43,51 @@ module.exports = {
     async execute(client) {
         const job = new cron.CronJob("0 10 12 * * 0", async function () {
             try {
-                oil = await fetchCPCOilPrice();
-                let oil_embed_color = Colors.Green;
-                let oil_embed_title = "";
+                const oil = await fetchCPCOilPrice();
+                let oil_color = Colors.Green;
+                let oil_title = "";
 
                 if(oil.rate === '0.0') {
-                    oil_embed_color = Colors.Grey;
-                    oil_embed_title = "下週汽油價格不調整";
+                    oil_color = Colors.Grey;
+                    oil_title = "本週汽油價格不調整";
                 } else if(oil.UpOrDown === "調漲") {
-                    oil_embed_color = Colors.Red;
-                    oil_embed_title = `下週汽油價格${oil.UpOrDown} ${oil.rate}`;
+                    oil_color = Colors.Red;
+                    oil_title = `本週汽油價格${oil.UpOrDown} ${oil.rate}`;
                 } else if(oil.UpOrDown === "調降") {
-                    oil_embed_color = Colors.Green;
-                    oil_embed_title = `下週汽油價格${oil.UpOrDown} ${oil.rate}`;
+                    oil_color = Colors.Green;
+                    oil_title = `本週汽油價格${oil.UpOrDown} ${oil.rate}`;
                 }
 
-                const oil_embed = new EmbedBuilder()
-                    .setAuthor({
-                        name: "台灣中油",
-                        iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/CPC_Corporation%2C_Taiwan_Seal.svg/800px-CPC_Corporation%2C_Taiwan_Seal.svg.png"
-                    })
-                    .setTitle(oil_embed_title)
-                    .setDescription(`自 **${oil.PriceUpdate}** 零時起實施，單位：元/公升`)
-                    .setColor(oil_embed_color)
-                    .addFields([
-                        { name: "92無鉛", value: oil.nine_two_price ,inline: true },
-                        { name: "95無鉛", value: oil.nine_five_price ,inline: true },
-                        { name: "98無鉛", value: oil.nine_eight_price ,inline: true },
-                        { name: "酒精汽油", value: oil.ethanolFuel_price ,inline: true },
-                        { name: "超級柴油", value: oil.superDiesel_price ,inline: true },
-                        { name: "液化石油氣", value: oil.LPG_price ,inline: true },
-                    ])
-                    .setFooter({ text: "台灣中油股份有限公司 • CPC Corporation, Taiwan" })
-                    .setTimestamp(Date.now())
+                const oil_header = new TextDisplayBuilder()
+                    .setContent(
+                        [
+                            `# ${oil_title}`,
+                            `-# 自 **<t:${parseMonthDayToUnix(oil.PriceUpdate)}>** 起實施，單位：元/公升`,
+                        ].join('\n')
+                    );
 
-                const url = new ActionRowBuilder()
+                    const oil_msg = new TextDisplayBuilder()
+                    .setContent(
+                        [
+                            `- **92無鉛**\n → __${oil.nine_two_price}__ 元`,
+                            `- **95無鉛**\n → __${oil.nine_five_price}__ 元`,
+                            `- **98無鉛**\n → __${oil.nine_eight_price}__ 元`,
+                            `- **酒精汽油**\n → __${oil.ethanolFuel_price}__ 元`,
+                            `- **超級柴油**\n → __${oil.superDiesel_price}__ 元`,
+                            `- **液化石油氣**\n → __${oil.LPG_price}__ 元`,
+                        ].join('\n')
+                    );
+    
+                const oil_footer = new TextDisplayBuilder()
+                    .setContent(`-# 以上價格僅供參考，實際價格以中油官網為準・資料來源：台灣中油`);
+        
+                const cpc_logo = new MediaGalleryBuilder()
+                    .addItems([
+                        new MediaGalleryItemBuilder()
+                            .setURL('https://ws.cpc.com.tw/001/Upload/1/sites/pagebackimage/ff201a11-44a7-4d52-970d-b5e747044b4b.png')
+                    ]);
+        
+                const cpc_url = new ActionRowBuilder()
                     .addComponents([
                         new ButtonBuilder()
                             .setLabel("台灣中油官網")
@@ -87,6 +98,18 @@ module.exports = {
                             .setStyle(ButtonStyle.Link)
                             .setURL("https://www.cpc.com.tw/historyprice.aspx?n=2890"),
                     ]);
+        
+                const oil_container = new ContainerBuilder()
+                    .setId(1)
+                    .setAccentColor(oil_color)
+                    .setSpoiler(false)
+                    .addMediaGalleryComponents(cpc_logo)
+                    .addTextDisplayComponents(oil_header)
+                    .addSeparatorComponents(separator => separator.setSpacing(SeparatorSpacingSize.Small))
+                    .addTextDisplayComponents(oil_msg)
+                    .addSeparatorComponents(separator => separator.setSpacing(SeparatorSpacingSize.Small))
+                    .addTextDisplayComponents(oil_footer)
+                    .addActionRowComponents(cpc_url)
 
                 client.guilds.cache.forEach(async (guild) => {
                     cpcSchema.findOne({ Guild: guild.id }, async (err, data) => {
@@ -104,8 +127,8 @@ module.exports = {
 
                         if (oil.PriceUpdate !== previousOilPriceUpdateDate){
                             cpcChannel.send({
-                                embeds: [ oil_embed ],
-                                components: [ url ]
+                                components : [oil_container],
+                                flags: MessageFlags.IsComponentsV2,
                             });
                             data.priceUpdateDate = oil.date;
                             await data.save();
