@@ -42,14 +42,14 @@ module.exports = {
 
             const original_msg = new TextDisplayBuilder()
                 .setContent([
-                    `- **原始訊息**`,
-                    ` \`\`\`${interaction.targetMessage}\`\`\``
+                    `**原始訊息**`,
+                    `\`\`\`${interaction.targetMessage}\`\`\``
                 ].join('\n'));
 
             const translated_msg = new TextDisplayBuilder()
                 .setContent([
-                    `- **翻譯訊息**`,
-                    ` \`\`\`${(await translate(interaction.targetMessage,{to:'en'})).text}\`\`\``
+                    `**翻譯訊息**`,
+                    `\`\`\`${(await translate(interaction.targetMessage,{to:'en'})).text}\`\`\``
                 ].join('\n'));
 
             const translate_container = new ContainerBuilder()

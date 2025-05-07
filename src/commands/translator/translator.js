@@ -85,8 +85,8 @@ module.exports = {
 
             const translated_msg = new TextDisplayBuilder()
                 .setContent([
-                    `- **翻譯訊息**`,
-                    ` \`\`\`${translatedText}\`\`\``
+                    `**翻譯訊息**`,
+                    `\`\`\`${translatedText}\`\`\``
                 ].join('\n'));
 
             const translate_container = new ContainerBuilder()
