@@ -1,8 +1,6 @@
-const { SlashCommandBuilder, EmbedBuilder, MessageFlags,
+const { SlashCommandBuilder, MessageFlags, ThumbnailBuilder,
         ContainerBuilder, TextDisplayBuilder, SeparatorSpacingSize,
-        MediaGalleryBuilder, MediaGalleryItemBuilder, ButtonBuilder,
-        ButtonStyle, SectionBuilder, ThumbnailBuilder,
-} = require('discord.js');
+        SectionBuilder, } = require('discord.js');
 const cheerio = require('cheerio');
 const { teamIcon, gameType } = require('../../data/cpblType.js');
 

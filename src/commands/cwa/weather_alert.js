@@ -10,7 +10,7 @@ module.exports = {
         .setDescription('檢視 天氣警報'),
 
     async execute(interaction) {
-        const WaitMessage = await interaction.deferReply({
+        await interaction.deferReply({
             withResponse: true,
             flags: MessageFlags.Ephemeral,
         });
@@ -19,33 +19,25 @@ module.exports = {
         const { records } = waResult.data;
         const Alert_Embed_List = [];
 
-        if (records.record == null || records.record.length === 0) {
-            const Null_Embed = new EmbedBuilder()
-                .setColor('Green')
-                .setTitle('目前沒有任何天氣警報')
-            Alert_Embed_List.push(Null_Embed);
-        } else {
-            for (let i = 0; i <= records.record.length-1; i++) {
-                Alert_Embed_List.push(F_Alert_Embed(i))
-            }
-        }
-
+        
         function F_Alert_Embed(number) {
-            const Weather_Alerts = records.record[number];
-            const Type = Weather_Alerts.datasetInfo.datasetDescription;
-            const Location = [];
-
-            Weather_Alerts.hazardConditions.hazards.hazard[0].info.affectedAreas.location.forEach( n =>{
-                Location.push(n.locationName);
-            });
-
-            const S_time = Date.parse(Weather_Alerts.datasetInfo.validTime.startTime) / 1000;
-            const E_time = Date.parse(Weather_Alerts.datasetInfo.validTime.endTime) / 1000;
-            const I_time = new Date(Weather_Alerts.datasetInfo.issueTime);
-
-            const Content = Weather_Alerts.contents.content.contentText.trim();
-
-            const Alert_Embed = new EmbedBuilder()
+            try {
+                const Weather_Alerts = records.record[number];
+                const Type = Weather_Alerts.datasetInfo.datasetDescription;
+                const Location = [];
+                
+                Weather_Alerts.hazardConditions.hazards?.hazard[0]
+                .info.affectedAreas.location.forEach(n =>{
+                    Location.push(n.locationName);
+                });
+                
+                const S_time = Date.parse(Weather_Alerts.datasetInfo.validTime.startTime) / 1000;
+                const E_time = Date.parse(Weather_Alerts.datasetInfo.validTime.endTime) / 1000;
+                const I_time = new Date(Weather_Alerts.datasetInfo.issueTime);
+                
+                const Content = Weather_Alerts.contents.content.contentText.trim();
+                
+                const Alert_Embed = new EmbedBuilder()
                 .setAuthor({
                     name: "天氣警報",
                     iconURL: 'https://cdn.discordapp.com/emojis/1134845181141725364.webp?size=96&quality=lossless',
@@ -71,12 +63,32 @@ module.exports = {
                         name: "結束時間",
                         value: `<t:${E_time}>__(<t:${E_time}:R>)__`
                     },
-                ])
+                ]);
 
-            return Alert_Embed;
+                return Alert_Embed;
+            } catch (error) {
+                console.error("Error: ", error);
+                const Error_Embed = new EmbedBuilder()
+                    .setColor('Red')
+                    .setTitle('發生錯誤')
+                    .setDescription('無法獲取天氣警報資料，請稍後再試。');
+
+                return Error_Embed;
+            }
+        }
+        
+        if (records.record == null || records.record.length === 0) {
+            const Null_Embed = new EmbedBuilder()
+                .setColor('Green')
+                .setTitle('目前沒有任何天氣警報')
+            Alert_Embed_List.push(Null_Embed);
+        } else {
+            for (let i = 0; i <= records.record.length-1; i++) {
+                Alert_Embed_List.push(F_Alert_Embed(i))
+            }
         }
 
-        const SuccessMessage = await interaction.editReply({
+        await interaction.editReply({
             embeds: Alert_Embed_List,
             ephemeral: true
         });
