@@ -21,7 +21,7 @@ function parseMonthDayToUnix(monthDayStr) {
     });
     
     return Math.floor(closest.date.getTime() / 1000);
-    }
+}
 
 async function fetchCPCOilPrice() {
     const res = await fetch("https://www.cpc.com.tw/GetOilPriceJson.aspx?type=TodayOilPriceString", { method: 'GET' });

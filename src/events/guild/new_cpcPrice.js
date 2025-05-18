@@ -4,6 +4,26 @@ const cpcSchema = require('../../Model/cpcChannel');
 const cheerio = require('cheerio');
 const cron = require('cron');
 
+function parseMonthDayToUnix(monthDayStr) {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    
+    const [_, month, day] = monthDayStr.match(/(\d+)月(\d+)日/);
+    
+    const candidates = [-1, 0, 1].map(offset => {
+        const year = currentYear + offset;
+        const date = new Date(year, month - 1, day);
+        return { year, date };
+    });
+    const closest = candidates.reduce((prev, curr) => {
+        const prevDiff = Math.abs(prev.date - now);
+        const currDiff = Math.abs(curr.date - now);
+        return currDiff < prevDiff ? curr : prev;
+    });
+    
+    return Math.floor(closest.date.getTime() / 1000);
+}
+
 
 async function fetchCPCOilPrice() {
     const res = await fetch("https://www.cpc.com.tw/GetOilPriceJson.aspx?type=TodayOilPriceString", { method: 'GET' });
