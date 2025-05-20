@@ -13,7 +13,6 @@ module.exports = {
                 await command.execute(interaction, client);
             } catch (error) {
                 console.error(error);
-                // console.log(interaction.member)
                 await interaction.reply({
                     content: `發生錯誤，請向管理員回報`,
                     ephemeral: true
@@ -55,11 +54,11 @@ module.exports = {
         } else if (interaction.isContextMenuCommand()) {
             const { commands } = client;
             const { commandName } = interaction;
-            const cotextCommand = commands.get(commandName);
-            if (!cotextCommand) return;
+            const contextCommand = commands.get(commandName);
+            if (!contextCommand) return;
 
             try {
-                await cotextCommand.execute(interaction, client);
+                await contextCommand.execute(interaction, client);
             } catch (error) {
                 console.error(error);
             }

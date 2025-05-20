@@ -55,8 +55,6 @@ async function fetchCPCOilPrice() {
     }
 }
 
-let oil;
-
 module.exports = {
     name: 'ready',
     once: false,
