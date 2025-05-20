@@ -16,11 +16,6 @@ module.exports = {
             .addChannelTypes(ChannelType.GuildText)
             .setRequired(true)
         )
-        .addRoleOption(option => 
-            option.setName("加入應得的身分組")
-            .setDescription("設定加入應得的身分組")
-            .setRequired(true)
-        )
         .addStringOption(option => (
             option
                 .setName("setup-remove")
@@ -34,6 +29,11 @@ module.exports = {
                     { name: '移除', value: '移除' },
                 )
         ))
+        .addRoleOption(option => 
+            option.setName("加入應得的身分組")
+            .setDescription("設定加入應得的身分組")
+            .setRequired(false)
+        )
         .addStringOption(option=>
             option.setName("歡迎訊息")
             .setDescription("設定歡迎訊息")
