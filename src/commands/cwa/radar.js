@@ -10,7 +10,7 @@ module.exports = {
         .setDescription("即時的雷達回波圖"),
 
         async execute (interaction) {
-            const WaitMessage = await interaction.deferReply({
+            await interaction.deferReply({
                 withResponse: true,
                 flags: MessageFlags.Ephemeral,
             });
@@ -29,7 +29,7 @@ module.exports = {
                 })
                 .setImage(radar_IMG)
 
-            const SuccessMessage = await interaction.editReply({
+            await interaction.editReply({
                 embeds:[radar_embed]
             })
 }

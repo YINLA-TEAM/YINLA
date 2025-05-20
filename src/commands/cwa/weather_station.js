@@ -10,7 +10,7 @@ module.exports = {
         .setDescription('檢視 氣象站相關資訊(此為實驗功能，僅能檢視 台中龍井 的觀測站)'),
 
     async execute(interaction){
-        const WaitMessage = await interaction.deferReply({
+        await interaction.deferReply({
             withResponse: true,
             flags: MessageFlags.Ephemeral,
         });

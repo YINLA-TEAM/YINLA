@@ -52,7 +52,7 @@ module.exports = {
                     inline: true
                 }
             ])
-        const SuccessMessage = await interaction.editReply({
+        await interaction.editReply({
             embeds : [ botInfoEmbed ],
         })
     }

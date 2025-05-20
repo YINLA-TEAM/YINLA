@@ -23,7 +23,7 @@ module.exports = {
         ),
 
     async execute(interaction) {
-        const WaitMessage = await interaction.deferReply({
+        await interaction.deferReply({
             withResponse: true,
             flags: MessageFlags.Ephemeral,
         });
@@ -169,7 +169,7 @@ module.exports = {
             .filter(v => !v.InfoStatus)
             .forEach(ShakingArea => embed.addFields({ name: ShakingArea.AreaDesc, value: ShakingArea.CountyName }));
 
-        const SuccessMessage = await interaction.editReply({
+        await interaction.editReply({
             embeds: [embed],
             components: [url],
         });

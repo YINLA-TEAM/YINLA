@@ -56,7 +56,7 @@ module.exports = {
         ),
 
     async execute (interaction) {
-        const WaitMessage = await interaction.deferReply({
+        await interaction.deferReply({
             withResponse: true,
             flags: MessageFlags.Ephemeral,
         });
@@ -89,7 +89,7 @@ module.exports = {
             .setDescription(`${broad.join("\n")}`)
             .setColor("Blue")
 
-        const SuccessMessage = await interaction.editReply({
+        await interaction.editReply({
             embeds: [ standingEmbed ]
         });
     }

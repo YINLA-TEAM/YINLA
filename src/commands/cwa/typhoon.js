@@ -13,7 +13,7 @@ module.exports = {
         const typhoon_WindReal = "https://www.cwa.gov.tw/Data/typhoon/WPPS_REG_WindReal.jpg";
         const typhoon_URL = "https://www.cwa.gov.tw/V8/C/P/Typhoon/TY_WARN.html";
 
-        const Wait_msg = await interaction.deferReply({
+        await interaction.deferReply({
             withResponse: true,
             flags: MessageFlags.Ephemeral,
         });
@@ -57,7 +57,7 @@ module.exports = {
                     .setURL(typhoon_URL)
             ])
 
-        const Suc_msg = await interaction.editReply({
+        await interaction.editReply({
             embeds : typhoon_Embed,
             components : [ url ],
         })

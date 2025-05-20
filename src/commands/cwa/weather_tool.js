@@ -43,7 +43,7 @@ module.exports = {
         ),
 
     async execute(interaction){
-        const WaitMessage = await interaction.deferReply({
+        await interaction.deferReply({
             withResponse: true,
             flags: MessageFlags.Ephemeral,
         });
@@ -72,7 +72,7 @@ module.exports = {
             iconURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png"
         })
 
-        const SuccessMessage = await interaction.editReply({
+        await interaction.editReply({
             embeds: [wtEmbed],
         });
     }

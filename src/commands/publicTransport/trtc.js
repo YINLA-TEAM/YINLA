@@ -53,7 +53,7 @@ module.exports = {
         .setDescription("查詢臺北捷運營運狀況"),
 
     async execute (interaction) {
-        const WaitMessage = await interaction.deferReply({
+        await interaction.deferReply({
             withResponse: true,
             flags: MessageFlags.Ephemeral,
         });
@@ -74,7 +74,7 @@ module.exports = {
             .setColor('Blue')
             .setFooter({ text: "資料來源 臺北大眾捷運股份有限公司" })
 
-        const SuccessMessage = await interaction.editReply({
+        await interaction.editReply({
             embeds : [ routeEmbed ]
         });
     }

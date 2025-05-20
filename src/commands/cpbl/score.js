@@ -93,7 +93,7 @@ module.exports = {
     
     async execute (interaction) {
 
-        const WaitMessage = await interaction.deferReply({
+        await interaction.deferReply({
             withResponse: true,
             flags: MessageFlags.Ephemeral,
         });
@@ -245,7 +245,7 @@ module.exports = {
                 }
             }
         }
-        const SuccessMessage = await interaction.editReply({
+        await interaction.editReply({
             embeds: game_embed_list
         });
     }

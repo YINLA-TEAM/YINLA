@@ -62,31 +62,31 @@ module.exports = {
 
         welcomeSchema.findOne({Guild:interaction.guild.id}, async (err,data) =>{
             if(!data && interaction.options.getString('setup-remove') == '建立') {
-                const newWelcome = await welcomeSchema.create({
+                await welcomeSchema.create({
                     Guild:interaction.guild.id,
                     Channel: welcomeChannel.id,
                     Msg: welcomeMessage,
                     Role:roleId.id
                 });
-                const succes_creat_welcome_msg = new EmbedBuilder()
+                const success_create_welcome_msg = new EmbedBuilder()
                 .setTitle(`✅ 成功建立 **歡迎訊息**`)
                 .setColor(`Green`)
 
                 interaction.reply({
-                    embeds:[ succes_creat_welcome_msg ],
+                    embeds:[ success_create_welcome_msg ],
                     flags: MessageFlags.Ephemeral,
                 })
             } else if(interaction.options.getString('setup-remove') == '建立') {
-                const err_creat_welcome_msg = new EmbedBuilder()
+                const err_create_welcome_msg = new EmbedBuilder()
                 .setTitle(`❌ 請確認使否有設定過推播頻道`)
                 .setColor(`Red`)
 
                 interaction.reply({
-                    embeds:[ err_creat_welcome_msg ],
+                    embeds:[ err_create_welcome_msg ],
                     flags: MessageFlags.Ephemeral,
                 })
             } else if(interaction.options.getString('setup-remove') == '移除') {
-                const rmWelcome = await welcomeSchema.deleteOne({
+                await welcomeSchema.deleteOne({
                     Guild:interaction.guild.id,
                 })
                 const rm_welcome_msg = new EmbedBuilder()
