@@ -7,7 +7,7 @@ module.exports = {
             const { commands } = client;
             const { commandName } = interaction;
             const command = commands.get(commandName);
-            if (!command) return;
+            if (!command) return new Error('There is no code for this command.');;
 
             try {
                 await command.execute(interaction, client);
@@ -55,7 +55,7 @@ module.exports = {
             const { commands } = client;
             const { commandName } = interaction;
             const contextCommand = commands.get(commandName);
-            if (!contextCommand) return;
+            if (!contextCommand) return new Error('There is no code for this context menu command.');
 
             try {
                 await contextCommand.execute(interaction, client);
@@ -66,7 +66,7 @@ module.exports = {
             const { commands } = client;
             const { commandName } = interaction;
             const command = commands.get(commandName);
-            if (!command) return;
+            if (!command) return new Error('There is no code for this command.');
 
             try {
                 await command.autocomplete(interaction, client);
