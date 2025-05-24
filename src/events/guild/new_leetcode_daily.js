@@ -22,7 +22,8 @@ module.exports = {
     name: 'ready',
     once: false,
     async execute(client) {
-        const job = new cron.CronJob("0/15 * * * * *", async function () {
+        const job = new cron.CronJob("10 8 * * *", async function () {
+            const today = new Date().toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' });
             const data = await fetchLeetCodeDaily();
             const leetcode_channel = client.channels.cache.get(process.env.leetcode_channel);
             if (!leetcode_channel) return;
@@ -32,7 +33,7 @@ module.exports = {
             
             const leetcode_title = new TextDisplayBuilder()
                 .setContent([
-                    `**LeetCode Daily**`,
+                    `**${today} LeetCode Daily**`,
                     `# [[${data.questionFrontendId}] ${data.questionTitle}](${data.questionLink})`,
                 ].join('\n'))
 
