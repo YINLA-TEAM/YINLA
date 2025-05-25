@@ -34,7 +34,7 @@ module.exports = {
             const leetcode_title = new TextDisplayBuilder()
                 .setContent([
                     `**${today} LeetCode Daily**`,
-                    `# [[${data.questionFrontendId}] ${data.questionTitle}](${data.questionLink})`,
+                    `# [[${data.questionFrontendId}] ${data.questionTitle}](${data.questionLink}/description/?envType=daily-question&envId=${data.date})`,
                 ].join('\n'))
 
             const leetcode_header = new SectionBuilder()
@@ -58,7 +58,7 @@ module.exports = {
             const leetcode_button = new ButtonBuilder()
                 .setLabel('Question')
                 .setStyle(ButtonStyle.Link)
-                .setURL(data.questionLink)
+                .setURL(`${data.questionLink}/description/?envType=daily-question&envId=${data.date}`)
 
             const leetcode_url = new ActionRowBuilder()
                 .addComponents(leetcode_button)
