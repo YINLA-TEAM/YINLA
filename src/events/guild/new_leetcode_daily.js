@@ -5,10 +5,15 @@ const { ThumbnailBuilder, TextDisplayBuilder, SectionBuilder,
 const html2md = require('html-to-md');
 
 const fetchLeetCodeDaily = async () => {
-    const response = await fetch('https://alfa-leetcode-api.onrender.com/daily', { method: 'GET' });
-    const data = await response.json();
-    if(data) return data;
-    else return;
+    try {
+        const response = await fetch('https://alfa-leetcode-api.onrender.com/daily', { method: 'GET' });
+        const data = await response.json();
+        if(data) return data;
+        else return;
+    } catch (error) {
+        console.error('[LeetCode Daily] 發生錯誤', error);
+        return null;
+    }
 }
 
 const difficulty_color = (difficulty) => {
@@ -55,17 +60,25 @@ module.exports = {
             const leetcode_footer = new TextDisplayBuilder()
                 .setContent(`-# 此為測試功能，如果有誤請回報`)
 
-            const leetcode_button = new ButtonBuilder()
+            const leetcode_questionButton = new ButtonBuilder()
                 .setLabel('Question')
                 .setStyle(ButtonStyle.Link)
                 .setURL(`${data.questionLink}/description/?envType=daily-question&envId=${data.date}`)
 
-            const leetcode_url = new ActionRowBuilder()
-                .addComponents(leetcode_button)
+            const leetcode_problemButton = new ButtonBuilder()
+                .setLabel('More Problems')
+                .setStyle(ButtonStyle.Link)
+                .setURL(`https://leetcode.com/problems/`)
+
+            const leetcode_questionRow = new ActionRowBuilder()
+                .addComponents(leetcode_questionButton)
+
+            const leetcode_problemRow = new ActionRowBuilder()
+                .addComponents(leetcode_problemButton)
 
             const leetcode_container = new ContainerBuilder()
 
-            if(data){
+            if(data !== null){
                 leetcode_container
                     .setId(1)
                     .setSpoiler(false)
@@ -73,13 +86,14 @@ module.exports = {
                     .addSectionComponents(leetcode_header)
                     .addSeparatorComponents(separator => separator.setSpacing(SeparatorSpacingSize.Small))
                     .addTextDisplayComponents(leetcode_description)
-                    .addActionRowComponents(leetcode_url)
+                    .addActionRowComponents(leetcode_questionRow)
                     .addTextDisplayComponents(leetcode_footer)
             } else {
                 leetcode_container
                     .setId(1)
                     .setSpoiler(false)
                     .addTextDisplayComponents(leetcode_error_msg)
+                    .addActionRowComponents(leetcode_problemRow)
                     .addTextDisplayComponents(leetcode_footer)
             }
 
