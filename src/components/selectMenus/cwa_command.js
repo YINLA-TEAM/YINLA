@@ -27,7 +27,7 @@ module.exports = {
                 name:`YINLA`,
                 iconURL:client.user.displayAvatarURL()
             })
-            .setDescription(`查詢當前的天氣警報\nEX:\`大雨特報\`、\`陸上颱風警報\`、\`\``)
+            .setDescription(`查詢當前的天氣警報\nEX:\`大雨特報\`、\`陸上颱風警報\`等`)
 
         const embed4 = new EmbedBuilder()
             .setTitle(`🔭｜氣象站`)
