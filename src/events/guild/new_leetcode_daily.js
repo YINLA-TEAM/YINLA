@@ -48,7 +48,7 @@ module.exports = {
 
             const leetcode_description = new TextDisplayBuilder()
                 .setContent(
-                    `${html2md(data.question).replace(/<sub>(.*?)<\/sub>/g, '_$1')}`
+                    `${html2md(data.question).replace(/<sub>(.*?)<\/sub>/g, '_$1').replace(/<sup>(.*?)<\/sup>/g, '^$1')}`
                 )
 
             const leetcode_error_msg = new TextDisplayBuilder()
