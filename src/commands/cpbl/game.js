@@ -335,13 +335,15 @@ module.exports = {
 
         player = await fetchCPBLPlayer(game.mvp_Acnt);
         const CPBLGameMVPAvatar = new ThumbnailBuilder()
-            .setURL(player[0].imageURL == undefined ? "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png" : `https://www.cpbl.com.tw${player[0].imageURL}`)
-
         const CPBLGameMVP = new SectionBuilder()
-            .setThumbnailAccessory(CPBLGameMVPAvatar)
-            .addTextDisplayComponents(CPBLGameMVPheader)
-            .addTextDisplayComponents(CPBLGameMVPDescription)
-            
+
+        if (game.mvp_name !== '') {
+            CPBLGameMVPAvatar.setURL(player[0].imageURL === undefined ? "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png" : `https://www.cpbl.com.tw${player[0].imageURL}`)
+            CPBLGameMVP
+                .setThumbnailAccessory(CPBLGameMVPAvatar)
+                .addTextDisplayComponents(CPBLGameMVPheader)
+                .addTextDisplayComponents(CPBLGameMVPDescription)
+        }
 
         const CPBLContainer = new ContainerBuilder()
             .addTextDisplayComponents(CPBLogo)
@@ -352,10 +354,11 @@ module.exports = {
 
         if(game.mvp_name !== '') CPBLContainer.addSectionComponents(CPBLGameMVP);
         
-        CPBLContainer.addSeparatorComponents(separator => separator.setSpacing(SeparatorSpacingSize.Small));
-        CPBLContainer.addTextDisplayComponents(CPBLReferee);
-        CPBLContainer.addSeparatorComponents(separator => separator.setSpacing(SeparatorSpacingSize.Small));
-        CPBLContainer.addTextDisplayComponents(CPBLGameDetail);
+        CPBLContainer
+            .addSeparatorComponents(separator => separator.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(CPBLReferee)
+            .addSeparatorComponents(separator => separator.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(CPBLGameDetail);
 
         await interaction.editReply({
             components : [ CPBLContainer ],
