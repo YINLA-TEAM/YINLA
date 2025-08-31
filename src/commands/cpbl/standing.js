@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const cheerio = require("cheerio");
-const { teamIcon } = require("../../data/cpblType.js");
+const { teamIcon } = require("../../types/cpblType.js");
 
 const fetchCPBLStanding = async() => {
     const response = await fetch("https://www.cpbl.com.tw", { method: 'GET' });

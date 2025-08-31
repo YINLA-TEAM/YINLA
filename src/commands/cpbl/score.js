@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
-const { teamIcon, gameType } = require('../../data/cpblType.js');
+const { teamIcon, gameType } = require('../../types/cpblType.js');
 
 const fetchCPBLScore = async() => {
     try {

@@ -2,7 +2,7 @@ const { SlashCommandBuilder, MessageFlags, ThumbnailBuilder,
         ContainerBuilder, TextDisplayBuilder, SeparatorSpacingSize,
         SectionBuilder, } = require('discord.js');
 const cheerio = require('cheerio');
-const { teamIcon, gameType } = require('../../data/cpblType.js');
+const { teamIcon, gameType } = require('../../types/cpblType.js');
 
 const fetchCPBLPlayer = async(acnt) => {
     if(acnt === undefined) return;
