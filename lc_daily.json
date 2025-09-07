@@ -1,0 +1,54 @@
+{
+    "questionLink": "https://leetcode.com/problems/zero-array-transformation-iii/",
+    "date": "2025-05-22",
+    "questionId": "3647",
+    "questionFrontendId": "3362",
+    "questionTitle": "Zero Array Transformation III",
+    "titleSlug": "zero-array-transformation-iii",
+    "difficulty": "Medium",
+    "isPaidOnly": false,
+    "question": "<p>You are given an integer array <code>nums</code> of length <code>n</code> and a 2D array <code>queries</code> where <code>queries[i] = [l<sub>i</sub>, r<sub>i</sub>]</code>.</p>\n\n<p>Each <code>queries[i]</code> represents the following action on <code>nums</code>:</p>\n\n<ul>\n\t<li>Decrement the value at each index in the range <code>[l<sub>i</sub>, r<sub>i</sub>]</code> in <code>nums</code> by <strong>at most</strong><strong> </strong>1.</li>\n\t<li>The amount by which the value is decremented can be chosen <strong>independently</strong> for each index.</li>\n</ul>\n\n<p>A <strong>Zero Array</strong> is an array with all its elements equal to 0.</p>\n\n<p>Return the <strong>maximum </strong>number of elements that can be removed from <code>queries</code>, such that <code>nums</code> can still be converted to a <strong>zero array</strong> using the <em>remaining</em> queries. If it is not possible to convert <code>nums</code> to a <strong>zero array</strong>, return -1.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<div class=\"example-block\">\n<p><strong>Input:</strong> <span class=\"example-io\">nums = [2,0,2], queries = [[0,2],[0,2],[1,1]]</span></p>\n\n<p><strong>Output:</strong> <span class=\"example-io\">1</span></p>\n\n<p><strong>Explanation:</strong></p>\n\n<p>After removing <code>queries[2]</code>, <code>nums</code> can still be converted to a zero array.</p>\n\n<ul>\n\t<li>Using <code>queries[0]</code>, decrement <code>nums[0]</code> and <code>nums[2]</code> by 1 and <code>nums[1]</code> by 0.</li>\n\t<li>Using <code>queries[1]</code>, decrement <code>nums[0]</code> and <code>nums[2]</code> by 1 and <code>nums[1]</code> by 0.</li>\n</ul>\n</div>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<div class=\"example-block\">\n<p><strong>Input:</strong> <span class=\"example-io\">nums = [1,1,1,1], queries = [[1,3],[0,2],[1,3],[1,2]]</span></p>\n\n<p><strong>Output:</strong> <span class=\"example-io\">2</span></p>\n\n<p><strong>Explanation:</strong></p>\n\n<p>We can remove <code>queries[2]</code> and <code>queries[3]</code>.</p>\n</div>\n\n<p><strong class=\"example\">Example 3:</strong></p>\n\n<div class=\"example-block\">\n<p><strong>Input:</strong> <span class=\"example-io\">nums = [1,2,3,4], queries = [[0,3]]</span></p>\n\n<p><strong>Output:</strong> <span class=\"example-io\">-1</span></p>\n\n<p><strong>Explanation:</strong></p>\n\n<p><code>nums</code> cannot be converted to a zero array even after using all the queries.</p>\n</div>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>\n\t<li><code>0 &lt;= nums[i] &lt;= 10<sup>5</sup></code></li>\n\t<li><code>1 &lt;= queries.length &lt;= 10<sup>5</sup></code></li>\n\t<li><code>queries[i].length == 2</code></li>\n\t<li><code>0 &lt;= l<sub>i</sub> &lt;= r<sub>i</sub> &lt; nums.length</code></li>\n</ul>\n",
+    "exampleTestcases": "[2,0,2]\n[[0,2],[0,2],[1,1]]\n[1,1,1,1]\n[[1,3],[0,2],[1,3],[1,2]]\n[1,2,3,4]\n[[0,3]]",
+    "topicTags": [
+        {
+            "name": "Array",
+            "slug": "array",
+            "translatedName": null
+        },
+        {
+            "name": "Greedy",
+            "slug": "greedy",
+            "translatedName": null
+        },
+        {
+            "name": "Sorting",
+            "slug": "sorting",
+            "translatedName": null
+        },
+        {
+            "name": "Heap (Priority Queue)",
+            "slug": "heap-priority-queue",
+            "translatedName": null
+        },
+        {
+            "name": "Prefix Sum",
+            "slug": "prefix-sum",
+            "translatedName": null
+        }
+    ],
+    "hints": [
+        "Sort the queries.",
+        "We need to greedily pick the queries with farthest ending point first."
+    ],
+    "solution": {
+        "id": "2759",
+        "canSeeDetail": true,
+        "paidOnly": false,
+        "hasVideoSolution": false,
+        "paidOnlyVideo": true
+    },
+    "companyTagStats": null,
+    "likes": 181,
+    "dislikes": 34,
+    "similarQuestions": "[{\"title\": \"Corporate Flight Bookings\", \"titleSlug\": \"corporate-flight-bookings\", \"difficulty\": \"Medium\", \"translatedTitle\": null}, {\"title\": \"Minimum Moves to Make Array Complementary\", \"titleSlug\": \"minimum-moves-to-make-array-complementary\", \"difficulty\": \"Medium\", \"translatedTitle\": null}, {\"title\": \"Zero Array Transformation IV\", \"titleSlug\": \"zero-array-transformation-iv\", \"difficulty\": \"Medium\", \"translatedTitle\": null}]"
+}
