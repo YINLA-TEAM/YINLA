@@ -42,6 +42,8 @@ const fetchCPBLScore = async() => {
     
                     place: game?.FieldAbbe,
                     place_time: game?.PreExeDate,
+                    weather: game?.WeatherCode, // [晴, 陰, 多雲, 雨]
+                    weather_description: game?.WeatherDesc,
                     inning: game?.CurtBatting?.InningSeq,
                     inning_top_bot: game?.CurtBatting?.VisitingHomeType,
                     schedule: game?.GameStatusChi,
@@ -73,7 +75,7 @@ const fetchCPBLScore = async() => {
                     loses_pitcher_name: game?.LosePitcherName,
                     loses_pitcher_Acnt: game?.LosePitcherAcnt,
                     loses_pitcher_team: game?.WinningType == 1 ? game.HomeTeamCode : game.VisitingTeamCode,
-                })
+                });
             });
         }
         return gameArray;
@@ -81,6 +83,21 @@ const fetchCPBLScore = async() => {
         console.log(error)
         return false;
     } 
+}
+
+const weatherToEmoji = (weather) => {
+    switch (weather) {
+        case 1:
+            return '☀️';
+        case 2:
+            return '☁️';
+        case 3:
+            return '🌥️';
+        case 4:
+            return '🌧️';
+        default:
+            return '';
+    }
 }
 
 module.exports = {
@@ -121,14 +138,19 @@ module.exports = {
                         // 如有需要才進行 或 比賽尚未開始
                         const ifNeededGame_Embed = new EmbedBuilder()
                             .setAuthor({ name: "中華職棒", url:"https://www.cpbl.com.tw", iconURL:"https://www.cpbl.com.tw/theme/common/images/project/logo_new.png"})
-                            .setTitle(`[${game[i].gameType == 'C' || 'E' || 'F' ? `GAME ${game[i].gameSNo}` : game[i].gameSNo.toString().padStart(3,'0')}] ${teamIcon(game[i].awayTeam)} vs. ${teamIcon(game[i].homeTeam)}`)
-                            .setDescription(`# 比賽尚未開始`)
+                            .setTitle(`[${game[i].gameType == 'C' || 'E' || 'F' ? `GAME ${game[i].gameSNo}` : game[i].gameSNo.toString().padStart(3,'0')}] ${teamIcon(game[i].awayTeam)} vs. ${teamIcon(game[i].homeTeam)}  ${weatherToEmoji(game[i].weather)}`)
+                            .setDescription(`
+                                # 比賽尚未開始
+                                > 預定於 **<t:${new Date(game[i].place_time) / 1000}>**__(<t:${new Date(game[i].place_time) / 1000}:R>)__ 開始`)
                             .addFields([
                                 { name: "客隊先發投手", value: game[i].away_sp_Acnt == '' ? "未公布" : `${teamIcon(game[i].awayTeam_code)} [${game[i].away_sp_name}](https://www.cpbl.com.tw/team/person?acnt=${game[i].away_sp_Acnt})`, inline: true },
                                 { name: "主隊先發投手", value: game[i].home_sp_Acnt == '' ? "未公布" : `${teamIcon(game[i].homeTeam_code)} [${game[i].home_sp_name}](https://www.cpbl.com.tw/team/person?acnt=${game[i].home_sp_Acnt})`, inline: true },
                                 { name: "** **", value: "** **", inline: true },
                                 { name: "客隊勝敗和", value: `${game[i].awayTeam_W}-${game[i].awayTeam_L}-${game[i].awayTeam_T}`, inline: true },
                                 { name: "主隊勝敗和", value: `${game[i].homeTeam_W}-${game[i].homeTeam_L}-${game[i].homeTeam_T}`, inline: true },
+                                { name: "** **", value: "** **", inline: true },
+                                { name: "氣溫", value: `${(game[i].weather_description.split('。')[2]).replace(/[^\d]/g, " ").split(' ')[2]}°C ~ ${(game[i].weather_description.split('。')[2]).replace(/[^\d]/g, " ").split(' ')[3]} °C (${game[i].weather_description.split('。')[3]})`, inline: true },
+                                { name: "降雨機率", value: `${(game[i].weather_description.split('。')[1]).replace(/[^\d]/g, "")} %`, inline: true },
                             ])
                             .setFooter({ text: `🏟️ ${game[i].place}棒球場 • ${gameType(game[i].gameType)}` })
                         game_embed_list.push(ifNeededGame_Embed);
