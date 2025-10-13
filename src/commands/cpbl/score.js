@@ -8,12 +8,12 @@ const fetchCPBLScore = async() => {
         let game_detail;
         const gameArray = [];
 
-        if(data.GameDetailJson === null) {
-            game_detail = JSON.parse(data.GameADetailJson);
-        } else if(data.GameADetailJson === null) {
-            game_detail = JSON.parse(data.GameDDetailJson);
-        } else if(data.GameDDetailJson === null) {
+        if(data.GameDetailJson !== null) {
             game_detail = JSON.parse(data.GameDetailJson);
+        } else if(data.GameADetailJson !== null) {
+            game_detail = JSON.parse(data.GameADetailJson);
+        } else if(data.GameDDetailJson !== null) {
+            game_detail = JSON.parse(data.GameDDetailJson);
         } else {
             return new Error('Game Not Found');
         }
@@ -101,14 +101,13 @@ module.exports = {
         const game_embed_list = [];
         const game = await fetchCPBLScore();
 
-        if(game instanceof Error){
-            await interaction.editReply(`# ❌：目前無賽事資料`);
-            return;
-        } else if (!game) {
+        if (!game) {
             await interaction.editReply(`# 🚨：API擷取發生錯誤請回報`);
             return;
+        } else if(game instanceof Error){
+            await interaction.editReply(`# ❌：目前無賽事資料`);
+            return;
         }
-        
         // 判定有無賽事
         if(game.length === 0){
             const nullGameEmbed = new EmbedBuilder()
@@ -119,7 +118,7 @@ module.exports = {
             for(let i = 0; i < game.length; i++){
                 switch (game[i].gameStatus) {
                     case 1:
-                        // 如有必要才進行 或 比賽尚未開始
+                        // 如有需要才進行 或 比賽尚未開始
                         const ifNeededGame_Embed = new EmbedBuilder()
                             .setAuthor({ name: "中華職棒", url:"https://www.cpbl.com.tw", iconURL:"https://www.cpbl.com.tw/theme/common/images/project/logo_new.png"})
                             .setTitle(`[${game[i].gameType == 'C' || 'E' || 'F' ? `GAME ${game[i].gameSNo}` : game[i].gameSNo.toString().padStart(3,'0')}] ${teamIcon(game[i].awayTeam)} vs. ${teamIcon(game[i].homeTeam)}`)
