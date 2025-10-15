@@ -148,11 +148,16 @@ module.exports = {
                                 { name: "** **", value: "** **", inline: true },
                                 { name: "客隊勝敗和", value: `${game[i].awayTeam_W}-${game[i].awayTeam_L}-${game[i].awayTeam_T}`, inline: true },
                                 { name: "主隊勝敗和", value: `${game[i].homeTeam_W}-${game[i].homeTeam_L}-${game[i].homeTeam_T}`, inline: true },
-                                { name: "** **", value: "** **", inline: true },
-                                { name: "氣溫", value: `${(game[i].weather_description.split('。')[2]).replace(/[^\d]/g, " ").split(' ')[2]}°C ~ ${(game[i].weather_description.split('。')[2]).replace(/[^\d]/g, " ").split(' ')[3]} °C (${game[i].weather_description.split('。')[3]})`, inline: true },
-                                { name: "降雨機率", value: `${(game[i].weather_description.split('。')[1]).replace(/[^\d]/g, "")} %`, inline: true },
                             ])
                             .setFooter({ text: `🏟️ ${game[i].place}棒球場 • ${gameType(game[i].gameType)}` })
+
+                            if( game[i].weather_description !== null && game[i].weather_description !== '' ){
+                                ifNeededGame_Embed.addFields(
+                                    { name: "** **", value: "** **", inline: true },
+                                    { name: "氣溫", value: `${(game[i].weather_description.split('。')[2]).replace(/[^\d]/g, " ").split(' ')[2]}°C ~ ${(game[i].weather_description.split('。')[2]).replace(/[^\d]/g, " ").split(' ')[3]} °C (${game[i].weather_description.split('。')[3]})`, inline: true },
+                                    { name: "降雨機率", value: `${(game[i].weather_description.split('。')[1]).replace(/[^\d]/g, "")} %`, inline: true },
+                                );
+                            }
                         game_embed_list.push(ifNeededGame_Embed);
                         break;
                     case 2:
