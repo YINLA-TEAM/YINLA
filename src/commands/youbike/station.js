@@ -7,7 +7,7 @@ const {
 const fetchYouBikeAreaData = async () => {
   try {
     const res = await fetch("https://apis.youbike.com.tw/json/area-all.json");
-    if (!res.ok) throw new Error("API 回應失敗");
+    if (!res.ok) throw new Error("API Error");
     return await res.json();
   } catch (err) {
     console.error("取得行政區資料失敗:", err);
@@ -20,7 +20,7 @@ const fetchYouBikeDistrictData = async () => {
     const res = await fetch(
       "https://apis.youbike.com.tw/json/station-min-yb2.json"
     );
-    if (!res.ok) throw new Error("API 回應失敗");
+    if (!res.ok) throw new Error("API Error");
     return await res.json();
   } catch (err) {
     console.error("取得站點資料失敗:", err);
@@ -35,13 +35,27 @@ const fetchYouBikeData = async (station_no) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ station_no: [`${station_no}`] }),
     });
-    if (!res.ok) throw new Error("API 回應失敗");
+    if (!res.ok) throw new Error("API Error");
     return await res.json();
   } catch (err) {
     console.error("取得即時車輛資料失敗:", err);
     return null;
   }
 };
+
+const fetchYouBikeElectricBikeData = async (station_no) => {
+  try {
+    const res = await fetch(`https://apis.youbike.com.tw/api/front/bike/lists?station_no=${station_no}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!res.ok) throw new Error("API Error");
+    return await res.json();
+  } catch (err) {
+    console.error("取得即時電動車資料失敗:", err);
+    return null;
+  }
+}
 
 let areaList = [];
 let stationList = [];
@@ -77,6 +91,7 @@ module.exports = {
         flags: MessageFlags.Ephemeral,
       });
 
+      let youBikeEmbedList = [];
       const areaID = interaction.options.getString("area");
       const stationID = interaction.options.getString("station");
 
@@ -119,6 +134,8 @@ module.exports = {
           .setDescription(
             `# 暫停營運\n[點我前往 Google 地圖](https://www.google.com.tw/maps?q=${stationData.lat},${stationData.lng})`
           );
+
+        youBikeEmbedList.push(youBikeEmbed);
       } else if (stationData.status === 1) {
         youBikeEmbed
           .setColor("Orange")
@@ -149,14 +166,32 @@ module.exports = {
               inline: true,
             }
           );
+          youBikeEmbedList.push(youBikeEmbed);
+
+          if (stationData.available_spaces_detail.eyb > 0) {
+            try {
+              const eBikeData = await fetchYouBikeElectricBikeData(stationID);
+              const electricBikeEmbed = new EmbedBuilder()
+                .setColor("Green")
+                .setTitle("YouBike 2.0E 電量資訊")
+                .setDescription(
+                  `${eBikeData.retVal.map((bike) => `__\`${bike.pillar_no}\`__ [\`${bike.bike_no}\`] 電量: \`${bike.battery_power}%\``).join('\n')}`
+                );
+              youBikeEmbedList.push(electricBikeEmbed);
+            } catch (err) {
+              console.error("取得電動車資料時發生錯誤:", err);
+            }
+          }
       } else {
         youBikeEmbed
           .setColor("Grey")
           .setAuthor({ name: "YouBike", url: "https://www.youbike.com.tw" })
           .setTitle("發生意外狀況，無法取得站點資訊");
+
+        youBikeEmbedList.push(youBikeEmbed);
       }
 
-      await interaction.editReply({ embeds: [youBikeEmbed] });
+      await interaction.editReply({ embeds: youBikeEmbedList });
     } catch (err) {
       console.error("執行指令時發生錯誤:", err);
       await interaction.editReply({
