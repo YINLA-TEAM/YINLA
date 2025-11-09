@@ -39,7 +39,7 @@ module.exports = {
             })
 
             if(!data.Role) {
-                console.log('[錯誤]：沒有身份組');
+                console.log('[資訊]：沒有身份組');
             } else {
                 try {
                     member.roles.add(data.Role);

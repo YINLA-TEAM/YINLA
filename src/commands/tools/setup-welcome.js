@@ -66,7 +66,7 @@ module.exports = {
                     Guild:interaction.guild.id,
                     Channel: welcomeChannel.id,
                     Msg: welcomeMessage,
-                    Role:roleId.id
+                    Role:roleId ? roleId.id : null,
                 });
                 const success_create_welcome_msg = new EmbedBuilder()
                 .setTitle(`✅ 成功建立 **歡迎訊息**`)
