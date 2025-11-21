@@ -1,10 +1,10 @@
-<img alt="LOGO" src="https://i.imgur.com/0FomLnJ.png" width="125px" height="125px" align="left" >
+<img alt="LOGO" src="https://i.imgur.com/0FomLnJ.png" width="125px" height="125px" align="left" />
 
 # **YINLA**
 
 &nbsp;
-<img alt="Discord" src="https://img.shields.io/discord/1031159028505641011?color=blue&label=DISCORD&logo=discord&style=for-the-badge" align="right">
-<img src="https://wakatime.com/badge/user/830ee6e5-c894-4b82-bf14-7e55d87afbd4/project/8fa8a374-7442-4dad-979c-7820ba198411.svg?style=for-the-badge"  alt="wakatime" align="right">
+<img alt="Discord" src="https://img.shields.io/discord/1031159028505641011?color=blue&label=DISCORD&logo=discord&style=for-the-badge" align="right" />
+<img src="https://wakatime.com/badge/user/830ee6e5-c894-4b82-bf14-7e55d87afbd4/project/8fa8a374-7442-4dad-979c-7820ba198411.svg?style=for-the-badge"  alt="wakatime" align="right" />
 ## 關於
 
 **於 `2024/08/22` 成為已驗證機器人 ✅**
