@@ -60,7 +60,7 @@ module.exports = {
         const leetcode_title = new TextDisplayBuilder().setContent(
           [
             `**${today} LeetCode Daily**`,
-            `# [[${data.questionFrontendId}] ${data.questionTitle}](${data.questionLink}/description/?envType=daily-question&envId=${data.date})`,
+            `# [[${data.questionFrontendId}] ${data.questionTitle}](${data.questionLink}description/?envType=daily-question&envId=${data.date})`,
           ].join("\n")
         );
 
