@@ -79,7 +79,7 @@ const fetchCPBLScore = async() => {
 
                     closer_pitcher_name: game?.CloserPitcherName,
                     closer_pitcher_Acnt: game?.CloserPitcherAcnt,
-                    closer_pitcher_team: game?.WinningType == 1 ? game.HomeTeamCode : game.VisitingTeamCode,
+                    closer_pitcher_team: game?.WinningType == 1 ? game.VisitingTeamCode : game.HomeTeamCode,
                 });
             });
         }
