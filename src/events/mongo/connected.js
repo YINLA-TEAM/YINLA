@@ -1,8 +1,12 @@
-const chalk = require("chalk");
+const { Signale } = require("signale");
+
+const logger = new Signale({
+  scope: "MONDB",
+});
 
 module.exports = {
-    name: "connected",
-    execute() {
-        console.log(chalk.green("[DB] 已連線"));
-    },
+  name: "connected",
+  execute() {
+    logger.success("已連線");
+  },
 };

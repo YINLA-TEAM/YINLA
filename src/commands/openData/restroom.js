@@ -279,25 +279,29 @@ module.exports = {
         return;
       }
 
-      const filtered = restroomData.records.filter(
-        (record) =>
-          ((record.county &&
-            toLowerSafe(record.county).includes(toLowerSafe(countyID))) ||
-            (extractCountyAndDistrict(record.address).county &&
-              toLowerSafe(
-                extractCountyAndDistrict(record.address).county
-              ).includes(toLowerSafe(countyID)))) &&
-          ((record.areacode &&
-            toLowerSafe(record.areacode).includes(toLowerSafe(areacode))) ||
-            (extractCountyAndDistrict(record.address).district &&
-              toLowerSafe(
-                extractCountyAndDistrict(record.address).district
-              ).includes(toLowerSafe(areacode)))) &&
-          record.village &&
-          record.village.toLowerCase().includes(village?.toLowerCase() || "") &&
-          record.name &&
-          record.name.toLowerCase().includes(focusedValue.toLowerCase())
-      ).slice(0, 25);
+      const filtered = restroomData.records
+        .filter(
+          (record) =>
+            ((record.county &&
+              toLowerSafe(record.county).includes(toLowerSafe(countyID))) ||
+              (extractCountyAndDistrict(record.address).county &&
+                toLowerSafe(
+                  extractCountyAndDistrict(record.address).county
+                ).includes(toLowerSafe(countyID)))) &&
+            ((record.areacode &&
+              toLowerSafe(record.areacode).includes(toLowerSafe(areacode))) ||
+              (extractCountyAndDistrict(record.address).district &&
+                toLowerSafe(
+                  extractCountyAndDistrict(record.address).district
+                ).includes(toLowerSafe(areacode)))) &&
+            record.village &&
+            record.village
+              .toLowerCase()
+              .includes(village?.toLowerCase() || "") &&
+            record.name &&
+            record.name.toLowerCase().includes(focusedValue.toLowerCase())
+        )
+        .slice(0, 25);
 
       if (filtered.length === 0) {
         console.log("name autocomplete: 無資料");

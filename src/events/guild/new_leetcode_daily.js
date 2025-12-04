@@ -12,6 +12,7 @@ const {
   Colors,
 } = require("discord.js");
 const html2md = require("html-to-md");
+const { Signale } = require("signale");
 
 const fetchLeetCodeDaily = async () => {
   try {
@@ -39,6 +40,9 @@ module.exports = {
   name: "clientReady",
   once: false,
   async execute(client) {
+    const logger = new Signale({
+      scope: "LEECD",
+    });
     const job = new cron.CronJob(
       "10 8 * * *",
       async function () {
@@ -130,7 +134,7 @@ module.exports = {
           components: [leetcode_container],
           flags: [MessageFlags.IsComponentsV2],
         });
-        console.log("[發布] LeetCode Daily");
+        logger.success("發布 LeetCode Daily");
       },
       null,
       true,
@@ -138,6 +142,6 @@ module.exports = {
     );
 
     job.start();
-    console.log("[啟動] LeetCode Daily任務");
+    logger.success("啟動 LeetCode Daily 任務");
   },
 };

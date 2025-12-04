@@ -1,9 +1,19 @@
 const fs = require("fs");
 const path = require("path");
 const cron = require("cron");
+const { Signale } = require("signale");
 
 const DATA_DIR = path.join(__dirname, "../../data");
 const DATA_PATH = path.join(DATA_DIR, "restroom.json");
+
+const logger = new Signale({
+  scope: "RESTR",
+});
+
+const interactive = new Signale({
+  scope: "RESTR",
+  interactive: true,
+});
 
 function needUpdate(lastUpdateISO) {
   if (!lastUpdateISO) return true;
@@ -27,15 +37,15 @@ async function ensureDataAndMaybeUpdate() {
   const { updateRestroomData } = require("../../scripts/fetchRestroomData");
   const local = getLocalRestroomData();
   if (!local.lastUpdate || needUpdate(local.lastUpdate)) {
-    console.log("[事件] 公共廁所資料首次或逾期，開始更新...");
+    interactive.await("公共廁所資料首次或逾期，開始更新...");
     try {
       const count = await updateRestroomData();
-      console.log(`[事件] 公共廁所資料更新完成，共 ${count} 筆`);
+      interactive.success(`公共廁所資料更新完成，共 ${count} 筆`);
     } catch (e) {
-      console.error("[事件] 公共廁所資料更新失敗:", e);
+      interactive.error("公共廁所資料更新失敗:", e);
     }
   } else {
-    console.log("[事件] 公共廁所本地資料在 15 天內，略過啟動時更新");
+    logger.info("公共廁所本地資料在 15 天內，略過啟動時更新");
   }
 }
 
@@ -52,9 +62,9 @@ module.exports = {
             updateRestroomData,
           } = require("../../scripts/fetchRestroomData");
           const count = await updateRestroomData();
-          console.log(`[事件] 公共廁所資料固定更新完成，共 ${count} 筆`);
+          logger.info(`公共廁所資料固定更新完成，共 ${count} 筆`);
         } catch (e) {
-          console.error("[事件] 公共廁所資料固定更新失敗:", e);
+          logger.error("公共廁所資料固定更新失敗:", e);
         }
       },
       null,
@@ -64,6 +74,6 @@ module.exports = {
 
     await ensureDataAndMaybeUpdate();
     job.start();
-    console.log("[啟動] 公共廁所資料更新作業");
+    logger.success("啟動公共廁所資料定時更新作業");
   },
 };

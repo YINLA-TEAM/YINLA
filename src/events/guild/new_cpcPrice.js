@@ -13,6 +13,7 @@ const {
 const cpcSchema = require("../../Model/cpcChannel");
 const cheerio = require("cheerio");
 const cron = require("cron");
+const { Signale } = require("signale");
 
 function parseMonthDayToUnix(monthDayStr) {
   const now = new Date();
@@ -71,6 +72,9 @@ module.exports = {
   name: "clientReady",
   once: false,
   async execute(client) {
+    const logger = new Signale({
+      scope: "CPC_P",
+    });
     const job = new cron.CronJob(
       "0 10 12 * * 0",
       async function () {
@@ -150,13 +154,11 @@ module.exports = {
           client.guilds.cache.forEach(async (guild) => {
             cpcSchema.findOne({ Guild: guild.id }, async (err, data) => {
               if (err) {
-                console.error("[錯誤] 資料庫錯誤:", err);
+                logger.error("資料庫:", err);
                 return;
               }
               if (!data) {
-                console.log(
-                  `[事件] Guild ID: ${guild.id} 未設定中油油價推播頻道`
-                );
+                logger.info(`Guild ID: ${guild.id} 未設定中油油價推播頻道`);
                 return;
               }
               let previousOilPriceUpdateDate = data.PriceUpdate || "";
@@ -171,20 +173,20 @@ module.exports = {
                 data.priceUpdateDate = oil.date;
                 await data.save();
               } else {
-                console.log(`[事件] 沒有更新油價`);
+                logger.info(`沒有更新油價`);
               }
             });
           });
         } catch (error) {
-          console.error("[錯誤] 無法取得中油油價資料:", error);
+          logger.error("無法取得中油油價資料:", error);
         }
       },
-      console.log(`[事件] 已擷取中油油價`),
+      logger.info(`已擷取中油油價`),
       true,
       "Asia/Taipei"
     );
 
     job.start();
-    console.log("[啟動] 中油油價作業");
+    logger.success("啟動中油油價作業");
   },
 };

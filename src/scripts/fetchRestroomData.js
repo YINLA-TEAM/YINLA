@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const axios = require("axios");
+const { Signale } = require("signale");
 require("dotenv").config();
 
 const DATA_DIR = path.join(__dirname, "../data");
@@ -48,12 +49,15 @@ async function updateRestroomData() {
 }
 
 async function main() {
+  const logger = new Signale({
+    scope: "FETCH_RESTROOM",
+  });
   try {
-    console.log("[事件] 開始取得公共廁所資料...");
+    logger.info("開始取得公共廁所資料...");
     const count = await updateRestroomData();
-    console.log(`[事件] 公共廁所資料已更新，共 ${count} 筆。`);
+    logger.success(`公共廁所資料已更新，共 ${count} 筆。`);
   } catch (err) {
-    console.error("取得公共廁所資料失敗:", err);
+    logger.error("取得公共廁所資料失敗:", err);
   }
 }
 

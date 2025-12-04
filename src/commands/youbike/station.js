@@ -45,17 +45,20 @@ const fetchYouBikeData = async (station_no) => {
 
 const fetchYouBikeElectricBikeData = async (station_no) => {
   try {
-    const res = await fetch(`https://apis.youbike.com.tw/api/front/bike/lists?station_no=${station_no}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
+    const res = await fetch(
+      `https://apis.youbike.com.tw/api/front/bike/lists?station_no=${station_no}`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
     if (!res.ok) throw new Error("API Error");
     return await res.json();
   } catch (err) {
     console.error("取得即時電動車資料失敗:", err);
     return null;
   }
-}
+};
 
 let areaList = [];
 let stationList = [];
@@ -166,22 +169,27 @@ module.exports = {
               inline: true,
             }
           );
-          youBikeEmbedList.push(youBikeEmbed);
+        youBikeEmbedList.push(youBikeEmbed);
 
-          if (stationData.available_spaces_detail.eyb > 0) {
-            try {
-              const eBikeData = await fetchYouBikeElectricBikeData(stationID);
-              const electricBikeEmbed = new EmbedBuilder()
-                .setColor("Green")
-                .setTitle("YouBike 2.0E 電量資訊")
-                .setDescription(
-                  `${eBikeData.retVal.map((bike) => `__\`${bike.pillar_no}\`__ [\`${bike.bike_no}\`] 電量: \`${bike.battery_power}%\``).join('\n')}`
-                );
-              youBikeEmbedList.push(electricBikeEmbed);
-            } catch (err) {
-              console.error("取得電動車資料時發生錯誤:", err);
-            }
+        if (stationData.available_spaces_detail.eyb > 0) {
+          try {
+            const eBikeData = await fetchYouBikeElectricBikeData(stationID);
+            const electricBikeEmbed = new EmbedBuilder()
+              .setColor("Green")
+              .setTitle("YouBike 2.0E 電量資訊")
+              .setDescription(
+                `${eBikeData.retVal
+                  .map(
+                    (bike) =>
+                      `__\`${bike.pillar_no}\`__ [\`${bike.bike_no}\`] 電量: \`${bike.battery_power}%\``
+                  )
+                  .join("\n")}`
+              );
+            youBikeEmbedList.push(electricBikeEmbed);
+          } catch (err) {
+            console.error("取得電動車資料時發生錯誤:", err);
           }
+        }
       } else {
         youBikeEmbed
           .setColor("Grey")

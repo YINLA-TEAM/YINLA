@@ -8,6 +8,7 @@ const {
 const eqSchema = require("../../Model/eqChannel");
 const axios = require("axios");
 const cron = require("cron");
+const { Signale } = require("signale");
 
 let checkImage = "";
 let cwaImage = "";
@@ -17,6 +18,9 @@ module.exports = {
   once: false,
 
   async execute(client) {
+    const logger = new Signale({
+      scope: "EQR_S",
+    });
     const job = new cron.CronJob(
       "0/15 * * * * *",
       async function () {
@@ -211,7 +215,7 @@ module.exports = {
           client.guilds.cache.forEach(async (guild) => {
             eqSchema.findOne({ Guild: guild.id }, async (err, data) => {
               if (err) {
-                console.error("[錯誤] 資料庫錯誤:", err);
+                logger.error("資料庫錯誤:", err);
                 return;
               }
               if (!data) return;
@@ -225,16 +229,16 @@ module.exports = {
                   embeds: [embed],
                   components: [url],
                 });
-                console.log(`[發布] 地震報告_S`);
+                logger.success(`發布地震報告_S`);
                 data.S_LastReportContent = Earthquake.ReportContent;
                 await data.save();
               } else {
-                console.log(`[事件] 沒有新的地震報告`);
+                logger.info(`沒有新的地震報告`);
               }
             });
           });
         } catch (error) {
-          console.error("[錯誤] 無法取得地震資料:", error);
+          logger.error("無法取得地震資料:", error);
         }
       },
       null,
@@ -243,6 +247,6 @@ module.exports = {
     );
 
     job.start();
-    console.log("[啟動] 地震報告任務_S");
+    logger.success("啟動地震報告任務_S");
   },
 };
