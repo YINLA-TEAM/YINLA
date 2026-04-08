@@ -49,7 +49,7 @@ module.exports = {
         .setColor("Random")
         .setImage(
           "https://www.cwa.gov.tw/Data/fcst_img/QPF_ChFcstPrecip_12_12.png" +
-            `?T=${Date.now()}`
+          `?T=${Date.now()}`
         )
         .setFooter({
           text: "交通部中央氣象署",
@@ -61,19 +61,19 @@ module.exports = {
         .setURL("https://www.cwa.gov.tw")
         .setImage(
           "https://www.cwa.gov.tw/Data/fcst_img/QPF_ChFcstPrecip_12_24.png" +
-            `?T=${Date.now()}`
+          `?T=${Date.now()}`
         ),
       new EmbedBuilder()
         .setURL("https://www.cwa.gov.tw")
         .setImage(
           "https://www.cwa.gov.tw/Data/fcst_img/QPF_ChFcstPrecip_12_36.png" +
-            `?T=${Date.now()}`
+          `?T=${Date.now()}`
         ),
       new EmbedBuilder()
         .setURL("https://www.cwa.gov.tw")
         .setImage(
           "https://www.cwa.gov.tw/Data/fcst_img/QPF_ChFcstPrecip_12_48.png" +
-            `?T=${Date.now()}`
+          `?T=${Date.now()}`
         ),
     ];
 

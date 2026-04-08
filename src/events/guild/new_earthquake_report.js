@@ -23,7 +23,7 @@ module.exports = {
     });
     const job = new cron.CronJob(
       "0/15 * * * * *",
-      async function () {
+      async function() {
         try {
           const eqResult = await axios.get(
             `https://opendata.cwa.gov.tw/api/v1/rest/datastore/E-A0015-001?Authorization=${process.env.cwa_key}`

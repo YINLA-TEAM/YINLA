@@ -45,7 +45,7 @@ module.exports = {
     });
     const job = new cron.CronJob(
       "10 8 * * *",
-      async function () {
+      async function() {
         const today = new Date().toLocaleDateString("zh-TW", {
           year: "numeric",
           month: "2-digit",

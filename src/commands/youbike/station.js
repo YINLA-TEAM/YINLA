@@ -153,9 +153,8 @@ module.exports = {
           .addFields(
             {
               name: "可借車輛數(2.0/E)",
-              value: `\`${
-                stationData.available_spaces_detail?.yb2 ?? 0
-              }\` / \`${stationData.available_spaces_detail?.eyb ?? 0}\` 輛`,
+              value: `\`${stationData.available_spaces_detail?.yb2 ?? 0
+                }\` / \`${stationData.available_spaces_detail?.eyb ?? 0}\` 輛`,
               inline: true,
             },
             {

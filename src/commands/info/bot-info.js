@@ -47,9 +47,8 @@ module.exports = {
         },
         {
           name: `機器人延遲`,
-          value: `${
-            WaitMessage.createdTimestamp - interaction.createdTimestamp
-          } ms`,
+          value: `${WaitMessage.createdTimestamp - interaction.createdTimestamp
+            } ms`,
           inline: true,
         },
         {

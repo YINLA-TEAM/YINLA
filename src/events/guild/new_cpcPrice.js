@@ -77,7 +77,7 @@ module.exports = {
     });
     const job = new cron.CronJob(
       "0 10 12 * * 0",
-      async function () {
+      async function() {
         try {
           const oil = await fetchCPCOilPrice();
           let oil_color = Colors.Green;

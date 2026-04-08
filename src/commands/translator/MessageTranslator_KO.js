@@ -54,8 +54,7 @@ module.exports = {
       const translated_msg = new TextDisplayBuilder().setContent(
         [
           `**翻譯訊息**`,
-          `\`\`\`${
-            (await translate(interaction.targetMessage, { to: "ko" })).text
+          `\`\`\`${(await translate(interaction.targetMessage, { to: "ko" })).text
           }\`\`\``,
         ].join("\n")
       );
