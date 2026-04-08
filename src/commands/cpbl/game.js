@@ -322,36 +322,29 @@ module.exports = {
         `### <:cpbl_logo:1275836738304217181> ${innings
           .map((i) => `\`${i}\``)
           .join(" ")} | \`R\` \`H\` \`E\`\n` +
-          `### ${teamIcon(game.awayTeam)} ${game.VisitingScoreArray.map(
-            (s) => `\`${s}\``
-          ).join(" ")} | \`${game.VisitingTotalScore}\` \`${
-            game.VisitingTotalHitting
-          }\` \`${game.VisitingTotalError}\`\n` +
-          `### ${teamIcon(game.homeTeam)} ${game.HomeScoreArray.map(
-            (s) => `\`${s}\``
-          ).join(" ")} | \`${game.HomeTotalScore}\` \`${
-            game.HomeTotalHitting
-          }\` \`${game.HomeTotalError}\``,
+        `### ${teamIcon(game.awayTeam)} ${game.VisitingScoreArray.map(
+          (s) => `\`${s}\``
+        ).join(" ")} | \`${game.VisitingTotalScore}\` \`${game.VisitingTotalHitting
+        }\` \`${game.VisitingTotalError}\`\n` +
+        `### ${teamIcon(game.homeTeam)} ${game.HomeScoreArray.map(
+          (s) => `\`${s}\``
+        ).join(" ")} | \`${game.HomeTotalScore}\` \`${game.HomeTotalHitting
+        }\` \`${game.HomeTotalError}\``,
       ].join("\n")
     );
 
     const CPBLReferee = new TextDisplayBuilder().setContent(
       [
         `- **主審**： ${game.headUmpire == "" ? "無" : game.headUmpire}`,
-        `- **一壘審**： ${
-          game.oneBaseReferee == "" ? "無" : game.oneBaseReferee
+        `- **一壘審**： ${game.oneBaseReferee == "" ? "無" : game.oneBaseReferee
         }`,
-        `- **二壘審**： ${
-          game.twoBaseReferee == "" ? "無" : game.twoBaseReferee
+        `- **二壘審**： ${game.twoBaseReferee == "" ? "無" : game.twoBaseReferee
         }`,
-        `- **三壘審**： ${
-          game.threeBaseReferee == "" ? "無" : game.threeBaseReferee
+        `- **三壘審**： ${game.threeBaseReferee == "" ? "無" : game.threeBaseReferee
         }`,
-        `- **左線審**： ${
-          game.leftFieldReferee == "" ? "無" : game.leftFieldReferee
+        `- **左線審**： ${game.leftFieldReferee == "" ? "無" : game.leftFieldReferee
         }`,
-        `- **右線審**： ${
-          game.rightFieldReferee == "" ? "無" : game.rightFieldReferee
+        `- **右線審**： ${game.rightFieldReferee == "" ? "無" : game.rightFieldReferee
         }`,
       ].join("\n")
     );
@@ -364,8 +357,7 @@ module.exports = {
           game.gameTimeE.getTime() - game.gameTimeS.getTime()
         )}`,
         ``,
-        `-# ${game.place}棒球場 • ${gameType(game.gameType)} • 編號 ${
-          game.gameSNo
+        `-# ${game.place}棒球場 • ${gameType(game.gameType)} • 編號 ${game.gameSNo
         }`,
       ].join("\n")
     );
@@ -373,8 +365,7 @@ module.exports = {
     const CPBLGameMVPheader = new TextDisplayBuilder().setContent(
       [
         `## MVP 最有價值球員`,
-        `### ${teamIcon(game.wins_pitcher_team)} [${
-          game.mvp_name
+        `### ${teamIcon(game.wins_pitcher_team)} [${game.mvp_name
         }](https://www.cpbl.com.tw/team/person?acnt=${game.mvp_Acnt})`,
       ].join("\n")
     );

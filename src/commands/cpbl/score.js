@@ -164,25 +164,21 @@ module.exports = {
                   "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png",
               })
               .setTitle(
-                `[${
-                  game[i].gameType == "C" || "E" || "F"
-                    ? `GAME ${game[i].gameSNo}`
-                    : game[i].gameSNo.toString().padStart(3, "0")
+                `[${game[i].gameType == "C" || "E" || "F"
+                  ? `GAME ${game[i].gameSNo}`
+                  : game[i].gameSNo.toString().padStart(3, "0")
                 }] ${teamIcon(game[i].awayTeam)} vs. ${teamIcon(
                   game[i].homeTeam
                 )}  ${weatherToEmoji(game[i].weather)}`
               )
               .setDescription(
                 `
-                                ${
-                                  game[i].isTemporary === "Y"
-                                    ? `# 如有需要才進行`
-                                    : "# 比賽尚未開始"
-                                }
-                                > 預定於 **<t:${
-                                  new Date(game[i].place_time) / 1000
-                                }>**__(<t:${
-                  new Date(game[i].place_time) / 1000
+                ${game[i].isTemporary === "Y"
+                  ? `# 如有需要才進行`
+                  : "# 比賽尚未開始"
+                }
+                > 預定於 **<t:${new Date(game[i].place_time) / 1000
+                }>**__(<t:${new Date(game[i].place_time) / 1000
                 }:R>)__ 開始
                             `
               )
@@ -199,11 +195,9 @@ module.exports = {
                   value:
                     game[i].away_sp_Acnt == ""
                       ? "未公布"
-                      : `${teamIcon(game[i].awayTeam_code)} [${
-                          game[i].away_sp_name
-                        }](https://www.cpbl.com.tw/team/person?acnt=${
-                          game[i].away_sp_Acnt
-                        })`,
+                      : `${teamIcon(game[i].awayTeam_code)} [${game[i].away_sp_name
+                      }](https://www.cpbl.com.tw/team/person?acnt=${game[i].away_sp_Acnt
+                      })`,
                   inline: true,
                 },
                 {
@@ -211,11 +205,9 @@ module.exports = {
                   value:
                     game[i].home_sp_Acnt == ""
                       ? "未公布"
-                      : `${teamIcon(game[i].homeTeam_code)} [${
-                          game[i].home_sp_name
-                        }](https://www.cpbl.com.tw/team/person?acnt=${
-                          game[i].home_sp_Acnt
-                        })`,
+                      : `${teamIcon(game[i].homeTeam_code)} [${game[i].home_sp_name
+                      }](https://www.cpbl.com.tw/team/person?acnt=${game[i].home_sp_Acnt
+                      })`,
                   inline: true,
                 },
                 { name: "** **", value: "** **", inline: true },
@@ -240,17 +232,15 @@ module.exports = {
                 { name: "** **", value: "** **", inline: true },
                 {
                   name: "氣溫",
-                  value: `${
-                    game[i].weather_description
-                      .split("。")[2]
-                      .replace(/[^\d]/g, " ")
-                      .split(" ")[2]
-                  }°C ~ ${
-                    game[i].weather_description
+                  value: `${game[i].weather_description
+                    .split("。")[2]
+                    .replace(/[^\d]/g, " ")
+                    .split(" ")[2]
+                    }°C ~ ${game[i].weather_description
                       .split("。")[2]
                       .replace(/[^\d]/g, " ")
                       .split(" ")[3]
-                  } °C (${game[i].weather_description.split("。")[3]})`,
+                    } °C (${game[i].weather_description.split("。")[3]})`,
                   inline: true,
                 },
                 {
@@ -274,38 +264,31 @@ module.exports = {
                   "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png",
               })
               .setTitle(
-                `[${
-                  game[i].gameType == "C" || "E" || "F"
-                    ? `GAME ${game[i].gameSNo}`
-                    : game[i].gameSNo.toString().padStart(3, "0")
+                `[${game[i].gameType == "C" || "E" || "F"
+                  ? `GAME ${game[i].gameSNo}`
+                  : game[i].gameSNo.toString().padStart(3, "0")
                 }] ${game[i].awayTeam} vs. ${game[i].homeTeam}`
               )
               .setDescription(
-                `# ${teamIcon(game[i].awayTeam)} \`${game[i].awayScore}\` ${
-                  game[i].inning
-                }${game[i].inning_top_bot == 1 ? "上" : "下"} \`${
-                  game[i].homeScore
+                `# ${teamIcon(game[i].awayTeam)} \`${game[i].awayScore}\` ${game[i].inning
+                }${game[i].inning_top_bot == 1 ? "上" : "下"} \`${game[i].homeScore
                 }\` ${teamIcon(game[i].homeTeam)}`
               )
               .setColor("Green")
               .addFields([
                 {
                   name: "投手",
-                  value: `${teamIcon(game[i].pitcher_team)} [${
-                    game[i].pitcher_no + " " + game[i].pitcher_name
-                  }](https://www.cpbl.com.tw/team/person?acnt=${
-                    game[i].pitcher_Acnt
-                  })`,
+                  value: `${teamIcon(game[i].pitcher_team)} [${game[i].pitcher_no + " " + game[i].pitcher_name
+                    }](https://www.cpbl.com.tw/team/person?acnt=${game[i].pitcher_Acnt
+                    })`,
                   inline: true,
                 },
                 { name: "** **", value: "** **", inline: true },
                 {
                   name: "打者",
-                  value: `${teamIcon(game[i].hitter_team)} [${
-                    game[i].hitter_no + " " + game[i].hitter_name
-                  }](https://www.cpbl.com.tw/team/person?acnt=${
-                    game[i].hitter_Acnt
-                  })`,
+                  value: `${teamIcon(game[i].hitter_team)} [${game[i].hitter_no + " " + game[i].hitter_name
+                    }](https://www.cpbl.com.tw/team/person?acnt=${game[i].hitter_Acnt
+                    })`,
                   inline: true,
                 },
                 {
@@ -337,15 +320,13 @@ module.exports = {
                   "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png",
               })
               .setTitle(
-                `[${
-                  game[i].gameType == "C" || "E" || "F"
-                    ? `GAME ${game[i].gameSNo}`
-                    : game[i].gameSNo.toString().padStart(3, "0")
+                `[${game[i].gameType == "C" || "E" || "F"
+                  ? `GAME ${game[i].gameSNo}`
+                  : game[i].gameSNo.toString().padStart(3, "0")
                 }] 比賽結束`
               )
               .setDescription(
-                `# ${teamIcon(game[i].awayTeam)} \`${
-                  game[i].awayScore
+                `# ${teamIcon(game[i].awayTeam)} \`${game[i].awayScore
                 }\` vs. \`${game[i].homeScore}\` ${teamIcon(game[i].homeTeam)}`
               )
               .setColor("Red")
@@ -355,11 +336,9 @@ module.exports = {
                   value:
                     game[i].wins_pitcher_name == ""
                       ? "無"
-                      : `${teamIcon(game[i].wins_pitcher_team)} [${
-                          game[i].wins_pitcher_name
-                        }](https://www.cpbl.com.tw/team/person?acnt=${
-                          game[i].wins_pitcher_Acnt
-                        })`,
+                      : `${teamIcon(game[i].wins_pitcher_team)} [${game[i].wins_pitcher_name
+                      }](https://www.cpbl.com.tw/team/person?acnt=${game[i].wins_pitcher_Acnt
+                      })`,
                   inline: true,
                 },
                 {
@@ -367,11 +346,9 @@ module.exports = {
                   value:
                     game[i].loses_pitcher_name == ""
                       ? "無"
-                      : `${teamIcon(game[i].loses_pitcher_team)} [${
-                          game[i].loses_pitcher_name
-                        }](https://www.cpbl.com.tw/team/person?acnt=${
-                          game[i].loses_pitcher_Acnt
-                        })`,
+                      : `${teamIcon(game[i].loses_pitcher_team)} [${game[i].loses_pitcher_name
+                      }](https://www.cpbl.com.tw/team/person?acnt=${game[i].loses_pitcher_Acnt
+                      })`,
                   inline: true,
                 },
                 { name: "** **", value: "** **", inline: true },
@@ -385,11 +362,9 @@ module.exports = {
             if (game[i].closer_pitcher_name != "") {
               endGame_Embed.addFields({
                 name: "救援",
-                value: `${teamIcon(game[i].closer_pitcher_team)} [${
-                  game[i].closer_pitcher_name
-                }](https://www.cpbl.com.tw/team/person?acnt=${
-                  game[i].closer_pitcher_Acnt
-                })`,
+                value: `${teamIcon(game[i].closer_pitcher_team)} [${game[i].closer_pitcher_name
+                  }](https://www.cpbl.com.tw/team/person?acnt=${game[i].closer_pitcher_Acnt
+                  })`,
                 inline: true,
               });
             }
@@ -417,10 +392,9 @@ module.exports = {
                   "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png",
               })
               .setTitle(
-                `[${
-                  game[i].gameType == "C" || "E" || "F"
-                    ? `GAME ${game[i].gameSNo}`
-                    : game[i].gameSNo.toString().padStart(3, "0")
+                `[${game[i].gameType == "C" || "E" || "F"
+                  ? `GAME ${game[i].gameSNo}`
+                  : game[i].gameSNo.toString().padStart(3, "0")
                 }] 先發打序`
               )
               .setDescription(
@@ -435,11 +409,9 @@ module.exports = {
                   value:
                     game[i].away_sp_Acnt == ""
                       ? "未公布"
-                      : `${teamIcon(game[i].awayTeam_code)} [${
-                          game[i].away_sp_name
-                        }](https://www.cpbl.com.tw/team/person?acnt=${
-                          game[i].away_sp_Acnt
-                        })`,
+                      : `${teamIcon(game[i].awayTeam_code)} [${game[i].away_sp_name
+                      }](https://www.cpbl.com.tw/team/person?acnt=${game[i].away_sp_Acnt
+                      })`,
                   inline: true,
                 },
                 {
@@ -447,11 +419,9 @@ module.exports = {
                   value:
                     game[i].home_sp_Acnt == ""
                       ? "未公布"
-                      : `${teamIcon(game[i].homeTeam_code)} [${
-                          game[i].home_sp_name
-                        }](https://www.cpbl.com.tw/team/person?acnt=${
-                          game[i].home_sp_Acnt
-                        })`,
+                      : `${teamIcon(game[i].homeTeam_code)} [${game[i].home_sp_name
+                      }](https://www.cpbl.com.tw/team/person?acnt=${game[i].home_sp_Acnt
+                      })`,
                   inline: true,
                 },
                 { name: "** **", value: "** **", inline: true },
@@ -483,10 +453,9 @@ module.exports = {
                   "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png",
               })
               .setTitle(
-                `[${
-                  game[i].gameType == "C" || "E" || "F"
-                    ? `GAME ${game[i].gameSNo}`
-                    : game[i].gameSNo.toString().padStart(3, "0")
+                `[${game[i].gameType == "C" || "E" || "F"
+                  ? `GAME ${game[i].gameSNo}`
+                  : game[i].gameSNo.toString().padStart(3, "0")
                 }] ${game[i].awayTeam} vs. ${game[i].homeTeam}`
               )
               .setDescription(`# 賽事已取消`)
@@ -508,10 +477,9 @@ module.exports = {
                   "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png",
               })
               .setTitle(
-                `[${
-                  game[i].gameType == "C" || "E" || "F"
-                    ? `GAME ${game[i].gameSNo}`
-                    : game[i].gameSNo.toString().padStart(3, "0")
+                `[${game[i].gameType == "C" || "E" || "F"
+                  ? `GAME ${game[i].gameSNo}`
+                  : game[i].gameSNo.toString().padStart(3, "0")
                 }] ${game[i].awayTeam} vs. ${game[i].homeTeam}`
               )
               .setDescription(`# 賽事已延賽`)
@@ -533,38 +501,31 @@ module.exports = {
                   "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png",
               })
               .setTitle(
-                `[${
-                  game[i].gameType == "C" || "E" || "F"
-                    ? `GAME ${game[i].gameSNo}`
-                    : game[i].gameSNo.toString().padStart(3, "0")
+                `[${game[i].gameType == "C" || "E" || "F"
+                  ? `GAME ${game[i].gameSNo}`
+                  : game[i].gameSNo.toString().padStart(3, "0")
                 }] ${game[i].awayTeam} vs. ${game[i].homeTeam}`
               )
               .setDescription(
-                `# ${teamIcon(game[i].awayTeam)} \`${game[i].awayScore}\` ${
-                  game[i].inning
-                }${game[i].inning_top_bot == 1 ? "上" : "下"} \`${
-                  game[i].homeScore
+                `# ${teamIcon(game[i].awayTeam)} \`${game[i].awayScore}\` ${game[i].inning
+                }${game[i].inning_top_bot == 1 ? "上" : "下"} \`${game[i].homeScore
                 }\` ${teamIcon(game[i].homeTeam)}\n## 保留比賽`
               )
               .setColor("Yellow")
               .addFields([
                 {
                   name: "投手",
-                  value: `${teamIcon(game[i].pitcher_team)} [${
-                    game[i].pitcher_no + " " + game[i].pitcher_name
-                  }](https://www.cpbl.com.tw/team/person?acnt=${
-                    game[i].pitcher_Acnt
-                  })`,
+                  value: `${teamIcon(game[i].pitcher_team)} [${game[i].pitcher_no + " " + game[i].pitcher_name
+                    }](https://www.cpbl.com.tw/team/person?acnt=${game[i].pitcher_Acnt
+                    })`,
                   inline: true,
                 },
                 { name: "** **", value: "** **", inline: true },
                 {
                   name: "打者",
-                  value: `${teamIcon(game[i].hitter_team)} [${
-                    game[i].hitter_no + " " + game[i].hitter_name
-                  }](https://www.cpbl.com.tw/team/person?acnt=${
-                    game[i].hitter_Acnt
-                  })`,
+                  value: `${teamIcon(game[i].hitter_team)} [${game[i].hitter_no + " " + game[i].hitter_name
+                    }](https://www.cpbl.com.tw/team/person?acnt=${game[i].hitter_Acnt
+                    })`,
                   inline: true,
                 },
                 {
@@ -596,38 +557,31 @@ module.exports = {
                   "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png",
               })
               .setTitle(
-                `[${
-                  game[i].gameType == "C" || "E" || "F"
-                    ? `GAME ${game[i].gameSNo}`
-                    : game[i].gameSNo.toString().padStart(3, "0")
+                `[${game[i].gameType == "C" || "E" || "F"
+                  ? `GAME ${game[i].gameSNo}`
+                  : game[i].gameSNo.toString().padStart(3, "0")
                 }] ${game[i].awayTeam} vs. ${game[i].homeTeam}`
               )
               .setDescription(
-                `# ${teamIcon(game[i].awayTeam)} \`${game[i].awayScore}\` ${
-                  game[i].inning
-                }${game[i].inning_top_bot == 1 ? "上" : "下"} \`${
-                  game[i].homeScore
+                `# ${teamIcon(game[i].awayTeam)} \`${game[i].awayScore}\` ${game[i].inning
+                }${game[i].inning_top_bot == 1 ? "上" : "下"} \`${game[i].homeScore
                 }\` ${teamIcon(game[i].homeTeam)}\n## 比賽暫停`
               )
               .setColor("Orange")
               .addFields([
                 {
                   name: "投手",
-                  value: `${teamIcon(game[i].pitcher_team)} [${
-                    game[i].pitcher_no + " " + game[i].pitcher_name
-                  }](https://www.cpbl.com.tw/team/person?acnt=${
-                    game[i].pitcher_Acnt
-                  })`,
+                  value: `${teamIcon(game[i].pitcher_team)} [${game[i].pitcher_no + " " + game[i].pitcher_name
+                    }](https://www.cpbl.com.tw/team/person?acnt=${game[i].pitcher_Acnt
+                    })`,
                   inline: true,
                 },
                 { name: "** **", value: "** **", inline: true },
                 {
                   name: "打者",
-                  value: `${teamIcon(game[i].hitter_team)} [${
-                    game[i].hitter_no + " " + game[i].hitter_name
-                  }](https://www.cpbl.com.tw/team/person?acnt=${
-                    game[i].hitter_Acnt
-                  })`,
+                  value: `${teamIcon(game[i].hitter_team)} [${game[i].hitter_no + " " + game[i].hitter_name
+                    }](https://www.cpbl.com.tw/team/person?acnt=${game[i].hitter_Acnt
+                    })`,
                   inline: true,
                 },
                 {

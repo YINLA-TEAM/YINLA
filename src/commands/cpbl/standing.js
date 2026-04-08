@@ -72,21 +72,17 @@ module.exports = {
     if (interaction.options.getString("season") === "上半季") {
       season = "上半賽季";
       for (let i = 0; i < data.length / 2; i++) {
-        let info = `## \`${data[i].rank}\` ${teamIcon(data[i].team)} \`${
-          data[i].gamesPlayed
-        }\` \`${data[i].winDrawLoss}\` \`${data[i].winRate}\` \`${
-          data[i].gamesBehind
-        }\` \`${data[i].streak}\``;
+        let info = `## \`${data[i].rank}\` ${teamIcon(data[i].team)} \`${data[i].gamesPlayed
+          }\` \`${data[i].winDrawLoss}\` \`${data[i].winRate}\` \`${data[i].gamesBehind
+          }\` \`${data[i].streak}\``;
         broad.push(info);
       }
     } else if (interaction.options.getString("season") === "下半季") {
       season = "下半賽季";
       for (let i = data.length / 2; i < data.length; i++) {
-        let info = `## \`${data[i].rank}\` ${teamIcon(data[i].team)} \`${
-          data[i].gamesPlayed
-        }\` \`${data[i].winDrawLoss}\` \`${data[i].winRate}\` \`${
-          data[i].gamesBehind
-        }\` \`${data[i].streak}\``;
+        let info = `## \`${data[i].rank}\` ${teamIcon(data[i].team)} \`${data[i].gamesPlayed
+          }\` \`${data[i].winDrawLoss}\` \`${data[i].winRate}\` \`${data[i].gamesBehind
+          }\` \`${data[i].streak}\``;
         broad.push(info);
       }
     }
