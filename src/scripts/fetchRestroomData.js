@@ -18,10 +18,11 @@ async function fetchAllRestroomData() {
     const { data } = await axios.get(
       `${API_URL}&limit=${limit}&offset=${offset}`
     );
-    if (data.records && data.records.length > 0) {
-      allRecords.push(...data.records);
+    const records = Array.isArray(data) ? data : data.records || [];
+    if (records.length > 0) {
+      allRecords.push(...records);
       offset += limit;
-      if (data.records.length < limit) {
+      if (records.length < limit) {
         hasMore = false;
       }
     } else {

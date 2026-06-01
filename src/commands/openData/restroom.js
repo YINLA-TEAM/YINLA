@@ -22,9 +22,15 @@ function normalizeCountyName(name) {
 function extractCountyAndDistrict(address) {
   if (!address || typeof address !== "string")
     return { county: null, district: null };
-  const addr = address.trim().replace(/臺/g, "台");
+  
+  const addr = address
+    .trim()
+    .replace(/臺/g, "台")
+    .replace(/\s+/g, "");
+  
   const countyPattern =
     /(台北市|新北市|桃園市|台中市|台南市|高雄市|基隆市|新竹市|嘉義市|新竹縣|苗栗縣|彰化縣|南投縣|雲林縣|嘉義縣|屏東縣|宜蘭縣|花蓮縣|台東縣|澎湖縣|金門縣|連江縣)/;
+  
   const m = addr.match(countyPattern);
   if (!m) return { county: null, district: null };
   const county = normalizeCountyName(m[1]);
@@ -122,12 +128,18 @@ module.exports = {
       });
 
       let restroomData = getLocalRestroomData();
-      if (!restroomData.lastUpdate || needUpdate(restroomData.lastUpdate)) {
+      const isEmpty = (data) => !data.records || data.records.length === 0;
+      
+      if (
+        !restroomData.lastUpdate ||
+        needUpdate(restroomData.lastUpdate) ||
+        isEmpty(restroomData)
+      ) {
         await updateLocalRestroomData();
         restroomData = getLocalRestroomData();
       }
 
-      if (!restroomData.records || restroomData.records.length === 0) {
+      if (isEmpty(restroomData)) {
         return interaction.editReply("無法取得公共廁所資料，請稍後再試。");
       }
 
