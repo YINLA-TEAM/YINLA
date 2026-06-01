@@ -91,28 +91,10 @@ module.exports = {
           value: `7`,
         }),
         new StringSelectMenuOptionBuilder({
-          emoji: `📅`,
-          label: `行事曆指令`,
-          description: "建立與查看行事曆",
-          value: `8`,
-        }),
-        new StringSelectMenuOptionBuilder({
-          emoji: `🧩`,
-          label: `LeetCode 指令`,
-          description: "查詢 LeetCode 相關資訊",
-          value: `9`,
-        }),
-        new StringSelectMenuOptionBuilder({
-          emoji: `🏎️`,
-          label: `F1 相關指令`,
-          description: "一級方程式賽事資訊",
-          value: `10`,
-        }),
-        new StringSelectMenuOptionBuilder({
           emoji: `🚻`,
           label: `生活資訊指令`,
           description: "公共廁所等生活資訊查詢",
-          value: `11`,
+          value: `8`,
         })
       );
 
