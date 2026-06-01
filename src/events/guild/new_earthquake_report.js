@@ -12,6 +12,7 @@ const { Signale } = require("signale");
 
 let checkImage = "";
 let cwaImage = "";
+let isRunning = false;
 
 module.exports = {
   name: "clientReady",
@@ -24,6 +25,8 @@ module.exports = {
     const job = new cron.CronJob(
       "0/15 * * * * *",
       async function() {
+        if (isRunning) return;
+        isRunning = true;
         try {
           const eqResult = await axios.get(
             `https://opendata.cwa.gov.tw/api/v1/rest/datastore/E-A0015-001?Authorization=${process.env.cwa_key}`
@@ -154,30 +157,44 @@ module.exports = {
           }
 
           await new Promise((resolve) => {
+            const maxRetries = 30;
             const checker = (retryCount = 0) => {
               fetch(Image, { method: "GET" })
                 .then(async (res) => {
-                  if (res.ok) {
-                    const buf = await res.arrayBuffer();
-                    if (buf.byteLength > 4000) {
-                      if (checkImage !== Image) {
-                        const sent = await client.channels.cache
-                          .get("1290219563715395604")
-                          .send({
-                            files: [new AttachmentBuilder().setFile(Image)],
-                          });
-                        cwaImage = sent.attachments.first().url;
-                        logger.info(`地震報告圖已生成`);
-                        checkImage = Image;
-                      }
-                      resolve(true);
+                  const buf = res.ok ? await res.arrayBuffer() : null;
+                  // 連結存在但為 0 byte（CWA 圖片尚未生成完成）或請求失敗時皆重試
+                  if (buf && buf.byteLength > 4000) {
+                    if (checkImage !== Image) {
+                      const sent = await client.channels.cache
+                        .get("1290219563715395604")
+                        .send({
+                          files: [
+                            new AttachmentBuilder(Buffer.from(buf), {
+                              name: "earthquake.png",
+                            }),
+                          ],
+                        });
+                      cwaImage = sent.attachments.first().url;
+                      logger.info(`地震報告圖已生成`);
+                      checkImage = Image;
                     }
-                  } else {
-                    setTimeout(checker, 8000, retryCount + 1);
+                    resolve(true);
+                    return;
                   }
+                  if (retryCount >= maxRetries) {
+                    logger.warn(`地震報告圖逾時未生成，已重試 ${retryCount} 次`);
+                    resolve(false);
+                    return;
+                  }
+                  setTimeout(() => checker(retryCount + 1), 8000);
                 })
                 .catch(() => {
-                  setTimeout(checker, 8000, retryCount + 1);
+                  if (retryCount >= maxRetries) {
+                    logger.warn(`地震報告圖讀取失敗，已重試 ${retryCount} 次`);
+                    resolve(false);
+                    return;
+                  }
+                  setTimeout(() => checker(retryCount + 1), 8000);
                 });
             };
             checker();
@@ -190,7 +207,7 @@ module.exports = {
             })
             .setDescription(Content)
             .setColor(Color[Earthquake.ReportColor])
-            .setImage(cwaImage)
+            .setImage(cwaImage || null)
             .addFields([
               {
                 name: "編號",
@@ -262,6 +279,8 @@ module.exports = {
           });
         } catch (error) {
           logger.error("無法取得地震資料:", error);
+        } finally {
+          isRunning = false;
         }
       },
       null,
