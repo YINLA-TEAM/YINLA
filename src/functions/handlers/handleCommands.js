@@ -27,7 +27,7 @@ module.exports = (client) => {
     }
     interactive_commands.success("所有 SlashCommands 已讀取");
     const clientId = process.env.botId;
-    const rest = new REST({ version: "9" }).setToken(process.env.token);
+    const rest = new REST({ version: "10" }).setToken(process.env.token);
     try {
       const interactive = new Signale({
         scope: "SLCMD",
