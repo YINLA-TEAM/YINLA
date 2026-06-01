@@ -70,6 +70,26 @@ module.exports = {
         `</help:1033064221283450965> 請用以下選單選擇指令，會向您詳細介紹`
       );
 
+    const embed7 = new EmbedBuilder()
+      .setTitle(`🚆｜交通相關`)
+      .setAuthor({
+        name: `YINLA`,
+        iconURL: client.user.displayAvatarURL(),
+      })
+      .setDescription(
+        `</help:1033064221283450965> 請用以下選單選擇指令，會向您詳細介紹`
+      );
+
+    const embed8 = new EmbedBuilder()
+      .setTitle(`🚻｜生活資訊`)
+      .setAuthor({
+        name: `YINLA`,
+        iconURL: client.user.displayAvatarURL(),
+      })
+      .setDescription(
+        `</help:1033064221283450965> 請用以下選單選擇指令，會向您詳細介紹`
+      );
+
     const common_menu = new StringSelectMenuBuilder()
       .setCustomId("common")
       .setPlaceholder("📖 請選擇指令")
@@ -85,6 +105,16 @@ module.exports = {
           emoji: `🤖`,
           label: `機器人狀態指令`,
           value: "bot",
+        }),
+        new StringSelectMenuOptionBuilder({
+          emoji: `📨`,
+          label: `邀請機器人`,
+          value: "invite",
+        }),
+        new StringSelectMenuOptionBuilder({
+          emoji: `📋`,
+          label: `回報問題`,
+          value: "report",
         })
       );
 
@@ -123,6 +153,11 @@ module.exports = {
           emoji: `☀️`,
           label: `紫外線指數`,
           value: "uv",
+        }),
+        new StringSelectMenuOptionBuilder({
+          emoji: `🌀`,
+          label: `颱風資訊`,
+          value: "typhoon",
         })
       );
 
@@ -142,6 +177,11 @@ module.exports = {
           emoji: `<:tranlate:1035826480904679424>`,
           label: `把訊息翻譯成 中/日/英/韓文`,
           value: `translator`,
+        }),
+        new StringSelectMenuOptionBuilder({
+          emoji: `<:tranlate:1035826480904679424>`,
+          label: `翻譯指令`,
+          value: `translator_cmd`,
         })
       );
 
@@ -196,9 +236,47 @@ module.exports = {
           value: `news_eq`,
         }),
         new StringSelectMenuOptionBuilder({
-          emoji: `<:cpc_logo:1293448641620611082`,
+          emoji: `<:cpc_logo:1293448641620611082>`,
           label: `中油油價推播`,
           value: `news_oilPrice`,
+        }),
+        new StringSelectMenuOptionBuilder({
+          emoji: `👋`,
+          label: `歡迎訊息`,
+          value: `news_welcome`,
+        })
+      );
+
+    const transport_menu = new StringSelectMenuBuilder()
+      .setCustomId(`transport`)
+      .setPlaceholder("📖 請選擇指令")
+      .setDisabled(false)
+      .setMinValues(1)
+      .setMaxValues(1)
+      .setOptions(
+        new StringSelectMenuOptionBuilder({
+          emoji: `🚲`,
+          label: `公共自行車查詢 (YouBike)`,
+          value: `youbike`,
+        }),
+        new StringSelectMenuOptionBuilder({
+          emoji: `🚇`,
+          label: `臺北捷運營運狀況`,
+          value: `mrt`,
+        })
+      );
+
+    const opendata_menu = new StringSelectMenuBuilder()
+      .setCustomId(`opendata`)
+      .setPlaceholder("📖 請選擇指令")
+      .setDisabled(false)
+      .setMinValues(1)
+      .setMaxValues(1)
+      .setOptions(
+        new StringSelectMenuOptionBuilder({
+          emoji: `🚻`,
+          label: `公共廁所查詢`,
+          value: `restroom`,
         })
       );
 
@@ -241,6 +319,20 @@ module.exports = {
       await interaction.reply({
         embeds: [embed6],
         components: [new ActionRowBuilder({ components: [news_menu] })],
+        ephemeral: true,
+      });
+    }
+    if (interaction.values[0] == `7`) {
+      await interaction.reply({
+        embeds: [embed7],
+        components: [new ActionRowBuilder({ components: [transport_menu] })],
+        ephemeral: true,
+      });
+    }
+    if (interaction.values[0] == `8`) {
+      await interaction.reply({
+        embeds: [embed8],
+        components: [new ActionRowBuilder({ components: [opendata_menu] })],
         ephemeral: true,
       });
     }

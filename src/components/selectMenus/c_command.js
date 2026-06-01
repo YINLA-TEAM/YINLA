@@ -37,6 +37,24 @@ module.exports = {
         },
       ]);
 
+    const embed3 = new EmbedBuilder()
+      .setTitle(`📨｜邀請機器人`)
+      .setAuthor({
+        name: `YINLA`,
+        iconURL: client.user.displayAvatarURL(),
+      })
+      .setDescription(`使用 \`/邀請我\` 取得邀請連結，將機器人加入你的伺服器`);
+
+    const embed4 = new EmbedBuilder()
+      .setTitle(`📋｜回報問題`)
+      .setAuthor({
+        name: `YINLA`,
+        iconURL: client.user.displayAvatarURL(),
+      })
+      .setDescription(
+        `使用 \`/回報問題\` 開啟回報表單，填寫後即可將問題回報給開發者`
+      );
+
     if (interaction.values[0] == "search") {
       await interaction.reply({
         embeds: [embed1],
@@ -46,6 +64,18 @@ module.exports = {
     if (interaction.values[0] == "bot") {
       await interaction.reply({
         embeds: [embed2],
+        ephemeral: true,
+      });
+    }
+    if (interaction.values[0] == "invite") {
+      await interaction.reply({
+        embeds: [embed3],
+        ephemeral: true,
+      });
+    }
+    if (interaction.values[0] == "report") {
+      await interaction.reply({
+        embeds: [embed4],
         ephemeral: true,
       });
     }

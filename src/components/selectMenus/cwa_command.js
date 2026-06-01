@@ -57,6 +57,14 @@ module.exports = {
       })
       .setDescription(`查詢該地區當下的紫外線指數`);
 
+    const embed7 = new EmbedBuilder()
+      .setTitle(`🌀｜颱風資訊`)
+      .setAuthor({
+        name: `YINLA`,
+        iconURL: client.user.displayAvatarURL(),
+      })
+      .setDescription(`取得颱風的相關資訊`);
+
     if (interaction.values[0] == `eq`) {
       await interaction.reply({
         embeds: [embed1],
@@ -90,6 +98,12 @@ module.exports = {
     if (interaction.values[0] == `uv`) {
       await interaction.reply({
         embeds: [embed6],
+        ephemeral: true,
+      });
+    }
+    if (interaction.values[0] == `typhoon`) {
+      await interaction.reply({
+        embeds: [embed7],
         ephemeral: true,
       });
     }

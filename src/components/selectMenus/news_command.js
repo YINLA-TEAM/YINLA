@@ -25,6 +25,16 @@ module.exports = {
         `利用\`/設定地震報告推播\`指令來設定**推播頻道**並推播**地震報告**`
       );
 
+    const embed3 = new EmbedBuilder()
+      .setTitle(`👋｜歡迎訊息`)
+      .setAuthor({
+        name: `YINLA`,
+        iconURL: client.user.displayAvatarURL(),
+      })
+      .setDescription(
+        `利用\`/設定歡迎訊息\`指令來設定**歡迎頻道**，當有新成員加入時會自動發送**歡迎訊息**`
+      );
+
     if (interaction.values[0] == `news_oilPrice`) {
       await interaction.reply({
         embeds: [embed1],
@@ -34,6 +44,12 @@ module.exports = {
     if (interaction.values[0] == `news_eq`) {
       await interaction.reply({
         embeds: [embed2],
+        ephemeral: true,
+      });
+    }
+    if (interaction.values[0] == `news_welcome`) {
+      await interaction.reply({
+        embeds: [embed3],
         ephemeral: true,
       });
     }

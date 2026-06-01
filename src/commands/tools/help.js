@@ -83,6 +83,36 @@ module.exports = {
           label: `推播相關指令`,
           description: "查詢目前推播的功能",
           value: `6`,
+        }),
+        new StringSelectMenuOptionBuilder({
+          emoji: `🚆`,
+          label: `交通相關指令`,
+          description: "公共自行車、捷運等交通資訊",
+          value: `7`,
+        }),
+        new StringSelectMenuOptionBuilder({
+          emoji: `📅`,
+          label: `行事曆指令`,
+          description: "建立與查看行事曆",
+          value: `8`,
+        }),
+        new StringSelectMenuOptionBuilder({
+          emoji: `🧩`,
+          label: `LeetCode 指令`,
+          description: "查詢 LeetCode 相關資訊",
+          value: `9`,
+        }),
+        new StringSelectMenuOptionBuilder({
+          emoji: `🏎️`,
+          label: `F1 相關指令`,
+          description: "一級方程式賽事資訊",
+          value: `10`,
+        }),
+        new StringSelectMenuOptionBuilder({
+          emoji: `🚻`,
+          label: `生活資訊指令`,
+          description: "公共廁所等生活資訊查詢",
+          value: `11`,
         })
       );
 
