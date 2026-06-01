@@ -5,13 +5,14 @@ const { Signale } = require("signale");
 module.exports = {
   name: "guildMemberAdd",
   async execute(member, client) {
-    logger = new Signale({
+    const logger = new Signale({
       scope: "GMADD",
     })
     welcomeSchema.findOne({ Guild: member.guild.id }, async (err, data) => {
       if (!data) return;
       const { guild } = member;
       const welcomeChannel = member.guild.channels.cache.get(data.Channel);
+      if (!welcomeChannel) return;
 
       const welcomeEmbed = new EmbedBuilder()
         .setTitle(
@@ -44,22 +45,26 @@ module.exports = {
           text: `YINLA`,
         });
 
-      welcomeChannel.send({
-        content: `<@${member.user.id}>`,
-        embeds: [welcomeEmbed],
-      });
+      try {
+        await welcomeChannel.send({
+          content: `<@${member.user.id}>`,
+          embeds: [welcomeEmbed],
+        });
+      } catch (err) {
+        client.sendErrorLog(err, null, "guildMemberAdd (welcomeChannel.send)");
+      }
 
       if (!data.Role) {
         logger.info("此伺服器未設定自動身分組");
       } else {
         try {
-          member.roles.add(data.Role);
+          await member.roles.add(data.Role);
         } catch (err) {
-          logger.error(err);
+          client.sendErrorLog(err, null, "guildMemberAdd (roles.add)");
         }
       }
 
-      if (err) return logger.error(err);
+      if (err) return client.sendErrorLog(err, null, "guildMemberAdd (welcomeSchema)");
     });
   },
 };
