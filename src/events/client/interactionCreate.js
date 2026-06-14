@@ -1,4 +1,4 @@
-const { InteractionType } = require("discord.js");
+const { InteractionType, MessageFlags } = require("discord.js");
 
 module.exports = {
   name: "interactionCreate",
@@ -7,7 +7,7 @@ module.exports = {
       if (interaction.isAutocomplete?.()) return;
       const payload = {
         content: `發生錯誤，請向管理員回報`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       };
       try {
         if (interaction.replied || interaction.deferred) {

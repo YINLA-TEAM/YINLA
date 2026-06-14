@@ -190,7 +190,6 @@ module.exports = {
 
       return interaction.editReply({
         embeds: [restroomEmbed],
-        MessageFlags: MessageFlags.Ephemeral,
       });
     } catch (err) {
       console.error("執行 restroom 指令時發生錯誤:", err);

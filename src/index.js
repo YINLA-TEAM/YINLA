@@ -9,7 +9,12 @@ const { connect, mongoose } = require("mongoose");
 const fs = require("fs");
 
 const client = new Client({
-  intents: [32767, GatewayIntentBits.MessageContent],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+  ],
 });
 client.commands = new Collection();
 client.buttons = new Collection();
@@ -17,7 +22,6 @@ client.selectMenus = new Collection();
 client.modals = new Collection();
 
 client.commandArray = [];
-client.commands.set([]);
 
 const functionFolders = fs.readdirSync(`./src/functions`);
 for (const folder of functionFolders) {

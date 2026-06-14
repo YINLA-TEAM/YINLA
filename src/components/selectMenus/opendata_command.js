@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, MessageFlags } = require("discord.js");
 
 module.exports = {
   data: {
@@ -18,7 +18,7 @@ module.exports = {
     if (interaction.values[0] == `restroom`) {
       await interaction.reply({
         embeds: [embed1],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

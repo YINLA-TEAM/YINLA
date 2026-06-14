@@ -83,7 +83,7 @@ module.exports = {
 
     await interaction.editReply({
       embeds: [wtEmbed],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   },
 };

@@ -12,66 +12,16 @@ module.exports = (client) => {
       const eventFiles = fs
         .readdirSync(`./src/events/${folder}`)
         .filter((file) => file.endsWith(".js"));
-      switch (folder) {
-        case "client":
-          for (const file of eventFiles) {
-            const event = require(`../../events/${folder}/${file}`);
-            if (event.once)
-              client.once(event.name, (...args) =>
-                event.execute(...args, client)
-              );
-            else
-              client.on(event.name, (...args) =>
-                event.execute(...args, client)
-              );
-          }
-          break;
 
-        case "mongo":
-          for (const file of eventFiles) {
-            const event = require(`../../events/${folder}/${file}`);
-            if (event.once)
-              connection.once(event.name, (...args) =>
-                event.execute(...args, client)
-              );
-            else
-              connection.on(event.name, (...args) =>
-                event.execute(...args, client)
-              );
-          }
-          break;
+      const emitter = folder === "mongo" ? connection : client;
 
-        case "guild":
-          for (const file of eventFiles) {
-            const event = require(`../../events/${folder}/${file}`);
-            if (event.once)
-              client.once(event.name, (...args) =>
-                event.execute(...args, client)
-              );
-            else
-              client.on(event.name, (...args) =>
-                event.execute(...args, client)
-              );
-          }
-          break;
-
-        case "logs":
-          for (const file of eventFiles) {
-            const event = require(`../../events/${folder}/${file}`);
-            if (event.once)
-              client.once(event.name, (...args) =>
-                event.execute(...args, client)
-              );
-            else
-              client.on(event.name, (...args) =>
-                event.execute(...args, client)
-              );
-          }
-          break;
-
-        default:
-          break;
+      for (const file of eventFiles) {
+        const event = require(`../../events/${folder}/${file}`);
+        const handler = (...args) => event.execute(...args, client);
+        if (event.once) emitter.once(event.name, handler);
+        else emitter.on(event.name, handler);
       }
+
       logger.success(`事件類型：${folder} ✅`);
     }
   };

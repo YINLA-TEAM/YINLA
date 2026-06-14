@@ -253,29 +253,34 @@ module.exports = {
           );
 
           client.guilds.cache.forEach(async (guild) => {
-            eqSchema.findOne({ Guild: guild.id }, async (err, data) => {
-              if (err) {
-                logger.error("資料庫:", err);
-                return;
-              }
-              if (!data) return;
+            let data;
+            try {
+              data = await eqSchema.findOne({ Guild: guild.id });
+            } catch (err) {
+              logger.error("資料庫:", err);
+              return;
+            }
+            if (!data) return;
 
-              let previousReportContent = data.E_LastReportContent || "";
-              const eqChannel = guild.channels.cache.get(data.Channel);
-              if (!eqChannel) return;
+            let previousReportContent = data.E_LastReportContent || "";
+            const eqChannel = guild.channels.cache.get(data.Channel);
+            if (!eqChannel) return;
 
-              if (Earthquake.ReportContent !== previousReportContent) {
-                eqChannel.send({
+            if (Earthquake.ReportContent !== previousReportContent) {
+              try {
+                await eqChannel.send({
                   embeds: [embed],
                   components: [url],
                 });
                 logger.success(`發布地震報告_E`);
                 data.E_LastReportContent = Earthquake.ReportContent;
                 await data.save();
-              } else {
-                logger.info(`沒有新的地震報告`);
+              } catch (err) {
+                logger.error(`推播地震報告至 Guild ${guild.id} 失敗:`, err);
               }
-            });
+            } else {
+              logger.info(`沒有新的地震報告`);
+            }
           });
         } catch (error) {
           logger.error("無法取得地震資料:", error);

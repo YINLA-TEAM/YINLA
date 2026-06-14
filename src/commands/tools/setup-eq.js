@@ -63,50 +63,49 @@ module.exports = {
       return;
     }
 
-    eqSchema.findOne({ Guild: interaction.guild.id }, async (err, data) => {
-      if (!data && interaction.options.getString("setup-remove") == "建立") {
-        await eqSchema.create({
-          Guild: interaction.guild.id,
-          Channel: eqChannel.id,
-        });
-        const success_create_eq_msg = new EmbedBuilder()
-          .setTitle(`✅ 成功設定 **地震報告推播**`)
-          .setColor(`Green`);
+    const data = await eqSchema.findOne({ Guild: interaction.guild.id });
 
-        interaction.reply({
-          embeds: [success_create_eq_msg],
-          ephemeral: false,
-        });
-      } else if (interaction.options.getString("setup-remove") == "建立") {
-        const err_create_eq_msg = new EmbedBuilder()
-          .setTitle(`❌ 請確認使否有設定過推播頻道`)
-          .setColor(`Red`);
+    if (!data && interaction.options.getString("setup-remove") == "建立") {
+      await eqSchema.create({
+        Guild: interaction.guild.id,
+        Channel: eqChannel.id,
+      });
+      const success_create_eq_msg = new EmbedBuilder()
+        .setTitle(`✅ 成功設定 **地震報告推播**`)
+        .setColor(`Green`);
 
-        interaction.reply({
-          embeds: [err_create_eq_msg],
-          flags: MessageFlags.Ephemeral,
-        });
-      } else if (interaction.options.getString("setup-remove") == "移除") {
-        await eqSchema.deleteOne({
-          Guild: interaction.guild.id,
-        });
-        const rm_eq_msg = new EmbedBuilder()
-          .setTitle(`✅ 成功移除推播頻道`)
-          .setColor(`Green`);
+      interaction.reply({
+        embeds: [success_create_eq_msg],
+      });
+    } else if (interaction.options.getString("setup-remove") == "建立") {
+      const err_create_eq_msg = new EmbedBuilder()
+        .setTitle(`❌ 請確認是否有設定過推播頻道`)
+        .setColor(`Red`);
 
-        interaction.reply({
-          embeds: [rm_eq_msg],
-        });
-      } else {
-        const err_EQ = new EmbedBuilder()
-          .setTitle(`⚠️ 發生錯誤`)
-          .setColor(`Red`);
+      interaction.reply({
+        embeds: [err_create_eq_msg],
+        flags: MessageFlags.Ephemeral,
+      });
+    } else if (interaction.options.getString("setup-remove") == "移除") {
+      await eqSchema.deleteOne({
+        Guild: interaction.guild.id,
+      });
+      const rm_eq_msg = new EmbedBuilder()
+        .setTitle(`✅ 成功移除推播頻道`)
+        .setColor(`Green`);
 
-        interaction.reply({
-          embeds: [err_EQ],
-          flags: MessageFlags.Ephemeral,
-        });
-      }
-    });
+      interaction.reply({
+        embeds: [rm_eq_msg],
+      });
+    } else {
+      const err_EQ = new EmbedBuilder()
+        .setTitle(`⚠️ 發生錯誤`)
+        .setColor(`Red`);
+
+      interaction.reply({
+        embeds: [err_EQ],
+        flags: MessageFlags.Ephemeral,
+      });
+    }
   },
 };

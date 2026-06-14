@@ -77,46 +77,70 @@ module.exports = {
       return;
     }
 
-    welcomeSchema.findOne(
-      { Guild: interaction.guild.id },
-      async (err, data) => {
-        if (!data && interaction.options.getString("setup-remove") == "建立") {
-          await welcomeSchema.create({
-            Guild: interaction.guild.id,
-            Channel: welcomeChannel.id,
-            Msg: welcomeMessage,
-            Role: roleId ? roleId.id : null,
-          });
-          const success_create_welcome_msg = new EmbedBuilder()
-            .setTitle(`✅ 成功建立 **歡迎訊息**`)
-            .setColor(`Green`);
+    const action = interaction.options.getString("setup-remove");
 
-          interaction.reply({
-            embeds: [success_create_welcome_msg],
-            flags: MessageFlags.Ephemeral,
-          });
-        } else if (interaction.options.getString("setup-remove") == "建立") {
-          const err_create_welcome_msg = new EmbedBuilder()
-            .setTitle(`❌ 請確認使否有設定過推播頻道`)
-            .setColor(`Red`);
-
-          interaction.reply({
-            embeds: [err_create_welcome_msg],
-            flags: MessageFlags.Ephemeral,
-          });
-        } else if (interaction.options.getString("setup-remove") == "移除") {
-          await welcomeSchema.deleteOne({
-            Guild: interaction.guild.id,
-          });
-          const rm_welcome_msg = new EmbedBuilder()
-            .setTitle(`✅ 成功移除 **歡迎訊息**`)
-            .setColor(`Green`);
-
-          interaction.reply({
-            embeds: [rm_welcome_msg],
-          });
-        }
+    // 建立時若有指定自動身分組，先驗證機器人實際能指派該身分組，
+    // 避免設定當下看似成功、卻在每次成員加入時才以 Unknown Role / Missing Permissions 失敗
+    if (action == "建立" && roleId) {
+      const me = interaction.guild.members.me;
+      let invalidReason = null;
+      if (roleId.id === interaction.guild.id) {
+        invalidReason = "不能將 @everyone 設為自動身分組。";
+      } else if (roleId.managed) {
+        invalidReason =
+          "該身分組由整合服務管理（例如機器人或 Nitro Boost 身分組），無法手動指派。";
+      } else if (me.roles.highest.comparePositionTo(roleId) <= 0) {
+        invalidReason = `機器人的最高身分組必須排在 **${roleId.name}** 之上，請到伺服器設定調整身分組順序後再試。`;
       }
-    );
+      if (invalidReason) {
+        const invalid_role_msg = new EmbedBuilder()
+          .setTitle("❌ 無法設定此自動身分組")
+          .setDescription(invalidReason)
+          .setColor("Red");
+        return interaction.reply({
+          embeds: [invalid_role_msg],
+          flags: MessageFlags.Ephemeral,
+        });
+      }
+    }
+
+    const data = await welcomeSchema.findOne({ Guild: interaction.guild.id });
+
+    if (!data && interaction.options.getString("setup-remove") == "建立") {
+      await welcomeSchema.create({
+        Guild: interaction.guild.id,
+        Channel: welcomeChannel.id,
+        Msg: welcomeMessage,
+        Role: roleId ? roleId.id : null,
+      });
+      const success_create_welcome_msg = new EmbedBuilder()
+        .setTitle(`✅ 成功建立 **歡迎訊息**`)
+        .setColor(`Green`);
+
+      interaction.reply({
+        embeds: [success_create_welcome_msg],
+        flags: MessageFlags.Ephemeral,
+      });
+    } else if (interaction.options.getString("setup-remove") == "建立") {
+      const err_create_welcome_msg = new EmbedBuilder()
+        .setTitle(`❌ 請確認是否有設定過推播頻道`)
+        .setColor(`Red`);
+
+      interaction.reply({
+        embeds: [err_create_welcome_msg],
+        flags: MessageFlags.Ephemeral,
+      });
+    } else if (interaction.options.getString("setup-remove") == "移除") {
+      await welcomeSchema.deleteOne({
+        Guild: interaction.guild.id,
+      });
+      const rm_welcome_msg = new EmbedBuilder()
+        .setTitle(`✅ 成功移除 **歡迎訊息**`)
+        .setColor(`Green`);
+
+      interaction.reply({
+        embeds: [rm_welcome_msg],
+      });
+    }
   },
 };
