@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, MessageFlags } = require("discord.js");
 const {
   ActionRowBuilder,
   StringSelectMenuBuilder,
@@ -284,56 +284,56 @@ module.exports = {
       await interaction.reply({
         embeds: [embed1],
         components: [new ActionRowBuilder({ components: [common_menu] })],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     if (interaction.values[0] == `2`) {
       await interaction.reply({
         embeds: [embed2],
         components: [new ActionRowBuilder({ components: [cwa_menu] })],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     if (interaction.values[0] == `3`) {
       await interaction.reply({
         embeds: [embed3],
         components: [new ActionRowBuilder({ components: [application_menu] })],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     if (interaction.values[0] == `4`) {
       await interaction.reply({
         embeds: [embed4],
         components: [new ActionRowBuilder({ components: [cpbl_menu] })],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     if (interaction.values[0] == `5`) {
       await interaction.reply({
         embeds: [embed5],
         components: [new ActionRowBuilder({ components: [cpc_menu] })],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     if (interaction.values[0] == `6`) {
       await interaction.reply({
         embeds: [embed6],
         components: [new ActionRowBuilder({ components: [news_menu] })],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     if (interaction.values[0] == `7`) {
       await interaction.reply({
         embeds: [embed7],
         components: [new ActionRowBuilder({ components: [transport_menu] })],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     if (interaction.values[0] == `8`) {
       await interaction.reply({
         embeds: [embed8],
         components: [new ActionRowBuilder({ components: [opendata_menu] })],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

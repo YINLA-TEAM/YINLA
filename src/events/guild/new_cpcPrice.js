@@ -152,30 +152,31 @@ module.exports = {
             .addActionRowComponents(cpc_url);
 
           client.guilds.cache.forEach(async (guild) => {
-            cpcSchema.findOne({ Guild: guild.id }, async (err, data) => {
-              if (err) {
-                logger.error("資料庫:", err);
-                return;
-              }
-              if (!data) {
-                logger.info(`Guild ID: ${guild.id} 未設定中油油價推播頻道`);
-                return;
-              }
-              let previousOilPriceUpdateDate = data.PriceUpdate || "";
-              const cpcChannel = guild.channels.cache.get(data.Channel);
-              if (!cpcChannel) return;
+            let data;
+            try {
+              data = await cpcSchema.findOne({ Guild: guild.id });
+            } catch (err) {
+              logger.error("資料庫:", err);
+              return;
+            }
+            if (!data) {
+              logger.info(`Guild ID: ${guild.id} 未設定中油油價推播頻道`);
+              return;
+            }
+            let previousOilPriceUpdateDate = data.PriceUpdate || "";
+            const cpcChannel = guild.channels.cache.get(data.Channel);
+            if (!cpcChannel) return;
 
-              if (oil.PriceUpdate !== previousOilPriceUpdateDate) {
-                cpcChannel.send({
-                  components: [oil_container],
-                  flags: MessageFlags.IsComponentsV2,
-                });
-                data.priceUpdateDate = oil.date;
-                await data.save();
-              } else {
-                logger.info(`沒有更新油價`);
-              }
-            });
+            if (oil.PriceUpdate !== previousOilPriceUpdateDate) {
+              cpcChannel.send({
+                components: [oil_container],
+                flags: MessageFlags.IsComponentsV2,
+              });
+              data.priceUpdateDate = oil.date;
+              await data.save();
+            } else {
+              logger.info(`沒有更新油價`);
+            }
           });
         } catch (error) {
           logger.error("無法取得中油油價資料:", error);

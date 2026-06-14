@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, MessageFlags } = require("discord.js");
 
 module.exports = {
   data: {
@@ -38,19 +38,19 @@ module.exports = {
     if (interaction.values[0] == `news_oilPrice`) {
       await interaction.reply({
         embeds: [embed1],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     if (interaction.values[0] == `news_eq`) {
       await interaction.reply({
         embeds: [embed2],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     if (interaction.values[0] == `news_welcome`) {
       await interaction.reply({
         embeds: [embed3],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

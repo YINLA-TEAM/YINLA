@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, MessageFlags } = require("discord.js");
 
 module.exports = {
   data: {
@@ -68,43 +68,43 @@ module.exports = {
     if (interaction.values[0] == `eq`) {
       await interaction.reply({
         embeds: [embed1],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     if (interaction.values[0] == `radar`) {
       await interaction.reply({
         embeds: [embed2],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     if (interaction.values[0] == `alert`) {
       await interaction.reply({
         embeds: [embed3],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     if (interaction.values[0] == `station`) {
       await interaction.reply({
         embeds: [embed4],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     if (interaction.values[0] == `tool`) {
       await interaction.reply({
         embeds: [embed5],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     if (interaction.values[0] == `uv`) {
       await interaction.reply({
         embeds: [embed6],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     if (interaction.values[0] == `typhoon`) {
       await interaction.reply({
         embeds: [embed7],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

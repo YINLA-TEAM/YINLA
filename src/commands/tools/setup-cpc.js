@@ -63,42 +63,41 @@ module.exports = {
       return;
     }
 
-    cpcSchema.findOne({ Guild: interaction.guild.id }, async (err, data) => {
-      if (!data && interaction.options.getString("setup-remove") == "建立") {
-        await cpcSchema.create({
-          Guild: interaction.guild.id,
-          Channel: cpcChannel.id,
-        });
-        const success_create_cpc_msg = new EmbedBuilder()
-          .setTitle(`✅ 成功設定 **中油油價推播**`)
-          .setDescription(`中油的油價推播會在每週日的中午12點後推送`)
-          .setColor(`Green`);
+    const data = await cpcSchema.findOne({ Guild: interaction.guild.id });
 
-        interaction.reply({
-          embeds: [success_create_cpc_msg],
-          ephemeral: false,
-        });
-      } else if (interaction.options.getString("setup-remove") == "建立") {
-        const err_create_cpc_msg = new EmbedBuilder()
-          .setTitle(`❌ 請確認使否有設定過推播頻道`)
-          .setColor(`Red`);
+    if (!data && interaction.options.getString("setup-remove") == "建立") {
+      await cpcSchema.create({
+        Guild: interaction.guild.id,
+        Channel: cpcChannel.id,
+      });
+      const success_create_cpc_msg = new EmbedBuilder()
+        .setTitle(`✅ 成功設定 **中油油價推播**`)
+        .setDescription(`中油的油價推播會在每週日的中午12點後推送`)
+        .setColor(`Green`);
 
-        interaction.reply({
-          embeds: [err_create_cpc_msg],
-          flags: MessageFlags.Ephemeral,
-        });
-      } else if (interaction.options.getString("setup-remove") == "移除") {
-        await cpcSchema.deleteOne({
-          Guild: interaction.guild.id,
-        });
-        const rm_cpc_msg = new EmbedBuilder()
-          .setTitle(`✅ 成功移除 **中油油價推播**`)
-          .setColor(`Green`);
+      interaction.reply({
+        embeds: [success_create_cpc_msg],
+      });
+    } else if (interaction.options.getString("setup-remove") == "建立") {
+      const err_create_cpc_msg = new EmbedBuilder()
+        .setTitle(`❌ 請確認使否有設定過推播頻道`)
+        .setColor(`Red`);
 
-        interaction.reply({
-          embeds: [rm_cpc_msg],
-        });
-      }
-    });
+      interaction.reply({
+        embeds: [err_create_cpc_msg],
+        flags: MessageFlags.Ephemeral,
+      });
+    } else if (interaction.options.getString("setup-remove") == "移除") {
+      await cpcSchema.deleteOne({
+        Guild: interaction.guild.id,
+      });
+      const rm_cpc_msg = new EmbedBuilder()
+        .setTitle(`✅ 成功移除 **中油油價推播**`)
+        .setColor(`Green`);
+
+      interaction.reply({
+        embeds: [rm_cpc_msg],
+      });
+    }
   },
 };

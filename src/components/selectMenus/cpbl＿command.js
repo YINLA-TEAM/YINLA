@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, MessageFlags } = require("discord.js");
 
 module.exports = {
   data: {
@@ -41,19 +41,19 @@ module.exports = {
     if (interaction.values[0] == `game`) {
       await interaction.reply({
         embeds: [embed1],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     if (interaction.values[0] == `score`) {
       await interaction.reply({
         embeds: [embed2],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     if (interaction.values[0] == `standing`) {
       await interaction.reply({
         embeds: [embed3],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

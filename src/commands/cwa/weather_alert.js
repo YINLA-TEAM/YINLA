@@ -100,7 +100,7 @@ module.exports = {
 
     await interaction.editReply({
       embeds: Alert_Embed_List,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   },
 };
