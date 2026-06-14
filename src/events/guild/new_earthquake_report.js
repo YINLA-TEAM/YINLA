@@ -267,13 +267,17 @@ module.exports = {
             if (!eqChannel) return;
 
             if (Earthquake.ReportContent !== previousReportContent) {
-              eqChannel.send({
-                embeds: [embed],
-                components: [url],
-              });
-              logger.success(`發布地震報告_E`);
-              data.E_LastReportContent = Earthquake.ReportContent;
-              await data.save();
+              try {
+                await eqChannel.send({
+                  embeds: [embed],
+                  components: [url],
+                });
+                logger.success(`發布地震報告_E`);
+                data.E_LastReportContent = Earthquake.ReportContent;
+                await data.save();
+              } catch (err) {
+                logger.error(`推播地震報告至 Guild ${guild.id} 失敗:`, err);
+              }
             } else {
               logger.info(`沒有新的地震報告`);
             }
