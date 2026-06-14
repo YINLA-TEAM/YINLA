@@ -80,18 +80,20 @@ module.exports = {
       async function() {
         try {
           const oil = await fetchCPCOilPrice();
-          let oil_color = Colors.Green;
-          let oil_title = "";
+          let oil_color;
+          let oil_title;
 
-          if (oil.rate === "0.0") {
-            oil_color = Colors.Grey;
-            oil_title = "本週汽油價格不調整";
-          } else if (oil.UpOrDown === "調漲") {
+          // 以 sys 文字（oil.UpOrDown）判斷漲跌；不調整時 API 的 rate 為空字串，
+          // 故以 else 作為穩健 fallback，避免標題空白
+          if (oil.UpOrDown === "調漲") {
             oil_color = Colors.Red;
             oil_title = `本週汽油價格${oil.UpOrDown} ${oil.rate}`;
           } else if (oil.UpOrDown === "調降") {
             oil_color = Colors.Green;
             oil_title = `本週汽油價格${oil.UpOrDown} ${oil.rate}`;
+          } else {
+            oil_color = Colors.Grey;
+            oil_title = "本週汽油價格不調整";
           }
 
           const oil_header = new TextDisplayBuilder().setContent(
@@ -173,7 +175,6 @@ module.exports = {
                   components: [oil_container],
                   flags: MessageFlags.IsComponentsV2,
                 });
-                // 推播成功後才記錄調價日期，失敗則維持原值、下次 cron 重試
                 data.priceUpdateDate = oil.PriceUpdate;
                 await data.save();
               } catch (err) {
