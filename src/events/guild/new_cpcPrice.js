@@ -163,17 +163,22 @@ module.exports = {
               logger.info(`Guild ID: ${guild.id} 未設定中油油價推播頻道`);
               return;
             }
-            let previousOilPriceUpdateDate = data.PriceUpdate || "";
+            const previousOilPriceUpdateDate = data.priceUpdateDate || "";
             const cpcChannel = guild.channels.cache.get(data.Channel);
             if (!cpcChannel) return;
 
             if (oil.PriceUpdate !== previousOilPriceUpdateDate) {
-              cpcChannel.send({
-                components: [oil_container],
-                flags: MessageFlags.IsComponentsV2,
-              });
-              data.priceUpdateDate = oil.date;
-              await data.save();
+              try {
+                await cpcChannel.send({
+                  components: [oil_container],
+                  flags: MessageFlags.IsComponentsV2,
+                });
+                // 推播成功後才記錄調價日期，失敗則維持原值、下次 cron 重試
+                data.priceUpdateDate = oil.PriceUpdate;
+                await data.save();
+              } catch (err) {
+                logger.error(`推播油價至 Guild ${guild.id} 失敗:`, err);
+              }
             } else {
               logger.info(`沒有更新油價`);
             }
