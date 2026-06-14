@@ -80,7 +80,7 @@ module.exports = {
       });
     } else if (interaction.options.getString("setup-remove") == "建立") {
       const err_create_cpc_msg = new EmbedBuilder()
-        .setTitle(`❌ 請確認使否有設定過推播頻道`)
+        .setTitle(`❌ 請確認是否有設定過推播頻道`)
         .setColor(`Red`);
 
       interaction.reply({
