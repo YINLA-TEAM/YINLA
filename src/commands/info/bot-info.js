@@ -47,13 +47,17 @@ module.exports = {
         },
         {
           name: `機器人延遲`,
-          value: `${WaitMessage.createdTimestamp - interaction.createdTimestamp
+          value: `${WaitMessage.resource.message.createdTimestamp -
+            interaction.createdTimestamp
             } ms`,
           inline: true,
         },
         {
           name: `使用者數量`,
-          value: `${client.users.cache.size} 人`,
+          value: `${client.guilds.cache.reduce(
+            (total, guild) => total + guild.memberCount,
+            0,
+          )} 人`,
           inline: true,
         },
         {
