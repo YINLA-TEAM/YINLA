@@ -35,7 +35,8 @@ module.exports = {
     } else if (interaction.isButton()) {
       const { buttons } = client;
       const { customId } = interaction;
-      const button = buttons.get(customId);
+      // 先精確比對；找不到再用 ":" 前綴比對（讓動態 customId 帶參數，例如 name:id）
+      const button = buttons.get(customId) || buttons.get(customId.split(":")[0]);
       if (!button) return;
 
       try {
@@ -47,7 +48,8 @@ module.exports = {
     } else if (interaction.isStringSelectMenu()) {
       const { selectMenus } = client;
       const { customId } = interaction;
-      const menu = selectMenus.get(customId);
+      const menu =
+        selectMenus.get(customId) || selectMenus.get(customId.split(":")[0]);
       if (!menu) return;
 
       try {
@@ -59,7 +61,7 @@ module.exports = {
     } else if (interaction.type == InteractionType.ModalSubmit) {
       const { modals } = client;
       const { customId } = interaction;
-      const modal = modals.get(customId);
+      const modal = modals.get(customId) || modals.get(customId.split(":")[0]);
       if (!modal) return;
 
       try {
