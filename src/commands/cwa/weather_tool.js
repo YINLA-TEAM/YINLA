@@ -58,15 +58,11 @@ module.exports = {
       )}?Authorization=${process.env.cwa_key}&downloadType=WEB&format=JSON`
     );
     const { cwaopendata } = wtResult.data;
-    const wt_tool = cwaopendata.dataset;
+    const location = cwaopendata.Dataset.Locations.Location;
 
-    const ct_name = wt_tool.location.locationName;
-    const ct_desc = wt_tool.parameterSet.parameter;
-    const ct_desc_list = [];
-
-    for (i = 0; i <= wt_tool.parameterSet.parameter.length - 1; i++) {
-      ct_desc_list.push(ct_desc[i].parameterValue);
-    }
+    const ct_name = location.LocationName;
+    const ct_desc_list =
+      location.WeatherElement.ElementValue.WeatherDescription;
 
     const wtEmbed = new EmbedBuilder()
       .setAuthor({
