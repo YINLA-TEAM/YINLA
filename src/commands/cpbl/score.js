@@ -1,125 +1,214 @@
-const {
-  SlashCommandBuilder,
-  EmbedBuilder,
-  MessageFlags,
-} = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require("discord.js");
 const { teamIcon, gameType } = require("../../types/cpblType.js");
+const {
+  fetchTodayGames,
+  fetchGameDetail,
+  fetchStandings,
+  taipeiToday,
+} = require("../../types/cpblStats.js");
+const { cpblCached } = require("../../types/cpblFetch.js");
 
-const fetchCPBLScore = async () => {
-  try {
-    const response = await fetch("https://www.cpbl.com.tw/home/getdetaillist", {
-      method: "POST",
-    });
-    const data = await response.json();
-    let game_detail;
-    const gameArray = [];
+// 比賽編號顯示：總冠軍/季後/二軍總冠軍用 GAME x，其餘補零
+const gameNoLabel = (g) =>
+  ["C", "E", "F"].includes(g.KindCode)
+    ? `GAME ${g.GameSno}`
+    : String(g.GameSno).padStart(3, "0");
 
-    if (data.GameDetailJson !== null) {
-      game_detail = JSON.parse(data.GameDetailJson);
-    } else if (data.GameADetailJson !== null) {
-      game_detail = JSON.parse(data.GameADetailJson);
-    } else if (data.GameDDetailJson !== null) {
-      game_detail = JSON.parse(data.GameDDetailJson);
-    } else {
-      return new Error("Game Not Found");
-    }
+const unix = (s) => Math.floor(new Date(s).getTime() / 1000);
+const playerUrl = (acnt) => `https://stats.cpbl.com.tw/players/${acnt}`;
 
-    if (game_detail === null) {
-      return new Error("Game Not Found");
-    } else {
-      game_detail.forEach((game) => {
-        gameArray.push({
-          gameSNo: game?.GameSno,
-          gameStatus: game?.GameStatus,
-          gameType: game?.KindCode,
-
-          awayTeam: game?.VisitingTeamName,
-          homeTeam: game?.HomeTeamName,
-          awayScore:
-            game?.VisitingTotalScore == null ? "0" : game?.VisitingTotalScore,
-          homeScore: game?.HomeTotalScore == null ? "0" : game?.HomeTotalScore,
-          awayTeam_code: game?.VisitingTeamCode,
-          homeTeam_code: game?.HomeTeamCode,
-          awayTeam_W: game?.VisitingGameResultWCnt,
-          awayTeam_L: game?.VisitingGameResultLCnt,
-          awayTeam_T: game?.VisitingGameResultTCnt,
-          homeTeam_W: game?.HomeGameResultWCnt,
-          homeTeam_L: game?.HomeGameResultLCnt,
-          homeTeam_T: game?.HomeGameResultTCnt,
-
-          place: game?.FieldAbbe,
-          place_time: game?.PreExeDate,
-          weather: game?.WeatherCode, // [晴, 陰, 多雲, 雨]
-          weather_description: game?.WeatherDesc,
-          inning: game?.CurtBatting?.InningSeq,
-          inning_top_bot: game?.CurtBatting?.VisitingHomeType,
-          schedule: game?.GameStatusChi,
-          isTemporary: game?.IsTemporary,
-
-          away_sp_name: game?.VisitingFirstMover,
-          away_sp_Acnt: game?.VisitingFirstAcnt,
-          home_sp_name: game?.HomeFirstMover,
-          home_sp_Acnt: game?.HomeFirstAcnt,
-
-          strike_cnt: game?.CurtBatting?.StrikeCnt,
-          ball_cnt: game?.CurtBatting?.BallCnt,
-          out_cnt: game?.CurtBatting?.OutCnt,
-          pitch_cnt: game?.CurtBatting?.PitchCnt,
-
-          hitter_no: game?.CurtBatting?.HitterUniformNo,
-          hitter_name: game?.CurtBatting?.HitterName,
-          hitter_Acnt: game?.CurtBatting?.HitterAcnt,
-          hitter_team:
-            game?.CurtBatting?.VisitingHomeType == 1
-              ? game.VisitingTeamCode
-              : game.HomeTeamCode,
-
-          pitcher_no: game?.CurtBatting?.PitcherUniformNo,
-          pitcher_name: game?.CurtBatting?.PitcherName,
-          pitcher_Acnt: game?.CurtBatting?.PitcherAcnt,
-          pitcher_team:
-            game?.CurtBatting?.VisitingHomeType == 1
-              ? game.HomeTeamCode
-              : game.VisitingTeamCode,
-
-          wins_pitcher_name: game?.WinningPitcherName,
-          wins_pitcher_Acnt: game?.WinningPitcherAcnt,
-          wins_pitcher_team:
-            game?.WinningType == 1 ? game.VisitingTeamCode : game.HomeTeamCode,
-
-          loses_pitcher_name: game?.LosePitcherName,
-          loses_pitcher_Acnt: game?.LosePitcherAcnt,
-          loses_pitcher_team:
-            game?.WinningType == 1 ? game.HomeTeamCode : game.VisitingTeamCode,
-
-          closer_pitcher_name: game?.CloserPitcherName,
-          closer_pitcher_Acnt: game?.CloserPitcherAcnt,
-          closer_pitcher_team:
-            game?.WinningType == 1 ? game.VisitingTeamCode : game.HomeTeamCode,
-        });
-      });
-    }
-    return gameArray;
-  } catch (error) {
-    console.log(error);
-    return false;
+// 賽程端點每場自帶的 AccumulationScore 是「該場排定當時」的累積戰績快照，對尚未開打
+// （含延賽改期）的賽事多半過時或為 0-0-0。改以戰績端點建當季即時對照（代碼+隊名雙鍵），
+// 查無（如二軍無一軍戰績）才退回該場自帶的 AccumulationScore。
+function buildRecordLookup(standings) {
+  const map = new Map();
+  for (const t of standings?.fullYear || []) {
+    const v = `${t.GameResultWCnt}-${t.GameResultLCnt}-${t.GameResultTCnt}`;
+    map.set(t.Team.Code, v);
+    map.set(t.Team.Name, v);
   }
+  return map;
+}
+const wltOf = (side, records) =>
+  records.get(side.Team.Code) ??
+  records.get(side.Team.Name) ??
+  `${side.AccumulationScore?.W ?? 0}-${side.AccumulationScore?.L ?? 0}-${
+    side.AccumulationScore?.T ?? 0
+  }`;
+
+const AUTHOR = {
+  name: "中華職棒",
+  url: "https://www.cpbl.com.tw",
+  iconURL: "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png",
+};
+const footerOf = (g) => ({
+  text: `🏟️ ${g.Field?.Abbe || ""}棒球場 • ${gameType(g.KindCode)}`,
+});
+
+// 投手欄位（勝敗投/中繼），以比分高低推斷所屬隊以套用隊徽
+const pitcherField = (label, pitcher, teamName) =>
+  pitcher && pitcher.Name
+    ? {
+        name: label,
+        value: `${teamIcon(teamName)} [${pitcher.Name}](${playerUrl(pitcher.Acnt)})`,
+        inline: true,
+      }
+    : { name: label, value: "無", inline: true };
+
+// 賽程端點不含逐球即時資料；好壞球/壘包/投球數/當前對戰只在單場詳細端點的
+// LiveLog（逐球陣列）裡，最後一筆即為「當前狀態」。SCHEDULED 等非進行中狀態無
+// LiveLog 可取，不必額外打 detail。
+const NON_LIVE = new Set([
+  "SCHEDULED",
+  "RESERVED",
+  "POSTPONED",
+  "CANCELLED",
+  "FINISHED",
+]);
+
+// 從 detail 的最新一筆 LiveLog 取當前局面：好壞球、出局、投球數、壘包、對戰投打。
+// VisitingHomeType==1 為上半局（客隊進攻）→ 打者屬客隊、投手屬主隊，反之亦然。
+function extractLive(detail, awayName, homeName) {
+  const log = detail?.LiveLog;
+  if (!log || !log.length) return null;
+  const l = log[log.length - 1];
+  const battingAway = String(l.VisitingHomeType) === "1";
+  return {
+    balls: l.BallCnt ?? 0,
+    strikes: l.StrikeCnt ?? 0,
+    outs: l.OutCnt ?? 0,
+    pitches: l.PitchCnt ?? 0,
+    // 壘包欄位存跑者背號字串，空字串＝無人在壘
+    bases: {
+      first: Boolean(l.FirstBase),
+      second: Boolean(l.SecondBase),
+      third: Boolean(l.ThirdBase),
+    },
+    pitcher: {
+      name: l.PitcherName,
+      acnt: l.PitcherAcnt,
+      no: l.PitcherUniformNo,
+      team: battingAway ? homeName : awayName,
+    },
+    hitter: {
+      name: l.HitterName,
+      acnt: l.HitterAcnt,
+      no: l.HitterUniformNo,
+      team: battingAway ? awayName : homeName,
+    },
+  };
+}
+
+// 壘包狀態文字：無人 / 滿壘 / 「一、二壘有人」等
+const baseText = (b) => {
+  const on = [b.first && "一", b.second && "二", b.third && "三"].filter(Boolean);
+  if (!on.length) return "壘上無人";
+  if (on.length === 3) return "滿壘";
+  return `${on.join("、")}壘有人`;
 };
 
-const weatherToEmoji = (weather) => {
-  switch (weather) {
-    case 1:
-      return "☀️";
-    case 2:
-      return "☁️";
-    case 3:
-      return "🌥️";
-    case 4:
-      return "🌧️";
-    default:
-      return "";
+// 當前對戰投/打欄位：隊徽 + 背號姓名（連結球員頁）
+const livePlayerField = (label, p) =>
+  p && p.name
+    ? {
+        name: label,
+        value: `${teamIcon(p.team)} [${p.no ? p.no + " " : ""}${p.name}](${playerUrl(p.acnt)})`,
+        inline: true,
+      }
+    : { name: label, value: "—", inline: true };
+
+function buildEmbed(g, records, live) {
+  const away = g.Visiting;
+  const home = g.Home;
+  const awayName = away.Team.Name;
+  const homeName = home.Team.Name;
+  const awayWLT = wltOf(away, records);
+  const homeWLT = wltOf(home, records);
+  const title = `[${gameNoLabel(g)}] ${awayName} vs. ${homeName}`;
+  const embed = new EmbedBuilder().setAuthor(AUTHOR).setFooter(footerOf(g));
+
+  switch (g.GameStatus) {
+    case "SCHEDULED":
+      return embed
+        .setTitle(`[${gameNoLabel(g)}] ${teamIcon(awayName)} vs. ${teamIcon(homeName)}`)
+        .setDescription(
+          `# 比賽尚未開始\n> 預定於 **<t:${unix(g.PreExeDate)}>**__(<t:${unix(
+            g.PreExeDate
+          )}:R>)__ 開始`
+        )
+        .setColor("Blue")
+        .addFields(
+          { name: "客隊勝敗和", value: awayWLT, inline: true },
+          { name: "主隊勝敗和", value: homeWLT, inline: true }
+        );
+
+    case "RESERVED":
+      return embed
+        .setTitle(title)
+        .setDescription("# 如有需要才進行")
+        .setColor("Greyple");
+
+    case "POSTPONED":
+      return embed.setTitle(title).setDescription("# 賽事已延賽").setColor("Red");
+
+    case "CANCELLED":
+      return embed
+        .setTitle(title)
+        .setDescription("# 賽事已取消")
+        .setColor("DarkRed");
+
+    case "FINISHED": {
+      // 勝隊（比分較高）：勝投/中繼屬勝隊、敗投屬敗隊
+      const awayWon = away.Score > home.Score;
+      const winnerTeam = awayWon ? awayName : homeName;
+      const loserTeam = awayWon ? homeName : awayName;
+      return embed
+        .setTitle(`[${gameNoLabel(g)}] 比賽結束`)
+        .setDescription(
+          `# ${teamIcon(awayName)} \`${away.Score}\` vs. \`${home.Score}\` ${teamIcon(homeName)}`
+        )
+        .setColor("Red")
+        .addFields(
+          pitcherField("勝投", g.WinningPitcher, winnerTeam),
+          pitcherField("敗投", g.LoserPitcher, loserTeam),
+          ...(g.Closer && g.Closer.Name
+            ? [pitcherField("中繼/救援", g.Closer, winnerTeam)]
+            : [{ name: "** **", value: "** **", inline: true }]),
+          { name: "客隊勝敗和", value: awayWLT, inline: true },
+          { name: "主隊勝敗和", value: homeWLT, inline: true }
+        );
+    }
+
+    default: {
+      // 進行中（PLAYING / LIVE / 其他未列舉的非結束狀態）：顯示即時比分與局數，
+      // 並在取得 LiveLog 時補上當前對戰投打、壘包、好壞球、出局數、投球數
+      const fields = [];
+      if (live) {
+        fields.push(
+          livePlayerField("對戰投手", live.pitcher),
+          livePlayerField("對戰打者", live.hitter),
+          { name: "壘包", value: baseText(live.bases), inline: true },
+          { name: "好球-壞球", value: `${live.strikes}-${live.balls}`, inline: true },
+          { name: "出局數", value: `${live.outs}`, inline: true },
+          { name: "投球數", value: `${live.pitches} 球`, inline: true }
+        );
+      }
+      fields.push(
+        { name: "客隊勝敗和", value: awayWLT, inline: true },
+        { name: "主隊勝敗和", value: homeWLT, inline: true }
+      );
+      return embed
+        .setTitle(title)
+        .setDescription(
+          `# ${teamIcon(awayName)} \`${away.Score}\` ${g.InningSeq}${
+            g.VisitingHomeType == 1 ? "上" : "下"
+          } \`${home.Score}\` ${teamIcon(homeName)}`
+        )
+        .setColor("Green")
+        .addFields(...fields);
+    }
   }
-};
+}
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -135,479 +224,51 @@ module.exports = {
       flags: MessageFlags.Ephemeral,
     });
 
-    const game_embed_list = [];
-    const game = await fetchCPBLScore();
-
-    if (!game) {
-      await interaction.editReply(`# 🚨：API擷取發生錯誤請回報`);
-      return;
-    } else if (game instanceof Error) {
-      await interaction.editReply(`# ❌：目前無賽事資料`);
+    let today;
+    try {
+      today = await fetchTodayGames();
+    } catch (error) {
+      console.error(error);
+      await interaction.editReply("# 🚨：擷取賽事資料發生錯誤，請稍後再試");
       return;
     }
-    // 判定有無賽事
-    if (game.length === 0) {
-      const nullGameEmbed = new EmbedBuilder()
-        .setTitle("無比賽數據")
-        .setColor("Red");
-      game_embed_list.push(nullGameEmbed);
-    } else {
-      for (let i = 0; i < game.length; i++) {
-        switch (game[i].gameStatus) {
-          case 1:
-            // 如有需要才進行 或 比賽尚未開始
-            const ifNeededGame_Embed = new EmbedBuilder()
-              .setAuthor({
-                name: "中華職棒",
-                url: "https://www.cpbl.com.tw",
-                iconURL:
-                  "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png",
-              })
-              .setTitle(
-                `[${game[i].gameType == "C" || "E" || "F"
-                  ? `GAME ${game[i].gameSNo}`
-                  : game[i].gameSNo.toString().padStart(3, "0")
-                }] ${teamIcon(game[i].awayTeam)} vs. ${teamIcon(
-                  game[i].homeTeam
-                )}  ${weatherToEmoji(game[i].weather)}`
-              )
-              .setDescription(
-                `
-                ${game[i].isTemporary === "Y"
-                  ? `# 如有需要才進行`
-                  : "# 比賽尚未開始"
-                }
-                > 預定於 **<t:${new Date(game[i].place_time) / 1000
-                }>**__(<t:${new Date(game[i].place_time) / 1000
-                }:R>)__ 開始
-                            `
-              )
-              .setFooter({
-                text: `🏟️ ${game[i].place}棒球場 • ${gameType(
-                  game[i].gameType
-                )}`,
-              });
 
-            if (game[i].isTemporary !== "Y") {
-              ifNeededGame_Embed.addFields([
-                {
-                  name: "客隊先發投手",
-                  value:
-                    game[i].away_sp_Acnt == ""
-                      ? "未公布"
-                      : `${teamIcon(game[i].awayTeam_code)} [${game[i].away_sp_name
-                      }](https://www.cpbl.com.tw/team/person?acnt=${game[i].away_sp_Acnt
-                      })`,
-                  inline: true,
-                },
-                {
-                  name: "主隊先發投手",
-                  value:
-                    game[i].home_sp_Acnt == ""
-                      ? "未公布"
-                      : `${teamIcon(game[i].homeTeam_code)} [${game[i].home_sp_name
-                      }](https://www.cpbl.com.tw/team/person?acnt=${game[i].home_sp_Acnt
-                      })`,
-                  inline: true,
-                },
-                { name: "** **", value: "** **", inline: true },
-                {
-                  name: "客隊勝敗和",
-                  value: `${game[i].awayTeam_W}-${game[i].awayTeam_L}-${game[i].awayTeam_T}`,
-                  inline: true,
-                },
-                {
-                  name: "主隊勝敗和",
-                  value: `${game[i].homeTeam_W}-${game[i].homeTeam_L}-${game[i].homeTeam_T}`,
-                  inline: true,
-                },
-              ]);
-            }
+    if (today.games.length === 0) {
+      await interaction.editReply({
+        embeds: [new EmbedBuilder().setTitle("今日無比賽").setColor("Red")],
+      });
+      return;
+    }
 
-            if (
-              game[i].weather_description !== null &&
-              game[i].weather_description !== ""
-            ) {
-              ifNeededGame_Embed.addFields(
-                { name: "** **", value: "** **", inline: true },
-                {
-                  name: "氣溫",
-                  value: `${game[i].weather_description
-                    .split("。")[2]
-                    .replace(/[^\d]/g, " ")
-                    .split(" ")[2]
-                    }°C ~ ${game[i].weather_description
-                      .split("。")[2]
-                      .replace(/[^\d]/g, " ")
-                      .split(" ")[3]
-                    } °C (${game[i].weather_description.split("。")[3]})`,
-                  inline: true,
-                },
-                {
-                  name: "降雨機率",
-                  value: `${game[i].weather_description
-                    .split("。")[1]
-                    .replace(/[^\d]/g, "")} %`,
-                  inline: true,
-                }
-              );
-            }
-            game_embed_list.push(ifNeededGame_Embed);
-            break;
-          case 2:
-            // 比賽中
-            const playBall_Embed = new EmbedBuilder()
-              .setAuthor({
-                name: "中華職棒",
-                url: "https://www.cpbl.com.tw",
-                iconURL:
-                  "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png",
-              })
-              .setTitle(
-                `[${game[i].gameType == "C" || "E" || "F"
-                  ? `GAME ${game[i].gameSNo}`
-                  : game[i].gameSNo.toString().padStart(3, "0")
-                }] ${game[i].awayTeam} vs. ${game[i].homeTeam}`
-              )
-              .setDescription(
-                `# ${teamIcon(game[i].awayTeam)} \`${game[i].awayScore}\` ${game[i].inning
-                }${game[i].inning_top_bot == 1 ? "上" : "下"} \`${game[i].homeScore
-                }\` ${teamIcon(game[i].homeTeam)}`
-              )
-              .setColor("Green")
-              .addFields([
-                {
-                  name: "投手",
-                  value: `${teamIcon(game[i].pitcher_team)} [${game[i].pitcher_no + " " + game[i].pitcher_name
-                    }](https://www.cpbl.com.tw/team/person?acnt=${game[i].pitcher_Acnt
-                    })`,
-                  inline: true,
-                },
-                { name: "** **", value: "** **", inline: true },
-                {
-                  name: "打者",
-                  value: `${teamIcon(game[i].hitter_team)} [${game[i].hitter_no + " " + game[i].hitter_name
-                    }](https://www.cpbl.com.tw/team/person?acnt=${game[i].hitter_Acnt
-                    })`,
-                  inline: true,
-                },
-                {
-                  name: "好球-壞球",
-                  value: `${game[i].strike_cnt}-${game[i].ball_cnt}`,
-                  inline: true,
-                },
-                { name: "出局數", value: `${game[i].out_cnt}`, inline: true },
-                {
-                  name: "投手球數",
-                  value: `${game[i].pitch_cnt} 球`,
-                  inline: true,
-                },
-              ])
-              .setFooter({
-                text: `🏟️ ${game[i].place}棒球場 • ${gameType(
-                  game[i].gameType
-                )}`,
-              });
-            game_embed_list.push(playBall_Embed);
-            break;
-          case 3:
-            // 比賽結束
-            const endGame_Embed = new EmbedBuilder()
-              .setAuthor({
-                name: "中華職棒",
-                url: "https://www.cpbl.com.tw",
-                iconURL:
-                  "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png",
-              })
-              .setTitle(
-                `[${game[i].gameType == "C" || "E" || "F"
-                  ? `GAME ${game[i].gameSNo}`
-                  : game[i].gameSNo.toString().padStart(3, "0")
-                }] 比賽結束`
-              )
-              .setDescription(
-                `# ${teamIcon(game[i].awayTeam)} \`${game[i].awayScore
-                }\` vs. \`${game[i].homeScore}\` ${teamIcon(game[i].homeTeam)}`
-              )
-              .setColor("Red")
-              .addFields([
-                {
-                  name: "勝投",
-                  value:
-                    game[i].wins_pitcher_name == ""
-                      ? "無"
-                      : `${teamIcon(game[i].wins_pitcher_team)} [${game[i].wins_pitcher_name
-                      }](https://www.cpbl.com.tw/team/person?acnt=${game[i].wins_pitcher_Acnt
-                      })`,
-                  inline: true,
-                },
-                {
-                  name: "敗投",
-                  value:
-                    game[i].loses_pitcher_name == ""
-                      ? "無"
-                      : `${teamIcon(game[i].loses_pitcher_team)} [${game[i].loses_pitcher_name
-                      }](https://www.cpbl.com.tw/team/person?acnt=${game[i].loses_pitcher_Acnt
-                      })`,
-                  inline: true,
-                },
-                { name: "** **", value: "** **", inline: true },
-              ])
-              .setFooter({
-                text: `🏟️ ${game[i].place}棒球場 • ${gameType(
-                  game[i].gameType
-                )}`,
-              });
+    // 取當季戰績作勝敗和（戰績抓失敗不影響比分顯示，退回各場自帶值）
+    let records = new Map();
+    try {
+      records = buildRecordLookup(await fetchStandings(taipeiToday().year));
+    } catch (error) {
+      console.error(error);
+    }
 
-            if (game[i].closer_pitcher_name != "") {
-              endGame_Embed.addFields({
-                name: "救援",
-                value: `${teamIcon(game[i].closer_pitcher_team)} [${game[i].closer_pitcher_name
-                  }](https://www.cpbl.com.tw/team/person?acnt=${game[i].closer_pitcher_Acnt
-                  })`,
-                inline: true,
-              });
-            }
-            endGame_Embed.addFields([
-              {
-                name: "客隊勝敗和",
-                value: `${game[i].awayTeam_W}-${game[i].awayTeam_L}-${game[i].awayTeam_T}`,
-                inline: true,
-              },
-              {
-                name: "主隊勝敗和",
-                value: `${game[i].homeTeam_W}-${game[i].homeTeam_L}-${game[i].homeTeam_T}`,
-                inline: true,
-              },
-            ]);
-            game_embed_list.push(endGame_Embed);
-            break;
-          case 4:
-            // 先發打序
-            const startingOrder_Embed = new EmbedBuilder()
-              .setAuthor({
-                name: "中華職棒",
-                url: "https://www.cpbl.com.tw",
-                iconURL:
-                  "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png",
-              })
-              .setTitle(
-                `[${game[i].gameType == "C" || "E" || "F"
-                  ? `GAME ${game[i].gameSNo}`
-                  : game[i].gameSNo.toString().padStart(3, "0")
-                }] 先發打序`
-              )
-              .setDescription(
-                `# ${teamIcon(game[i].awayTeam)} vs. ${teamIcon(
-                  game[i].homeTeam
-                )}`
-              )
-              .setColor("Aqua")
-              .addFields([
-                {
-                  name: "客隊先發投手",
-                  value:
-                    game[i].away_sp_Acnt == ""
-                      ? "未公布"
-                      : `${teamIcon(game[i].awayTeam_code)} [${game[i].away_sp_name
-                      }](https://www.cpbl.com.tw/team/person?acnt=${game[i].away_sp_Acnt
-                      })`,
-                  inline: true,
-                },
-                {
-                  name: "主隊先發投手",
-                  value:
-                    game[i].home_sp_Acnt == ""
-                      ? "未公布"
-                      : `${teamIcon(game[i].homeTeam_code)} [${game[i].home_sp_name
-                      }](https://www.cpbl.com.tw/team/person?acnt=${game[i].home_sp_Acnt
-                      })`,
-                  inline: true,
-                },
-                { name: "** **", value: "** **", inline: true },
-                {
-                  name: "客隊勝敗和",
-                  value: `${game[i].awayTeam_W}-${game[i].awayTeam_L}-${game[i].awayTeam_T}`,
-                  inline: true,
-                },
-                {
-                  name: "主隊勝敗和",
-                  value: `${game[i].homeTeam_W}-${game[i].homeTeam_L}-${game[i].homeTeam_T}`,
-                  inline: true,
-                },
-              ])
-              .setFooter({
-                text: `🏟️ ${game[i].place}棒球場 • ${gameType(
-                  game[i].gameType
-                )}`,
-              });
-            game_embed_list.push(startingOrder_Embed);
-            break;
-          case 5:
-            // 取消比賽
-            const cancelGame_Embed = new EmbedBuilder()
-              .setAuthor({
-                name: "中華職棒",
-                url: "https://www.cpbl.com.tw",
-                iconURL:
-                  "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png",
-              })
-              .setTitle(
-                `[${game[i].gameType == "C" || "E" || "F"
-                  ? `GAME ${game[i].gameSNo}`
-                  : game[i].gameSNo.toString().padStart(3, "0")
-                }] ${game[i].awayTeam} vs. ${game[i].homeTeam}`
-              )
-              .setDescription(`# 賽事已取消`)
-              .setColor("DarkRed")
-              .setFooter({
-                text: `🏟️ ${game[i].place}棒球場 • ${gameType(
-                  game[i].gameType
-                )}`,
-              });
-            game_embed_list.push(cancelGame_Embed);
-            break;
-          case 6:
-            // 延賽
-            const postPoned_Embed = new EmbedBuilder()
-              .setAuthor({
-                name: "中華職棒",
-                url: "https://www.cpbl.com.tw",
-                iconURL:
-                  "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png",
-              })
-              .setTitle(
-                `[${game[i].gameType == "C" || "E" || "F"
-                  ? `GAME ${game[i].gameSNo}`
-                  : game[i].gameSNo.toString().padStart(3, "0")
-                }] ${game[i].awayTeam} vs. ${game[i].homeTeam}`
-              )
-              .setDescription(`# 賽事已延賽`)
-              .setColor("Red")
-              .setFooter({
-                text: `🏟️ ${game[i].place}棒球場 • ${gameType(
-                  game[i].gameType
-                )}`,
-              });
-            game_embed_list.push(postPoned_Embed);
-            break;
-          case 7:
-            // 保留比賽
-            const savaGame_Embed = new EmbedBuilder()
-              .setAuthor({
-                name: "中華職棒",
-                url: "https://www.cpbl.com.tw",
-                iconURL:
-                  "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png",
-              })
-              .setTitle(
-                `[${game[i].gameType == "C" || "E" || "F"
-                  ? `GAME ${game[i].gameSNo}`
-                  : game[i].gameSNo.toString().padStart(3, "0")
-                }] ${game[i].awayTeam} vs. ${game[i].homeTeam}`
-              )
-              .setDescription(
-                `# ${teamIcon(game[i].awayTeam)} \`${game[i].awayScore}\` ${game[i].inning
-                }${game[i].inning_top_bot == 1 ? "上" : "下"} \`${game[i].homeScore
-                }\` ${teamIcon(game[i].homeTeam)}\n## 保留比賽`
-              )
-              .setColor("Yellow")
-              .addFields([
-                {
-                  name: "投手",
-                  value: `${teamIcon(game[i].pitcher_team)} [${game[i].pitcher_no + " " + game[i].pitcher_name
-                    }](https://www.cpbl.com.tw/team/person?acnt=${game[i].pitcher_Acnt
-                    })`,
-                  inline: true,
-                },
-                { name: "** **", value: "** **", inline: true },
-                {
-                  name: "打者",
-                  value: `${teamIcon(game[i].hitter_team)} [${game[i].hitter_no + " " + game[i].hitter_name
-                    }](https://www.cpbl.com.tw/team/person?acnt=${game[i].hitter_Acnt
-                    })`,
-                  inline: true,
-                },
-                {
-                  name: "好球-壞球",
-                  value: `${game[i].strike_cnt}-${game[i].ball_cnt}`,
-                  inline: true,
-                },
-                { name: "出局數", value: `${game[i].out_cnt}`, inline: true },
-                {
-                  name: "投手球數",
-                  value: `${game[i].pitch_cnt} 球`,
-                  inline: true,
-                },
-              ])
-              .setFooter({
-                text: `🏟️ ${game[i].place}棒球場 • ${gameType(
-                  game[i].gameType
-                )}`,
-              });
-            game_embed_list.push(savaGame_Embed);
-            break;
-          case 8:
-            // 比賽暫停
-            const stopGame_Embed = new EmbedBuilder()
-              .setAuthor({
-                name: "中華職棒",
-                url: "https://www.cpbl.com.tw",
-                iconURL:
-                  "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png",
-              })
-              .setTitle(
-                `[${game[i].gameType == "C" || "E" || "F"
-                  ? `GAME ${game[i].gameSNo}`
-                  : game[i].gameSNo.toString().padStart(3, "0")
-                }] ${game[i].awayTeam} vs. ${game[i].homeTeam}`
-              )
-              .setDescription(
-                `# ${teamIcon(game[i].awayTeam)} \`${game[i].awayScore}\` ${game[i].inning
-                }${game[i].inning_top_bot == 1 ? "上" : "下"} \`${game[i].homeScore
-                }\` ${teamIcon(game[i].homeTeam)}\n## 比賽暫停`
-              )
-              .setColor("Orange")
-              .addFields([
-                {
-                  name: "投手",
-                  value: `${teamIcon(game[i].pitcher_team)} [${game[i].pitcher_no + " " + game[i].pitcher_name
-                    }](https://www.cpbl.com.tw/team/person?acnt=${game[i].pitcher_Acnt
-                    })`,
-                  inline: true,
-                },
-                { name: "** **", value: "** **", inline: true },
-                {
-                  name: "打者",
-                  value: `${teamIcon(game[i].hitter_team)} [${game[i].hitter_no + " " + game[i].hitter_name
-                    }](https://www.cpbl.com.tw/team/person?acnt=${game[i].hitter_Acnt
-                    })`,
-                  inline: true,
-                },
-                {
-                  name: "好球-壞球",
-                  value: `${game[i].strike_cnt}-${game[i].ball_cnt}`,
-                  inline: true,
-                },
-                { name: "出局數", value: `${game[i].out_cnt}`, inline: true },
-                {
-                  name: "投手球數",
-                  value: `${game[i].pitch_cnt} 球`,
-                  inline: true,
-                },
-              ])
-              .setFooter({
-                text: `🏟️ ${game[i].place}棒球場 • ${gameType(
-                  game[i].gameType
-                )}`,
-              });
-            game_embed_list.push(stopGame_Embed);
-            break;
+    const games = today.games.slice(0, 10);
+
+    // 進行中場次另抓單場詳細，取 LiveLog 最新一筆當「當前局面」（與 game.js 共用
+    // 15 秒快取，避免輪詢重複打 API）。單場抓失敗只是少了即時欄位，不影響比分。
+    const liveMap = new Map();
+    await Promise.all(
+      games.map(async (g) => {
+        if (NON_LIVE.has(g.GameStatus)) return;
+        try {
+          const detail = await cpblCached(`stats_game:${g.GameId}`, 15000, () =>
+            fetchGameDetail(g.GameId)
+          );
+          const live = extractLive(detail, g.Visiting.Team.Name, g.Home.Team.Name);
+          if (live) liveMap.set(g.GameId, live);
+        } catch (error) {
+          console.error(error);
         }
-      }
-    }
-    await interaction.editReply({
-      embeds: game_embed_list,
-    });
+      })
+    );
+
+    const embeds = games.map((g) => buildEmbed(g, records, liveMap.get(g.GameId)));
+    await interaction.editReply({ embeds });
   },
 };

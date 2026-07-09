@@ -1,42 +1,18 @@
-const {
-  SlashCommandBuilder,
-  EmbedBuilder,
-  MessageFlags,
-} = require("discord.js");
-const cheerio = require("cheerio");
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require("discord.js");
 const { teamIcon } = require("../../types/cpblType.js");
+const { fetchStandings, taipeiToday } = require("../../types/cpblStats.js");
 
-const fetchCPBLStanding = async () => {
-  const response = await fetch("https://www.cpbl.com.tw", { method: "GET" });
-  const data = await response.text();
-  const $ = cheerio.load(data);
+const fmtPct = (p) => (p ?? 0).toFixed(3).replace(/^0/, ""); // 0.679 → .679
+const fmtGB = (gb) => (gb == null ? "-" : `${gb}`); // 領先者 GB 為 null
+const fmtStreak = (s) => (s > 0 ? `${s}連勝` : s < 0 ? `${-s}連敗` : "-");
+const fmtWLT = (t) =>
+  `${t.GameResultWCnt}勝${t.GameResultLCnt}敗${t.GameResultTCnt}和`;
 
-  const dataArray = [];
-
-  $(".index_standing_table tbody tr").each((i, elem) => {
-    if (i === 0) return;
-    const rank = $(elem).find(".rank").text().trim();
-    const team = $(elem).find(".team_name a").attr("title");
-    const gamesPlayed = $(elem).find("td").eq(1).text().trim();
-    const winDrawLoss = $(elem).find("td").eq(2).text().trim();
-    const winRate = $(elem).find("td").eq(3).text().trim();
-    const gamesBehind = $(elem).find("td").eq(4).text().trim();
-    const streak = $(elem).find("td").eq(5).text().trim();
-    if (team == undefined) return;
-
-    dataArray.push({
-      rank,
-      team,
-      gamesPlayed,
-      winDrawLoss,
-      winRate,
-      gamesBehind,
-      streak,
-    });
-  });
-
-  return dataArray;
-};
+const row = (t) =>
+  `\`#${t.Ranking}\` ${teamIcon(t.Team.Name)} **${t.Team.Name}**　\`${t.GameCnt}\` 場\n` +
+  `　${fmtWLT(t)}・勝率 \`${fmtPct(t.Pct)}\`・勝差 \`${fmtGB(t.GB)}\`・\`${fmtStreak(
+    t.Strk
+  )}\``;
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -65,26 +41,26 @@ module.exports = {
       flags: MessageFlags.Ephemeral,
     });
 
-    const data = await fetchCPBLStanding();
-    let season = "";
-    let broad = [];
+    const { year } = taipeiToday();
 
-    if (interaction.options.getString("season") === "上半季") {
-      season = "上半賽季";
-      for (let i = 0; i < data.length / 2; i++) {
-        let info = `## \`${data[i].rank}\` ${teamIcon(data[i].team)} \`${data[i].gamesPlayed
-          }\` \`${data[i].winDrawLoss}\` \`${data[i].winRate}\` \`${data[i].gamesBehind
-          }\` \`${data[i].streak}\``;
-        broad.push(info);
-      }
-    } else if (interaction.options.getString("season") === "下半季") {
-      season = "下半賽季";
-      for (let i = data.length / 2; i < data.length; i++) {
-        let info = `## \`${data[i].rank}\` ${teamIcon(data[i].team)} \`${data[i].gamesPlayed
-          }\` \`${data[i].winDrawLoss}\` \`${data[i].winRate}\` \`${data[i].gamesBehind
-          }\` \`${data[i].streak}\``;
-        broad.push(info);
-      }
+    let standings;
+    try {
+      standings = await fetchStandings(year);
+    } catch (error) {
+      console.error(error);
+      await interaction.editReply("# 🚨：無法取得球隊成績，請稍後再試");
+      return;
+    }
+
+    const season = interaction.options.getString("season");
+    const teams = season === "上半季" ? standings.firstHalf : standings.secondHalf;
+    const seasonLabel = season === "上半季" ? "上半賽季" : "下半賽季";
+
+    if (!teams.length) {
+      await interaction.editReply(
+        `# 📭：\`${year}\` 年${seasonLabel}尚無戰績資料`
+      );
+      return;
     }
 
     const standingEmbed = new EmbedBuilder()
@@ -94,8 +70,8 @@ module.exports = {
         iconURL:
           "https://www.cpbl.com.tw/theme/common/images/project/logo_new.png",
       })
-      .setTitle(`${season} 球隊成績`)
-      .setDescription(`${broad.join("\n")}`)
+      .setTitle(`${year} ${seasonLabel} 球隊戰績`)
+      .setDescription(teams.map(row).join("\n"))
       .setColor("Blue");
 
     await interaction.editReply({
