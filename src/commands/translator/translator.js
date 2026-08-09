@@ -71,7 +71,7 @@ module.exports = {
     const lan = interaction.options.getString("lan");
     const text = interaction.options.getString("text");
 
-    if (text.lenght > 500) {
+    if (text.length > 500) {
       const error_embed = new EmbedBuilder()
         .setTitle(`翻譯｜TRANSLATE`)
         .setDescription("太多了")
@@ -82,6 +82,8 @@ module.exports = {
         flags: MessageFlags.Ephemeral,
       });
     } else {
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
       const translatedText = (await translate(text, { to: lan })).text;
       const translate_header = new TextDisplayBuilder().setContent(
         [
@@ -103,9 +105,9 @@ module.exports = {
         )
         .addTextDisplayComponents(translated_msg);
 
-      await interaction.reply({
+      await interaction.editReply({
         components: [translate_container],
-        flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2],
+        flags: MessageFlags.IsComponentsV2,
       });
     }
   },

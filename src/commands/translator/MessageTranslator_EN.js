@@ -29,7 +29,7 @@ module.exports = {
         embeds: [error_embed],
         flags: MessageFlags.Ephemeral,
       });
-    } else if (interaction.targetMessage.content.length >= 500) {
+    } else if (interaction.targetMessage.content.length > 500) {
       const error_embed = new EmbedBuilder()
         .setTitle(`<:tranlate:1035826480904679424> 翻譯｜TRANSLATE`)
         .setDescription("太多了")
@@ -40,6 +40,11 @@ module.exports = {
         flags: MessageFlags.Ephemeral,
       });
     } else {
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
+      const translatedText = (
+        await translate(interaction.targetMessage.content, { to: "en" })
+      ).text;
       const translate_header = new TextDisplayBuilder().setContent(
         [
           `## <:tranlate:1035826480904679424> 翻譯｜TRANSLATE`,
@@ -48,14 +53,16 @@ module.exports = {
       );
 
       const original_msg = new TextDisplayBuilder().setContent(
-        [`**原始訊息**`, `\`\`\`${interaction.targetMessage}\`\`\``].join("\n")
+        [
+          `**原始訊息**`,
+          `\`\`\`${interaction.targetMessage.content}\`\`\``,
+        ].join("\n")
       );
 
       const translated_msg = new TextDisplayBuilder().setContent(
         [
           `**翻譯訊息**`,
-          `\`\`\`${(await translate(interaction.targetMessage, { to: "en" })).text
-          }\`\`\``,
+          `\`\`\`${translatedText}\`\`\``,
         ].join("\n")
       );
 
@@ -72,9 +79,9 @@ module.exports = {
         )
         .addTextDisplayComponents(translated_msg);
 
-      await interaction.reply({
+      await interaction.editReply({
         components: [translate_container],
-        flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2],
+        flags: MessageFlags.IsComponentsV2,
       });
     }
   },
