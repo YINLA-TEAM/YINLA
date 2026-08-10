@@ -34,7 +34,6 @@ module.exports = {
           for (const subscription of subscriptions) {
             const channel = await client.channels.fetch(subscription.Channel).catch(() => null);
             if (!channel?.isTextBased()) {
-              logger.warn(`找不到 Guild ${subscription.Guild} 的天氣警特報頻道`);
               continue;
             }
 
