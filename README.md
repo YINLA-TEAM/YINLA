@@ -1,24 +1,123 @@
-<img alt="LOGO" src="https://i.imgur.com/0FomLnJ.png" width="125px" height="125px" align="left" />
+<p align="center">
+  <img src="./assets/yinla-readme-splash-compact.png" alt="YINLA — weather, translation, baseball, and earthquake information in Discord" width="100%" />
+</p>
 
-# **YINLA**
+<!-- README-I18N:START -->
 
-&nbsp;
-<img alt="Discord" src="https://img.shields.io/discord/1031159028505641011?color=blue&label=DISCORD&logo=discord&style=for-the-badge" align="right" />
-<img src="https://wakatime.com/badge/user/830ee6e5-c894-4b82-bf14-7e55d87afbd4/project/8fa8a374-7442-4dad-979c-7820ba198411.svg?style=for-the-badge"  alt="wakatime" align="right" />
-## 關於
+**English** | [繁體中文（台灣）](./README.zh-TW.md)
 
-**於 `2024/08/22` 成為已驗證機器人 ✅**
+<!-- README-I18N:END -->
 
-目前機器人並非24H運行，啟動時間為 8:00AM 到 隔日3:00AM
+# YINLA
 
-如果在使用機器人遇到什麼問題，可以用[issues](https://github.com/YINLA-TEAM/YINLA/issues)回報給我，或是私訊@YinCheng0106的DC，加入支援的伺服器也是可以。
+> A Taiwan-focused Discord information assistant for communities that want useful public information, timely alerts, and everyday utilities in one place.
 
-- [邀請連結](https://discord.com/oauth2/authorize?client_id=914150570250625044&permissions=1759214307376375&integration_type=0&scope=applications.commands+bot)
-- [服務條款](https://hackmd.io/@YinCheng0106/YINLA_TOS)
-- [支援伺服器](https://discord.gg/mnCHdBbh65)
-## 貢獻者
+[![Discord](https://img.shields.io/discord/1031159028505641011?color=5865F2&label=Discord&logo=discord&logoColor=white&style=flat-square)](https://discord.gg/mnCHdBbh65)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg?style=flat-square)](./License)
+[![Runtime](https://img.shields.io/badge/runtime-Bun%20%7C%20Node.js-111111?style=flat-square)](./package.json)
 
-- [YinCheng](https://github.com/YinCheng0106) `主編`
+YINLA brings Taiwan-centric information services into Discord. Use it to look up weather and disaster information, follow CPBL games, check transport and local services, translate text, and configure server notifications. It is designed for both people using the public bot and communities that want to run their own instance.
 
----
-<p align="center">此為 YINLA 所有</p>
+## What YINLA does
+
+| Area | Highlights |
+| --- | --- |
+| Weather and safety | CWA weather summaries, station data, UV index, radar imagery, typhoon information, earthquake reports, and weather alerts. |
+| Community notifications | Configurable weather-alert AI summaries, earthquake reports, CPC fuel-price updates, and welcome messages. |
+| Sports | Live CPBL scores, standings, and detailed game views. |
+| Everyday Taiwan services | YouBike availability, Taipei Metro operating status, public-restroom lookup, and CPC fuel prices. |
+| Utilities | Slash-command translation, message-context translation to Chinese, English, Japanese, or Korean, Discord profile tools, and issue reporting. |
+
+## Use the public bot
+
+1. [Invite YINLA to your Discord server](https://discord.com/oauth2/authorize?client_id=914150570250625044&permissions=1759214307376375&integration_type=0&scope=applications.commands+bot).
+2. Run `/help` in a channel and choose a category to browse the available commands.
+3. For notifications, ask a server administrator to configure the relevant `/setup-*` command.
+
+Need help or want to report a problem? Join the [support server](https://discord.gg/mnCHdBbh65) or open an [issue](https://github.com/YINLA-TEAM/YINLA/issues).
+
+## Command guide
+
+Discord presents localized command names when Traditional Chinese (Taiwan) is selected. The command identifiers below are the canonical names used by the API.
+
+| Task | Commands |
+| --- | --- |
+| Get started and Discord utilities | `/help`, `/invite`, `/bot-info`, `/server-info`, `/user-info`, `/getAvatar`, `/report` |
+| Weather, disasters, and alerts | `/weather_tool`, `/weather_station`, `/weather_alert`, `/earthquake_report`, `/radar`, `/typhoon`, `/uv` |
+| CPBL | `/cpbl_score`, `/cpbl_standing`, `/cpbl_game` |
+| Translation | `/translator` and the message context-menu translators |
+| Transport and local information | `/youbike`, `/mrt-trtc`, `/restroom`, `/cpc_oil` |
+| Server setup | `/setup-weather-alert`, `/setup-eqchannel`, `/setup-cpcchannel`, `/setup-welcome` |
+
+### Weather-alert notifications
+
+`/setup-weather-alert` lets each server choose a target text channel and optionally enable concise AI summaries. The bot checks the active CWA alert feed on a schedule and only republishes an alert when its published time, effective time, affected locations, or content changes. The optional summary falls back safely to the original alert when the AI service is unavailable. Read [weather-alert notifications and AI summaries](./docs/weather-alert-push.md) for configuration details.
+
+## Self-hosting
+
+### Requirements
+
+- A Discord application with a bot user and its **token** and **Application ID**.
+- The **Server Members Intent** and **Message Content Intent** enabled for that bot in the Discord Developer Portal.
+- A MongoDB database; server-level notification settings are stored there.
+- Bun (recommended) or a current Node.js runtime. Docker is also supported through the included `Dockerfile`.
+
+### Configure the environment
+
+Create a local `.env` file in the project root. Never commit it.
+
+```dotenv
+token=your_discord_bot_token
+botId=your_discord_application_id
+bot_status=watching for updates
+databaseToken=your_mongodb_connection_string
+
+# Optional: enables AI summaries for weather-alert notifications.
+EXPTECH_API_KEY=your_exptech_api_key
+
+# Optional overrides for the weather-alert AI service.
+# WEATHER_ALERT_AI_MODEL=gemma-4-26b-a4b
+# WEATHER_ALERT_AI_BASE_URL=https://ai.exptech.dev/v1
+# WEATHER_ALERT_AI_CACHE_VERSION=1
+# WEATHER_ALERT_AI_CACHE_PATH=/persistent/path/weatherAlertSummaries.json
+# log_channel=your_discord_log_channel_id
+```
+
+The bot starts and authenticates with `token`, registers global slash commands using `botId`, displays `bot_status`, and connects to MongoDB through `databaseToken`. `EXPTECH_API_KEY` is optional: without it, weather alerts still work and use the original CWA content instead of an AI summary.
+
+### Run locally
+
+```bash
+bun install
+bun src/index.js
+```
+
+On startup, YINLA registers its slash commands globally. Discord can take some time to make globally registered commands visible in every server. Keep the process running with a process manager in production.
+
+### Run with Docker
+
+```bash
+docker build -t yinla .
+docker run --env-file .env yinla
+```
+
+For long-running deployments, persist any configured weather-alert cache path and use a managed MongoDB service or a durable MongoDB volume.
+
+## Development notes
+
+- Commands, interactions, events, and components are loaded dynamically from `src/` when the bot starts.
+- The project uses scheduled jobs for notification features; deployment must remain running for scheduled notifications to be delivered.
+- External data providers can be temporarily unavailable or change their responses. Commands report a friendly error when a source cannot be reached.
+- `data/`, `src/data/weatherAlertSummaries.json`, and `.env` may contain runtime data or credentials and should not be committed.
+
+## Contributing
+
+Bug reports and improvement ideas are welcome through [GitHub Issues](https://github.com/YINLA-TEAM/YINLA/issues). Before opening a pull request, keep changes focused, verify the commands you touch, and never include secrets or generated runtime data.
+
+## License
+
+YINLA is distributed under the [GNU General Public License v3.0](./License).
+
+## Credits
+
+Created and maintained by [YinCheng](https://github.com/YinCheng0106).
