@@ -1,9 +1,15 @@
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require("discord.js");
+const { Signale } = require("signale");
 const {
-  SlashCommandBuilder,
-  EmbedBuilder,
-  MessageFlags,
-} = require("discord.js");
-const axios = require("axios");
+  buildWeatherAlertEmbed,
+  fetchWeatherAlerts,
+  normaliseWeatherAlert,
+} = require("../../utils/weatherAlert");
+const weatherAlertChannelSchema = require("../../Model/weatherAlertChannel");
+const {
+  getOrCreateWeatherAlertSummary,
+} = require("../../services/weatherAlertSummaryCache");
+const { logWeatherAlertAiSummary } = require("../../services/weatherAlertAiLog");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -14,88 +20,68 @@ module.exports = {
     .setDescription("檢視 天氣警報"),
 
   async execute(interaction) {
+    const logger = new Signale({
+      scope: "WEAA",
+    });
     await interaction.deferReply({
       withResponse: true,
       flags: MessageFlags.Ephemeral,
     });
 
-    const waResult = await axios.get(
-      `https://opendata.cwa.gov.tw/api/v1/rest/datastore/W-C0033-002?Authorization=${process.env.cwa_key}`
-    );
-    const { records } = waResult.data;
     const Alert_Embed_List = [];
 
-    function F_Alert_Embed(number) {
-      try {
-        const Weather_Alerts = records.record[number];
-        const Type = Weather_Alerts.datasetInfo.datasetDescription;
-        const Location = [];
-
-        Weather_Alerts.hazardConditions.hazards?.hazard[0].info.affectedAreas.location.forEach(
-          (n) => {
-            Location.push(n.locationName);
+    try {
+      const alerts = (await fetchWeatherAlerts()).map(normaliseWeatherAlert);
+      const subscription = interaction.guild
+        ? await weatherAlertChannelSchema.findOne({ Guild: interaction.guild.id })
+        : null;
+      if (alerts.length === 0) {
+        const Null_Embed = new EmbedBuilder()
+          .setColor("Green")
+          .setTitle("目前沒有任何天氣警報");
+        Alert_Embed_List.push(Null_Embed);
+      } else {
+        for (const alert of alerts) {
+          let summary = null;
+          let cacheHit = false;
+          if (subscription?.AiSummaryEnabled) {
+            try {
+              const result = await getOrCreateWeatherAlertSummary(alert);
+              summary = result.summary;
+              cacheHit = result.cacheHit;
+            } catch (error) {
+              logger.warn("AI 天氣警特報摘要失敗，改顯示原始內容:", error.message);
+            }
           }
-        );
 
-        const S_time =
-          Date.parse(Weather_Alerts.datasetInfo.validTime.startTime) / 1000;
-        const E_time =
-          Date.parse(Weather_Alerts.datasetInfo.validTime.endTime) / 1000;
-        const I_time = new Date(Weather_Alerts.datasetInfo.issueTime);
-
-        const Content = Weather_Alerts.contents.content.contentText.trim();
-
-        const Alert_Embed = new EmbedBuilder()
-          .setAuthor({
-            name: "天氣警報",
-            iconURL:
-              "https://cdn.discordapp.com/emojis/1134845181141725364.webp?size=96&quality=lossless",
-          })
-          .setTitle(Type)
-          .setColor("Red")
-          .setDescription(`\`\`\`${Content}\`\`\``)
-          .setFooter({
-            text: `交通部中央氣象署 • 發布於`,
-            iconURL:
-              "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/ROC_Central_Weather_Bureau.svg/1200px-ROC_Central_Weather_Bureau.svg.png",
-          })
-          .setTimestamp(I_time)
-          .addFields([
-            {
-              name: "影響區域",
-              value: `${Location.map((n) => `**${n}**`).join("、")}`,
-            },
-            {
-              name: "開始時間",
-              value: `<t:${S_time}>__(<t:${S_time}:R>)__`,
-            },
-            {
-              name: "結束時間",
-              value: `<t:${E_time}>__(<t:${E_time}:R>)__`,
-            },
-          ]);
-
-        return Alert_Embed;
-      } catch (error) {
-        console.error("Error: ", error);
-        const Error_Embed = new EmbedBuilder()
+          Alert_Embed_List.push(buildWeatherAlertEmbed(alert, summary));
+          if (summary) {
+            try {
+              const logged = await logWeatherAlertAiSummary(interaction.client, {
+                alert,
+                summary,
+                source: `</${interaction.commandName}:${interaction.commandId}>\n\`${interaction.commandName}\``,
+                guild: interaction.guild,
+                channel: interaction.channel,
+                cacheHit,
+              });
+              if (!logged) {
+                logger.warn("AI 摘要已產生，但尚未設定 log_channel");
+              }
+            } catch (error) {
+              logger.warn("AI 天氣警特報後台紀錄失敗:", error.message);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      logger.error("無法獲取天氣警報資料:", error);
+      Alert_Embed_List.push(
+        new EmbedBuilder()
           .setColor("Red")
           .setTitle("發生錯誤")
-          .setDescription("無法獲取天氣警報資料，請稍後再試。");
-
-        return Error_Embed;
-      }
-    }
-
-    if (records.record == null || records.record.length === 0) {
-      const Null_Embed = new EmbedBuilder()
-        .setColor("Green")
-        .setTitle("目前沒有任何天氣警報");
-      Alert_Embed_List.push(Null_Embed);
-    } else {
-      for (let i = 0; i <= records.record.length - 1; i++) {
-        Alert_Embed_List.push(F_Alert_Embed(i));
-      }
+          .setDescription("無法獲取天氣警報資料，請稍後再試。")
+      );
     }
 
     await interaction.editReply({
