@@ -10,8 +10,14 @@ module.exports = {
         flags: MessageFlags.Ephemeral,
       };
       try {
-        if (interaction.replied || interaction.deferred) {
+        if (interaction.replied) {
           await interaction.followUp(payload);
+        } else if (interaction.deferred) {
+          await interaction.editReply({
+            content: payload.content,
+            embeds: [],
+            components: [],
+          });
         } else {
           await interaction.reply(payload);
         }

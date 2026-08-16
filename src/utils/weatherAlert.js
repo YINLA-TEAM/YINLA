@@ -59,9 +59,9 @@ function buildWeatherAlertEmbed(alert, summary = null, { summaryOnly = false } =
   const issueDate = alert.issueTime ? new Date(alert.issueTime) : new Date();
   const descriptionParts = [];
 
-  if (summary) descriptionParts.push(`**AI 摘要**\n\`\`\`${summary}\`\`\``);
+  if (summary) descriptionParts.push(`${summaryOnly ? "" : `**AI 摘要**\n`}${summary}`);
   if (alert.content && (!summary || !summaryOnly)) {
-    descriptionParts.push(`**中央氣象署原始內容**\n\`\`\`${alert.content}\`\`\``);
+    descriptionParts.push(`${alert.content && summary ? `**中央氣象署原始內容**\n` : ""}${alert.content}`);
   }
 
   const fields = [
@@ -99,7 +99,7 @@ function buildWeatherAlertEmbed(alert, summary = null, { summaryOnly = false } =
       truncate(descriptionParts.join("\n\n") || "中央氣象署未提供警報內容。", 4096)
     )
     .addFields(fields)
-    .setFooter({ text: `交通部中央氣象署 • ${summary == null ? "" : `AI 摘要，僅供參考`}`, iconURL: CWA_ICON_URL })
+    .setFooter({ text: `交通部中央氣象署 • ${summary == null ? "CWA原始訊息" : `AI 摘要，僅供參考`}`, iconURL: CWA_ICON_URL })
     .setTimestamp(Number.isNaN(issueDate.getTime()) ? new Date() : issueDate);
 }
 
