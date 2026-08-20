@@ -1,0 +1,26 @@
+name: Announce published release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-announcement-${{ github.event.release.id }}
+  cancel-in-progress: false
+
+jobs:
+  announce:
+    if: github.event.release.draft == false && github.event.release.prerelease == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out release tooling
+        uses: actions/checkout@v4
+
+      - name: Post Discord announcement
+        env:
+          DISCORD_RELEASE_WEBHOOK_URL: ${{ secrets.DISCORD_RELEASE_WEBHOOK_URL }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/announce-release.js
