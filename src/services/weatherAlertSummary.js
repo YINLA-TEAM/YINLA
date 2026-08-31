@@ -1,10 +1,13 @@
 const axios = require("axios");
 
-const DEFAULT_BASE_URL = "https://ai.exptech.dev/v1";
-const DEFAULT_MODEL = "gemma-4-26b-a4b";
-
 function getWeatherAlertAiModel() {
-  return process.env.WEATHER_ALERT_AI_MODEL ?? DEFAULT_MODEL;
+  return process.env.LITELLM_MODEL ?? process.env.WEATHER_ALERT_AI_MODEL;
+}
+
+function getLiteLLMProxyBaseUrl() {
+  const baseURL =
+    process.env.LITELLM_PROXY_URL ?? process.env.WEATHER_ALERT_AI_BASE_URL;
+  return baseURL?.replace(/\/$/, "") ?? null;
 }
 
 function getTextContent(content) {
@@ -19,21 +22,18 @@ function getTextContent(content) {
 }
 
 /**
- * 使用 ExpTech AI 產生天氣警特報摘要。
- * 未設定 EXPTECH_API_KEY 時回傳 null，讓原始 CWA 警報照常推播。
+ * 使用 LiteLLM Proxy 產生天氣警特報摘要。
+ * 未完整設定 LiteLLM 時回傳 null，讓原始 CWA 警報照常推播。
  *
  * @param {object} alert
  * @returns {Promise<string | null>}
  */
 async function summarizeWeatherAlert(alert) {
-  const apiKey = process.env.EXPTECH_API_KEY;
-  if (!apiKey) return null;
-
-  const baseURL = (process.env.WEATHER_ALERT_AI_BASE_URL ?? DEFAULT_BASE_URL).replace(
-    /\/$/,
-    ""
-  );
+  const apiKey = process.env.LITELLM_API_KEY;
+  const baseURL = getLiteLLMProxyBaseUrl();
   const model = getWeatherAlertAiModel();
+  if (!apiKey || !baseURL || !model) return null;
+
   const response = await axios.post(
     `${baseURL}/chat/completions`,
     {
@@ -70,6 +70,7 @@ async function summarizeWeatherAlert(alert) {
 }
 
 module.exports = {
+  getLiteLLMProxyBaseUrl,
   getTextContent,
   getWeatherAlertAiModel,
   summarizeWeatherAlert,

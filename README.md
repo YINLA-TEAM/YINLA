@@ -72,18 +72,20 @@ botId=your_discord_application_id
 bot_status=watching for updates
 databaseToken=your_mongodb_connection_string
 
-# Optional: enables AI summaries for weather-alert notifications.
-EXPTECH_API_KEY=your_exptech_api_key
+# Optional: enables weather-alert AI summaries through LiteLLM Proxy.
+LITELLM_API_KEY=your_litellm_virtual_key
+LITELLM_PROXY_URL=https://your-litellm-proxy.example.com/v1
+LITELLM_MODEL=your_configured_model_alias
 
-# Optional overrides for the weather-alert AI service.
-# WEATHER_ALERT_AI_MODEL=gemma-4-26b-a4b
-# WEATHER_ALERT_AI_BASE_URL=https://ai.exptech.dev/v1
+# Legacy aliases are supported temporarily during migration.
+# WEATHER_ALERT_AI_BASE_URL=https://your-litellm-proxy.example.com/v1
+# WEATHER_ALERT_AI_MODEL=your_configured_model_alias
 # WEATHER_ALERT_AI_CACHE_VERSION=1
 # WEATHER_ALERT_AI_CACHE_PATH=/persistent/path/weatherAlertSummaries.json
 # log_channel=your_discord_log_channel_id
 ```
 
-The bot starts and authenticates with `token`, registers global slash commands using `botId`, displays `bot_status`, and connects to MongoDB through `databaseToken`. `EXPTECH_API_KEY` is optional: without it, weather alerts still work and use the original CWA content instead of an AI summary.
+The bot starts and authenticates with `token`, registers global slash commands using `botId`, displays `bot_status`, and connects to MongoDB through `databaseToken`. `LITELLM_API_KEY`, `LITELLM_PROXY_URL`, and `LITELLM_MODEL` must all be set to enable summaries; otherwise weather alerts still work and use the original CWA content. The Proxy URL must include its API version path (normally `/v1`), and the model must be an alias configured in LiteLLM.
 
 ### Run locally
 

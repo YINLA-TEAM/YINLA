@@ -4,8 +4,6 @@ const { execFileSync } = require("node:child_process");
 const fs = require("node:fs/promises");
 const path = require("node:path");
 
-const DEFAULT_BASE_URL = "https://ai.exptech.dev/v1";
-const DEFAULT_MODEL = "gemma-4-26b-a4b";
 const STABLE_SEMVER = /^\d+\.\d+\.\d+$/;
 const MAX_COMMITS = 150;
 const MAX_FILES = 300;
@@ -100,8 +98,20 @@ function extractTextContent(content) {
   return "";
 }
 
+function getReleaseAiConfig() {
+  return {
+    apiKey: process.env.RELEASE_AI_API_KEY ?? process.env.LITELLM_API_KEY,
+    baseUrl: process.env.RELEASE_AI_BASE_URL ?? process.env.LITELLM_PROXY_URL,
+    model: process.env.RELEASE_AI_MODEL ?? process.env.LITELLM_MODEL,
+  };
+}
+
 async function requestAiOutline({ version, changes, apiKey, model, baseUrl, fetchFn = fetch }) {
-  if (!apiKey) throw new Error("未設定 EXPTECH_API_KEY");
+  if (!apiKey || !baseUrl || !model) {
+    throw new Error(
+      "必須設定 LITELLM_API_KEY、LITELLM_PROXY_URL 與 LITELLM_MODEL，或對應的 RELEASE_AI_* 覆寫值"
+    );
+  }
 
   const response = await fetchFn(`${baseUrl.replace(/\/$/, "")}/chat/completions`, {
     method: "POST",
@@ -122,19 +132,19 @@ async function requestAiOutline({ version, changes, apiKey, model, baseUrl, fetc
   try {
     payload = await response.json();
   } catch {
-    throw new Error(`ExpTech AI 回傳了非 JSON 的 HTTP ${response.status} 回應`);
+    throw new Error(`LiteLLM Proxy 回傳了非 JSON 的 HTTP ${response.status} 回應`);
   }
   if (!response.ok) {
-    throw new Error(`ExpTech AI 請求失敗（HTTP ${response.status}）`);
+    throw new Error(`LiteLLM Proxy 請求失敗（HTTP ${response.status}）`);
   }
 
   const text = extractTextContent(payload?.choices?.[0]?.message?.content);
-  if (!text) throw new Error("ExpTech AI 未回傳 Release 內容");
+  if (!text) throw new Error("LiteLLM Proxy 未回傳 Release 內容");
 
   try {
     return JSON.parse(text);
   } catch {
-    throw new Error("ExpTech AI 回傳內容不是預期的 JSON 結構");
+    throw new Error("LiteLLM Proxy 回傳內容不是預期的 JSON 結構");
   }
 }
 
@@ -229,15 +239,11 @@ async function main() {
   const targetCommit = resolveCommit(target);
   const previousTag = findPreviousStableTag(targetCommit);
   const changes = collectChangeData(previousTag, targetCommit);
-  const outline = validateOutline(
-    await requestAiOutline({
-      version,
-      changes,
-      apiKey: process.env.EXPTECH_API_KEY,
-      model: process.env.RELEASE_AI_MODEL || DEFAULT_MODEL,
-      baseUrl: process.env.RELEASE_AI_BASE_URL || DEFAULT_BASE_URL,
-    })
-  );
+  const outline = validateOutline(await requestAiOutline({
+    version,
+    changes,
+    ...getReleaseAiConfig(),
+  }));
   const notes = renderReleaseNotes(outline);
   await fs.mkdir(path.dirname(path.resolve(output)), { recursive: true });
   await fs.writeFile(output, notes, "utf8");
@@ -252,11 +258,10 @@ if (require.main === module) {
 }
 
 module.exports = {
-  DEFAULT_BASE_URL,
-  DEFAULT_MODEL,
   buildMessages,
   collectChangeData,
   findPreviousStableTag,
+  getReleaseAiConfig,
   renderReleaseNotes,
   requestAiOutline,
   validateOutline,

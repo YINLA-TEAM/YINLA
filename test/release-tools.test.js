@@ -10,6 +10,7 @@ const {
 } = require("../scripts/announce-release");
 const {
   collectChangeData,
+  getReleaseAiConfig,
   renderReleaseNotes,
   requestAiOutline,
   validateOutline,
@@ -72,7 +73,7 @@ test("AI 請求使用結構化提示並拒絕非成功回應", async () => {
     version: "0.28.1",
     changes,
     apiKey: "test-key",
-    model: "gemma-4-26b-a4b",
+    model: "release-writer",
     baseUrl: "https://ai.example.test/v1",
     fetchFn: async (url, options) => {
       request = { url, options };
@@ -89,10 +90,54 @@ test("AI 請求使用結構化提示並拒絕非成功回應", async () => {
     version: "0.28.1",
     changes,
     apiKey: "test-key",
-    model: "gemma-4-26b-a4b",
+    model: "release-writer",
     baseUrl: "https://ai.example.test/v1",
     fetchFn: async () => response(503, { error: "temporary" }),
   }));
+});
+
+test("Release AI 預設使用 LiteLLM 設定，並允許個別覆寫", () => {
+  const keys = [
+    "LITELLM_API_KEY",
+    "LITELLM_PROXY_URL",
+    "LITELLM_MODEL",
+    "RELEASE_AI_API_KEY",
+    "RELEASE_AI_BASE_URL",
+    "RELEASE_AI_MODEL",
+  ];
+  const original = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+
+  try {
+    Object.assign(process.env, {
+      LITELLM_API_KEY: "proxy-key",
+      LITELLM_PROXY_URL: "https://proxy.example/v1",
+      LITELLM_MODEL: "default-model",
+    });
+    for (const key of keys.filter((key) => key.startsWith("RELEASE_"))) {
+      delete process.env[key];
+    }
+    assert.deepEqual(getReleaseAiConfig(), {
+      apiKey: "proxy-key",
+      baseUrl: "https://proxy.example/v1",
+      model: "default-model",
+    });
+
+    Object.assign(process.env, {
+      RELEASE_AI_API_KEY: "release-key",
+      RELEASE_AI_BASE_URL: "https://release-proxy.example/v1",
+      RELEASE_AI_MODEL: "release-model",
+    });
+    assert.deepEqual(getReleaseAiConfig(), {
+      apiKey: "release-key",
+      baseUrl: "https://release-proxy.example/v1",
+      model: "release-model",
+    });
+  } finally {
+    for (const key of keys) {
+      if (original[key] === undefined) delete process.env[key];
+      else process.env[key] = original[key];
+    }
+  }
 });
 
 test("Discord payload 會禁止提及、移除去重標記並保留 Release 連結", () => {

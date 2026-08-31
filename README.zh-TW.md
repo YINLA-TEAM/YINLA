@@ -72,18 +72,20 @@ botId=your_discord_application_id
 bot_status=watching for updates
 databaseToken=your_mongodb_connection_string
 
-# 選填：啟用天氣警特報的 AI 摘要。
-EXPTECH_API_KEY=your_exptech_api_key
+# 選填：透過 LiteLLM Proxy 啟用天氣警特報的 AI 摘要。
+LITELLM_API_KEY=your_litellm_virtual_key
+LITELLM_PROXY_URL=https://your-litellm-proxy.example.com/v1
+LITELLM_MODEL=your_configured_model_alias
 
-# 選填：覆寫天氣警特報 AI 服務的預設設定。
-# WEATHER_ALERT_AI_MODEL=gemma-4-26b-a4b
-# WEATHER_ALERT_AI_BASE_URL=https://ai.exptech.dev/v1
+# 遷移期間暫時支援舊名稱。
+# WEATHER_ALERT_AI_BASE_URL=https://your-litellm-proxy.example.com/v1
+# WEATHER_ALERT_AI_MODEL=your_configured_model_alias
 # WEATHER_ALERT_AI_CACHE_VERSION=1
 # WEATHER_ALERT_AI_CACHE_PATH=/persistent/path/weatherAlertSummaries.json
 # log_channel=your_discord_log_channel_id
 ```
 
-`token` 用於登入 Discord；`botId` 用來註冊全域 Slash 指令；`bot_status` 是機器人狀態文字；`databaseToken` 用於連線 MongoDB。`EXPTECH_API_KEY` 為選填，未設定時天氣警特報仍可正常運作，只會使用氣象署原始內容，不產生 AI 摘要。
+`token` 用於登入 Discord；`botId` 用來註冊全域 Slash 指令；`bot_status` 是機器人狀態文字；`databaseToken` 用於連線 MongoDB。啟用摘要時，必須同時設定 `LITELLM_API_KEY`、`LITELLM_PROXY_URL` 與 `LITELLM_MODEL`；否則天氣警特報仍可正常運作，只會使用氣象署原始內容。Proxy URL 需包含 API 版本路徑（通常是 `/v1`），模型名稱則要填入 LiteLLM 中設定的別名。
 
 ### 在本機執行
 
